@@ -12,7 +12,7 @@ router.get('/', async (req: Request, res: Response) => {
     where = 'WHERE continent_id = $1';
   }
   const { rows } = await pool.query(
-    `SELECT * FROM islands ${where} ORDER BY ordem NULLS LAST, id`,
+    `SELECT * FROM islands ${where} ORDER BY id`,
     params
   );
   res.json(rows);

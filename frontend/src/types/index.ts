@@ -1,8 +1,6 @@
 export interface Factor {
   letra: string;
   cont: number;
-  valor: string;
-  dgts: number;
 }
 
 export interface Mine {
@@ -34,7 +32,6 @@ export interface Artefato {
 export interface Island {
   id: number;
   nome: string;
-  ordem: number | null;
   continent_id: number;
   updated_at: string;
 }

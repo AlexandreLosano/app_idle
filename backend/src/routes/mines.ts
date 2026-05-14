@@ -24,7 +24,7 @@ router.get('/', async (req: Request, res: Response) => {
      FROM mines m
      LEFT JOIN islands i ON i.id = m.island_id
      ${where}
-     ORDER BY i.ordem NULLS LAST, m.id`,
+     ORDER BY i.id NULLS LAST, m.id`,
     params
   );
   res.json(rows);
