@@ -1,6 +1,6 @@
-# Idle Tracker
+# Idle Miner Tycom - Tracker
 
-Tracker para jogo idle de mineração. Registra e calcula produção, prestígio e progresso por ilha, com base nos dados da planilha `Idle_v2.1.xlsx`.
+Tracker para o jogo Idle Miner Tycom. Registra e calcula produção, prestígio e progresso por continente, ilha e mina, com base nos dados da planilha `Idle_v2.1.xlsx`.
 
 ## Stack
 
@@ -17,6 +17,11 @@ Tracker para jogo idle de mineração. Registra e calcula produção, prestígio
 - **Ilhas** — lista expansível por ilha com header mostrando produção, próximo prestígio, tempo e indicador de balanço (Equilibrado / Trabalhar); edição inline de cada mina com botão salvar por linha
 - **Minas** — tabela somente leitura com filtro por ilha, coluna de ordem de prestígio com bullet de validação e percentual de contribuição por ilha
 - **Boosters / Artefatos** — gestão de artefatos ativos/inativos e configuração de booster (comprados + multiplicador de anúncio)
+- **Cadastros** — criação e edição de Continentes, Ilhas e Minas com select de edição inline por entidade
+
+## Multi-Continente
+
+O app suporta múltiplos continentes. O select no header filtra toda a interface (Resumo, Ilhas, Minas) para exibir apenas as ilhas e minas do continente ativo. Novos continentes, ilhas e minas são criados e editados pela aba **Cadastros**.
 
 ## Sistema de Notação
 
@@ -94,7 +99,8 @@ app_idle/
 │       │   ├── IslandPanel.tsx
 │       │   ├── MinesTable.tsx
 │       │   ├── ArtefatosPanel.tsx
-│       │   └── BoosterBar.tsx
+│       │   ├── BoosterBar.tsx
+│       │   └── CadastrosPanel.tsx
 │       ├── api/client.ts
 │       ├── types/index.ts
 │       └── index.css
@@ -103,11 +109,12 @@ app_idle/
         ├── routes/
         │   ├── mines.ts
         │   ├── islands.ts
+        │   ├── continents.ts
         │   ├── artefatos.ts
         │   ├── prestige.ts
         │   └── gameState.ts
         └── migrations/
-            └── 001_initial.sql … 011_drop_valor_minimo.sql
+            └── 001_initial.sql … 012_continents.sql
 ```
 
 ## Histórico de Alterações
