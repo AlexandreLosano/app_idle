@@ -157,7 +157,7 @@ function DonutChart({ atual, maximo }: { atual: number; maximo: number }) {
   const color = full ? 'var(--ok)' : 'var(--accent-dark)';
 
   return (
-    <svg viewBox="0 0 180 180" width={200} height={200}>
+    <svg viewBox="0 0 180 180" width={160} height={160}>
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--surface2)" strokeWidth={16} />
       {pct > 0 && (
         <circle

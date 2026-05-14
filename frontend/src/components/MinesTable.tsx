@@ -199,31 +199,42 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
   return (
     <div className="mines-table-wrap">
       <table className="mines-table">
+        <colgroup>
+          <col />
+          <col />
+          {showIsland && <col />}
+          <col span={8} className="cg-a" />
+          <col span={2} className="cg-b" />
+          <col />
+          <col />
+          <col />
+          {!readOnly && <col />}
+        </colgroup>
         <thead>
           <tr>
             <th className="col-status" rowSpan={2}></th>
             <th className="col-nome"   rowSpan={2}>Mina</th>
             {showIsland && <th className="col-ilha" rowSpan={2}>Ilha</th>}
-            <th colSpan={2}>Armazém</th>
+            <th colSpan={2} className="grp-a-l">Armazém</th>
             <th colSpan={2}>Elevador</th>
             <th colSpan={2}>Extração</th>
             <th className="col-prestige" rowSpan={2}>Prest.<br />Atual</th>
-            <th className="col-prestige" rowSpan={2}>Prest.<br />Máx.</th>
-            <th colSpan={2} className="">Próx. Prestígio</th>
+            <th className="col-prestige grp-a-r" rowSpan={2}>Prest.<br />Máx.</th>
+            <th colSpan={2} className="grp-b-l grp-b-r">Próx. Prestígio</th>
             <th className="col-rank"     rowSpan={2}>Ordem<br />Prestígio</th>
             <th className="col-producao" rowSpan={2}>Produção</th>
             <th className="col-pct"     rowSpan={2}>%</th>
             {!readOnly && <th className="col-action" rowSpan={2}></th>}
           </tr>
           <tr>
-            <th className="col-nivel sub">Nível</th>
+            <th className="col-nivel sub grp-a-l">Nível</th>
             <th className="col-letra sub">Letra</th>
             <th className="col-nivel sub">Nível</th>
             <th className="col-letra sub">Letra</th>
             <th className="col-nivel sub">Nível</th>
             <th className="col-letra sub">Letra</th>
-            <th className="col-nivel sub">Valor</th>
-            <th className="col-letra sub">Letra</th>
+            <th className="col-nivel sub grp-b-l">Valor</th>
+            <th className="col-letra sub grp-b-r">Letra</th>
           </tr>
         </thead>
         <tbody>
@@ -275,7 +286,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                   </td>
                 )}
 
-                <td className="col-nivel">
+                <td className="col-nivel grp-a-l">
                   {readOnly
                     ? <span>{f.armazem_nivel || '—'}</span>
                     : <input type="number" step="0.01" value={f.armazem_nivel}
@@ -329,20 +340,20 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                     : <input type="number" min="0" value={f.prestigio_atual}
                         onChange={e => set(m.id, 'prestigio_atual', e.target.value)} />}
                 </td>
-                <td className="col-prestige">
+                <td className="col-prestige grp-a-r">
                   {readOnly
                     ? <span>{f.prestigio_maximo || '—'}</span>
                     : <input type="number" min="0" value={f.prestigio_maximo}
                         onChange={e => set(m.id, 'prestigio_maximo', e.target.value)} />}
                 </td>
 
-                <td className="col-nivel">
+                <td className="col-nivel grp-b-l">
                   {readOnly
                     ? <span>{f.proximo_prestigio_valor || '—'}</span>
                     : <input type="number" step="0.01" value={f.proximo_prestigio_valor}
                         onChange={e => set(m.id, 'proximo_prestigio_valor', e.target.value)} />}
                 </td>
-                <td className="col-letra">
+                <td className="col-letra grp-b-r">
                   {readOnly
                     ? <span>{f.proximo_prestigio_letra || '—'}</span>
                     : <select value={f.proximo_prestigio_letra}

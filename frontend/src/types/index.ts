@@ -35,5 +35,12 @@ export interface Island {
   id: number;
   nome: string;
   ordem: number | null;
+  continent_id: number;
+  updated_at: string;
+}
+
+export interface Continent {
+  id: number;
+  nome: string;
   updated_at: string;
 }

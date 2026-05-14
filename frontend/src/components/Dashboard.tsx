@@ -1,29 +1,44 @@
 import { useEffect, useState, useCallback } from 'react';
-import type { Mine, Island, Factor, Artefato } from '../types';
+import type { Mine, Island, Factor, Artefato, Continent } from '../types';
 import { api } from '../api/client';
 import { MinesTable } from './MinesTable';
 import { IslandPanel } from './IslandPanel';
 import { ArtefatosPanel } from './ArtefatosPanel';
 import { SummaryPanel } from './SummaryPanel';
+import { CadastrosPanel } from './CadastrosPanel';
 
 export function Dashboard() {
-  const [mines, setMines] = useState<Mine[]>([]);
-  const [islands, setIslands] = useState<Island[]>([]);
-  const [factors, setFactors] = useState<Factor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'mines' | 'boosters'>('summary');
+  const [mines, setMines]       = useState<Mine[]>([]);
+  const [islands, setIslands]   = useState<Island[]>([]);
+  const [factors, setFactors]   = useState<Factor[]>([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'mines' | 'boosters' | 'cadastros'>('summary');
   const [artefatos, setArtefatos] = useState<Artefato[]>([]);
   const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null }>({ buster_anuncio: null, total_comprado: null });
   const [islandFilter, setIslandFilter] = useState<string>('');
 
+  const [continents, setContinents]           = useState<Continent[]>([]);
+  const [activeContinentId, setActiveContinentId] = useState<number | null>(null);
+
+  // Load continents once on mount; set first as active
+  useEffect(() => {
+    api.continents.list()
+      .then(cs => {
+        setContinents(cs);
+        if (cs.length > 0) setActiveContinentId(cs[0].id);
+      })
+      .catch(e => setError((e as Error).message));
+  }, []);
+
   const load = useCallback(async () => {
+    if (activeContinentId === null) return;
     setLoading(true);
     setError(null);
     try {
       const [m, i, f, art, cfg] = await Promise.all([
-        api.mines.list(),
-        api.islands.list(),
+        api.mines.list(undefined, activeContinentId),
+        api.islands.list(activeContinentId),
         api.factors(),
         api.artefatos.list(),
         api.artefatos.getConfig(),
@@ -38,9 +53,16 @@ export function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [activeContinentId]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Reloads continents list + main data; passed to CadastrosPanel
+  const handleRefresh = useCallback(async () => {
+    const cs = await api.continents.list();
+    setContinents(cs);
+    await load();
+  }, [load]);
 
   const handleMineUpdate = (updated: Mine) =>
     setMines(ms => ms.map(m => m.id === updated.id ? updated : m));
@@ -66,7 +88,16 @@ export function Dashboard() {
   return (
     <div className="dashboard">
       <header className="app-header">
-        <h1>Idle Tracker</h1>
+        <h1>Idle Miner Tycom - Tracker</h1>
+        <select
+          className="continent-select"
+          value={activeContinentId ?? ''}
+          onChange={e => setActiveContinentId(Number(e.target.value))}
+        >
+          {continents.map(c => (
+            <option key={c.id} value={c.id}>{c.nome}</option>
+          ))}
+        </select>
       </header>
 
       <nav className="tabs">
@@ -93,6 +124,12 @@ export function Dashboard() {
           onClick={() => setActiveTab('boosters')}
         >
           Boosters / Artefatos
+        </button>
+        <button
+          className={activeTab === 'cadastros' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('cadastros')}
+        >
+          Cadastros
         </button>
       </nav>
 
@@ -150,6 +187,13 @@ export function Dashboard() {
             onUpdate={handleMineUpdate}
           />
         </section>
+      )}
+
+      {activeTab === 'cadastros' && (
+        <CadastrosPanel
+          continents={continents}
+          onRefresh={handleRefresh}
+        />
       )}
     </div>
   );

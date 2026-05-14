@@ -25,26 +25,41 @@ body {
 }
 
 /* Layout */
-.dashboard { max-width: 1200px; margin: 0 auto; padding: 0 16px 40px; }
+.dashboard { max-width: 1200px; margin: 0 auto; padding: 0 16px 20px; }
 
 /* Header */
 .app-header {
-  padding: 20px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0 10px;
   border-bottom: 1px solid var(--border);
 }
 
 .app-header h1 {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--accent);
   letter-spacing: .5px;
 }
 
+.continent-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+.continent-select:focus { border-color: var(--accent); }
+
 /* Tabs */
 .tabs {
   display: flex;
   gap: 4px;
-  padding: 16px 0 12px;
+  padding: 10px 0 8px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -52,7 +67,7 @@ body {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-muted);
-  padding: 7px 18px;
+  padding: 5px 16px;
   border-radius: var(--radius);
   cursor: pointer;
   font-size: 13px;
@@ -63,8 +78,8 @@ body {
 .tab.active { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; font-weight: 600; }
 
 /* Panels */
-.panel { padding: 20px 0; }
-.panel h2 { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+.panel { padding: 12px 0; }
+.panel h2 { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
 
 /* Panel header with filter */
 .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
@@ -281,6 +296,15 @@ body {
   font-family: 'Courier New', monospace;
   color: var(--accent);
 }
+
+/* Column group encapsulation via colgroup */
+col.cg-a { background: rgba(255, 255, 255, 0.03); }
+col.cg-b { background: rgba(108, 142, 247, 0.09); }
+
+/* Remove borders from group markers — colgroup handles background */
+.grp-a-l, .grp-a-r { border: none !important; }
+.grp-b-l, .grp-b-r { border: none !important; }
+
 
 /* Bullet indicator */
 .status-bullet {
@@ -575,8 +599,8 @@ button { cursor: pointer; font-family: inherit; }
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 7px 14px;
-  margin-bottom: 16px;
+  padding: 5px 14px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
@@ -612,25 +636,25 @@ button { cursor: pointer; font-family: inherit; }
 .summary-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .summary-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px 16px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 5px;
 }
 
 .sc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 .sc-name  { font-size: 14px; font-weight: 700; color: var(--text); }
 .sc-count { font-size: 11px; color: var(--text-muted); background: var(--surface2); padding: 2px 7px; border-radius: 999px; }
@@ -649,23 +673,24 @@ button { cursor: pointer; font-family: inherit; }
 .sc-time    { color: var(--accent); }
 
 /* Prestige comparison chart */
-.summary-prestige-chart { margin-top: 4px; }
+.summary-prestige-chart { margin-top: 0; }
 .summary-prestige-chart h2 {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .prestige-chart-layout {
   display: flex;
   align-items: center;
-  gap: 0;
+  justify-content: space-between;
+  gap: 32px;
 }
 
-.prestige-rows { display: flex; flex-direction: column; gap: 10px; }
+.prestige-rows { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
 
 .prestige-donut {
   display: flex;
@@ -674,7 +699,6 @@ button { cursor: pointer; font-family: inherit; }
   justify-content: center;
   gap: 8px;
   flex-shrink: 0;
-  margin-left: 275px;
 }
 
 .donut-label {
@@ -688,7 +712,7 @@ button { cursor: pointer; font-family: inherit; }
 .prestige-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .prestige-island-name {
@@ -715,8 +739,8 @@ button { cursor: pointer; font-family: inherit; }
 .prestige-bar-full .pseg-on { background: var(--ok); }
 
 .pseg {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 2px;
   flex-shrink: 0;
 }
@@ -732,6 +756,72 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .sp-empty { color: var(--text-muted); font-size: 12px; }
+
+/* Cadastros panel */
+.cad-sections { display: flex; flex-direction: column; gap: 32px; }
+
+.cad-section { display: flex; flex-direction: column; gap: 12px; }
+
+.cad-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: .3px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cad-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cad-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 13px;
+  outline: none;
+  width: 220px;
+}
+.cad-input:focus { border-color: var(--accent); }
+
+.cad-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+.cad-select:focus { border-color: var(--accent); }
+
+.cad-select-wide { min-width: 260px; }
+
+.cad-edit-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cad-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.cad-sub { color: var(--text-muted); font-size: 12px; }
 
 /* Loading / Error */
 .loading, .error {
