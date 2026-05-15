@@ -346,6 +346,10 @@ col.cg-b { background: rgba(108, 142, 247, 0.09); }
 .mines-table input[type="number"]:focus,
 .mines-table select:focus { border-color: var(--accent); }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
 .mines-table td.col-nivel span,
 .mines-table td.col-letra span,
 .mines-table td.col-prestige span {
