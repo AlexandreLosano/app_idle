@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { Island, Mine, Factor } from '../types';
 import { MinesTable } from './MinesTable';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
+import { computeUpgradeHints } from '../utils/upgradeAdvisor';
 
 interface Props {
   islands: Island[];
@@ -9,6 +10,7 @@ interface Props {
   factors: Factor[];
   boosterTotal?: number;
   boosterInfo?: BoosterInfo;
+  targetPct?: number;
   onMineUpdate: (updated: Mine) => void;
 }
 
@@ -150,7 +152,7 @@ function formatTime(seconds: number): string {
   return `${s}s`;
 }
 
-export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo, onMineUpdate }: Props) {
+export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo, targetPct, onMineUpdate }: Props) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   return (
@@ -163,6 +165,7 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
         {islands.map(island => {
           const islandMines = mines.filter(m => m.island_id === island.id);
           const isExpanded = expandedId === island.id;
+          const upgradeHints = computeUpgradeHints(islandMines, factors);
           const production  = computeProduction(islandMines, factors, (boosterTotal ?? 0) / 10);
           const nextPrestige = minNextPrestige(islandMines, factors);
           const timeEst = production.raw > 0 && nextPrestige.raw > 0
@@ -217,6 +220,8 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
                     mines={islandMines}
                     factors={factors}
                     boosterTotal={boosterTotal}
+                    upgradeHints={upgradeHints}
+                    targetPct={targetPct}
                     onUpdate={onMineUpdate}
                   />
                 </div>

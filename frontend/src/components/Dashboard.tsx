@@ -17,6 +17,7 @@ export function Dashboard() {
   const [artefatos, setArtefatos] = useState<Artefato[]>([]);
   const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null }>({ buster_anuncio: null, total_comprado: null });
   const [islandFilter, setIslandFilter] = useState<string>('');
+  const [targetPct, setTargetPct] = useState(10);
 
   const [continents, setContinents]           = useState<Continent[]>([]);
   const [activeContinentId, setActiveContinentId] = useState<number | null>(null);
@@ -150,16 +151,33 @@ export function Dashboard() {
           factors={factors}
           boosterTotal={boosterTotal}
           boosterInfo={boosterInfo}
+          targetPct={targetPct}
           onMineUpdate={handleMineUpdate}
         />
       )}
 
       {activeTab === 'boosters' && (
-        <ArtefatosPanel
-          artefatos={artefatos}
-          onUpdate={updated => setArtefatos(arr => arr.map(a => a.id === updated.id ? updated : a))}
-          onAdd={created => setArtefatos(arr => [...arr, created].sort((a, b) => a.quantidade - b.quantidade))}
-        />
+        <>
+          <ArtefatosPanel
+            artefatos={artefatos}
+            onUpdate={updated => setArtefatos(arr => arr.map(a => a.id === updated.id ? updated : a))}
+            onAdd={created => setArtefatos(arr => [...arr, created].sort((a, b) => a.quantidade - b.quantidade))}
+          />
+          <div className="target-pct-bar">
+            <span className="target-pct-label">
+              % do Target exibido: <strong>{targetPct}%</strong>
+            </span>
+            <input
+              type="range"
+              className="target-pct-slider"
+              min={1}
+              max={100}
+              step={1}
+              value={targetPct}
+              onChange={e => setTargetPct(Number(e.target.value))}
+            />
+          </div>
+        </>
       )}
 
       {activeTab === 'mines' && (

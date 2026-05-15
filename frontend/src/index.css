@@ -152,6 +152,7 @@ body {
 .mines-table .col-rank    { width: 72px; text-align: center; font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--warn); }
 .mines-table .col-producao{ width: 90px; text-align: center; font-weight: 700; font-family: 'Courier New', monospace; color: var(--accent); }
 .mines-table .col-pct     { width: 58px; text-align: center; font-size: 12px; color: var(--text); font-weight: 600; font-family: 'Courier New', monospace; }
+.mines-table .col-target  { width: 72px; text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; font-family: 'Courier New', monospace; }
 .mines-table .col-action  { width: 68px; text-align: center; border-left: none; }
 
 /* Boosters / Artefatos */
@@ -844,3 +845,24 @@ button { cursor: pointer; font-family: inherit; }
   border-radius: 6px;
   cursor: pointer;
 }
+
+/* Target % slider */
+.target-pct-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-top: 12px;
+}
+.target-pct-label { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
+.target-pct-label strong { color: var(--accent); font-family: 'Courier New', monospace; }
+.target-pct-slider { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
+
+/* Upgrade advisor arrow */
+.upgrade-arrow        { font-size: 11px; font-weight: 700; margin-right: 4px; cursor: default; }
+.upgrade-arrow.up     { color: var(--warn); }
+.upgrade-arrow.ok     { color: var(--ok); }
+.upgrade-arrow.skip   { color: var(--text-muted); }

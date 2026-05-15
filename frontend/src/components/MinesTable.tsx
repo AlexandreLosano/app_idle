@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { Mine, Factor, Island } from '../types';
 import { api } from '../api/client';
+import { UpgradeArrow } from './UpgradeArrow';
+import { formatRaw } from '../utils/upgradeAdvisor';
+import type { UpgradeHint } from '../utils/upgradeAdvisor';
 
 interface Props {
   mines: Mine[];
@@ -9,6 +12,8 @@ interface Props {
   showIsland?: boolean;
   boosterTotal?: number;
   readOnly?: boolean;
+  upgradeHints?: Record<number, UpgradeHint | null>;
+  targetPct?: number;
   onUpdate: (updated: Mine) => void;
 }
 
@@ -107,7 +112,7 @@ function extracaoStatus(f: FormRow, factors: Factor[]): 'min' | 'notmin' | 'unkn
   return x <= Math.min(a, e) + 1e-9 ? 'min' : 'notmin';
 }
 
-export function MinesTable({ mines, factors, islands = [], showIsland = false, boosterTotal = 0, readOnly = false, onUpdate }: Props) {
+export function MinesTable({ mines, factors, islands = [], showIsland = false, boosterTotal = 0, readOnly = false, upgradeHints, targetPct = 10, onUpdate }: Props) {
   const [rows,   setRows]   = useState<Record<number, FormRow>>({});
   const [saving, setSaving] = useState<Record<number, boolean>>({});
   const [saved,  setSaved]  = useState<Record<number, boolean>>({});
@@ -208,6 +213,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
           <col />
           <col />
           <col />
+          {upgradeHints && <col />}
           {!readOnly && <col />}
         </colgroup>
         <thead>
@@ -224,6 +230,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
             <th className="col-rank"     rowSpan={2}>Ordem<br />Prestígio</th>
             <th className="col-producao" rowSpan={2}>Produção</th>
             <th className="col-pct"     rowSpan={2}>%</th>
+            {upgradeHints && <th className="col-target" rowSpan={2}>Target</th>}
             {!readOnly && <th className="col-action" rowSpan={2}></th>}
           </tr>
           <tr>
@@ -278,7 +285,10 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                   </div>
                 </td>
 
-                <td className="col-nome"><span className="mine-name">{m.nome}</span></td>
+                <td className="col-nome">
+                  {upgradeHints && <UpgradeArrow hint={upgradeHints[m.id] ?? null} />}
+                  <span className="mine-name">{m.nome}</span>
+                </td>
 
                 {showIsland && (
                   <td className="col-ilha">
@@ -371,6 +381,13 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                 </td>
                 <td className="col-producao">{producao}</td>
                 <td className="col-pct">{pct}</td>
+                {upgradeHints && (
+                  <td className="col-target">
+                    {upgradeHints[m.id] != null
+                      ? formatRaw(upgradeHints[m.id]!.targetRaw * targetPct / 100, factors)
+                      : '—'}
+                  </td>
+                )}
 
                 {!readOnly && (
                   <td className="col-action">
