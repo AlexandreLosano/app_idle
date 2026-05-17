@@ -866,3 +866,178 @@ button { cursor: pointer; font-family: inherit; }
 .upgrade-arrow.up     { color: var(--warn); }
 .upgrade-arrow.ok     { color: var(--ok); }
 .upgrade-arrow.skip   { color: var(--text-muted); }
+
+/* Promoção panel */
+.promo-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.promo-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.promo-field-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--text-muted);
+}
+
+.promo-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  width: 120px;
+  text-align: right;
+  outline: none;
+}
+.promo-input:focus { border-color: var(--accent); }
+
+.promo-unit-select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+.promo-unit-select:focus { border-color: var(--accent); }
+
+.promo-boost-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin-left: 8px;
+}
+.promo-boost-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+.promo-boost-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+}
+.promo-boost-atual { color: var(--text-muted); }
+.promo-boost-promo { color: var(--accent); }
+.promo-boost-arrow { color: var(--text-muted); font-size: 14px; }
+
+.promo-prod-atual { color: var(--text-muted) !important; }
+.promo-arrow-sep { font-size: 11px; color: var(--text-muted); margin: 0 2px; }
+
+.promo-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.promo-badge-ok   { background: rgba(76,175,130,0.15);  color: var(--ok);    border: 1px solid var(--ok); }
+.promo-badge-none { background: rgba(224,85,85,0.12);   color: #e05555;      border: 1px solid #e05555; }
+.promo-badge-all  { background: rgba(108,142,247,0.15); color: var(--accent); border: 1px solid var(--accent); }
+
+.promo-mine-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.promo-mine-table th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.promo-mine-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.promo-mine-table tbody tr:last-child td { border-bottom: none; }
+.promo-mine-table tbody tr:hover td { background: var(--surface2); }
+
+.promo-prestige-val { font-family: 'Courier New', monospace; color: var(--warn); font-weight: 700; font-size: 12px; }
+.promo-time-val     { font-family: 'Courier New', monospace; font-weight: 700; font-size: 12px; }
+.promo-time-atual   { color: var(--text-muted); }
+.promo-time-promo   { color: var(--accent); }
+
+.promo-status-vai { color: var(--ok);    font-weight: 700; font-size: 16px; }
+.promo-status-nao { color: #e05555;      font-weight: 700; font-size: 16px; }
+.promo-status-max { color: var(--warn);  font-weight: 700; font-size: 16px; }
+
+/* Promo entry list */
+.promo-entries-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.promo-entries { display: flex; flex-direction: column; gap: 6px; }
+.promo-entry-row { display: flex; align-items: center; gap: 6px; }
+.promo-entries-footer { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+
+/* Promo pct label */
+.promo-pct-label-only { font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; width: 36px; text-align: right; }
+
+.promo-btn-add,
+.promo-btn-remove {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color .15s, color .15s;
+}
+.promo-btn-add:hover   { border-color: var(--accent); color: var(--accent); }
+.promo-btn-remove:hover { border-color: #e05555; color: #e05555; }
+
+.promo-total-qtd {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+.promo-total-qtd strong {
+  font-family: 'Courier New', monospace;
+  color: var(--accent);
+}
+
+/* Island row status variants */
+.promo-island-row { border-left: 3px solid transparent; }
+.promo-row-vai { border-left-color: var(--ok); }
+.promo-row-nao { border-left-color: #e05555; }
+.promo-row-max { border-left-color: var(--warn); }
+
+/* Status icon (right side) */
+.promo-status-icon { font-size: 20px; font-weight: 700; flex-shrink: 0; width: 28px; text-align: center; }

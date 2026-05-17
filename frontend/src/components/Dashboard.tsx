@@ -6,6 +6,7 @@ import { IslandPanel } from './IslandPanel';
 import { ArtefatosPanel } from './ArtefatosPanel';
 import { SummaryPanel } from './SummaryPanel';
 import { CadastrosPanel } from './CadastrosPanel';
+import { PromocaoPanel } from './PromocaoPanel';
 
 export function Dashboard() {
   const [mines, setMines]       = useState<Mine[]>([]);
@@ -13,11 +14,12 @@ export function Dashboard() {
   const [factors, setFactors]   = useState<Factor[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'mines' | 'boosters' | 'cadastros'>('summary');
+  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'mines' | 'boosters' | 'promocao' | 'cadastros'>('summary');
   const [artefatos, setArtefatos] = useState<Artefato[]>([]);
   const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null }>({ buster_anuncio: null, total_comprado: null });
   const [islandFilter, setIslandFilter] = useState<string>('');
-  const [targetPct, setTargetPct] = useState(10);
+  const [targetPct, setTargetPct] = useState(() => Number(localStorage.getItem('targetPct') || 10));
+  const [targetPctSaved, setTargetPctSaved] = useState(false);
 
   const [continents, setContinents]           = useState<Continent[]>([]);
   const [activeContinentId, setActiveContinentId] = useState<number | null>(null);
@@ -127,6 +129,12 @@ export function Dashboard() {
           Boosters / Artefatos
         </button>
         <button
+          className={activeTab === 'promocao' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('promocao')}
+        >
+          Promoção
+        </button>
+        <button
           className={activeTab === 'cadastros' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('cadastros')}
         >
@@ -174,8 +182,14 @@ export function Dashboard() {
               max={100}
               step={1}
               value={targetPct}
-              onChange={e => setTargetPct(Number(e.target.value))}
+              onChange={e => { setTargetPct(Number(e.target.value)); setTargetPctSaved(false); }}
             />
+            <button
+              className={`btn-row-save${targetPctSaved ? ' saved' : ''}`}
+              onClick={() => { localStorage.setItem('targetPct', String(targetPct)); setTargetPctSaved(true); }}
+            >
+              {targetPctSaved ? '✓' : 'Salvar'}
+            </button>
           </div>
         </>
       )}
@@ -205,6 +219,17 @@ export function Dashboard() {
             onUpdate={handleMineUpdate}
           />
         </section>
+      )}
+
+      {activeTab === 'promocao' && (
+        <PromocaoPanel
+          islands={islands}
+          mines={mines}
+          factors={factors}
+          artefatos={artefatos}
+          boosterCfg={boosterCfg}
+          boosterTotal={boosterTotal}
+        />
       )}
 
       {activeTab === 'cadastros' && (

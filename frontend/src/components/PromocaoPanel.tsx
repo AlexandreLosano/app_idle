@@ -1,0 +1,317 @@
+import { useState } from 'react';
+import type { Mine, Island, Factor, Artefato } from '../types';
+
+interface Props {
+  islands: Island[];
+  mines: Mine[];
+  factors: Factor[];
+  artefatos: Artefato[];
+  boosterCfg: { buster_anuncio: number | null; total_comprado: number | null };
+  boosterTotal: number;
+}
+
+interface ArtefatoEntry {
+  id: number;
+  qtd: string;
+  duracao: string;
+  unidade: 'min' | 'h' | 'dias';
+}
+
+let nextId = 1;
+
+function toSeconds(duracao: string, unidade: 'min' | 'h' | 'dias'): number {
+  const n = Number(duracao) || 0;
+  return n * (unidade === 'min' ? 60 : unidade === 'h' ? 3600 : 86400);
+}
+
+function roundByMagnitude(n: number): number {
+  if (n < 10)  return Math.round(n * 100) / 100;
+  if (n < 100) return Math.round(n * 10)  / 10;
+  return Math.round(n);
+}
+
+function computeProduction(mines: Mine[], factors: Factor[], boosterFactor: number): { display: string; raw: number } {
+  const factorMap = new Map(factors.map(f => [f.letra, f]));
+  const values: Array<{ nivel: number; cont: number }> = [];
+
+  for (const m of mines) {
+    const components = [
+      { nivel: m.armazem_nivel,  letra: m.armazem_letra },
+      { nivel: m.elevador_nivel, letra: m.elevador_letra },
+      { nivel: m.extracao_nivel, letra: m.extracao_letra },
+    ];
+    if (components.some(c => c.nivel == null || !c.letra)) continue;
+    const scored = components.map(c => {
+      const cont = factorMap.get(c.letra!)?.cont ?? 1;
+      const n = c.nivel ?? 0;
+      return { nivel: n, cont, score: (cont - 1) * 100 + Math.log10(n > 0 ? n : 0.001) };
+    });
+    const min = scored.reduce((a, b) => a.score < b.score ? a : b);
+    if (min.nivel > 0) values.push({ nivel: min.nivel, cont: min.cont });
+  }
+
+  if (values.length === 0) return { display: '—', raw: 0 };
+
+  const maxCont = Math.max(...values.map(v => v.cont));
+  let total = 0;
+  for (const v of values) {
+    total += v.nivel / Math.pow(1000, maxCont - v.cont);
+  }
+  if (boosterFactor > 0) total *= boosterFactor;
+
+  const sorted = [...factors].sort((a, b) => a.cont - b.cont);
+  let cont = maxCont;
+  while (total >= 1000 && cont < sorted[sorted.length - 1].cont) {
+    total /= 1000;
+    cont++;
+  }
+
+  const letra = sorted.find(f => f.cont === cont)?.letra ?? '?';
+  const raw = total * Math.pow(1000, cont - 1);
+  return { display: `${roundByMagnitude(total)}${letra}`, raw };
+}
+
+function minNextPrestige(mines: Mine[], factors: Factor[]): { display: string; raw: number; nome: string } {
+  const factorMap = new Map(factors.map(f => [f.letra, f]));
+  const candidates = mines
+    .filter(m => m.proximo_prestigio_valor != null && m.proximo_prestigio_letra)
+    .map(m => {
+      const cont = factorMap.get(m.proximo_prestigio_letra!)?.cont ?? 1;
+      const valor = m.proximo_prestigio_valor!;
+      return {
+        nome: m.nome,
+        valor,
+        letra: m.proximo_prestigio_letra!,
+        score: (cont - 1) * 100 + Math.log10(valor > 0 ? valor : 0.001),
+        raw: valor * Math.pow(1000, cont - 1),
+      };
+    });
+  if (candidates.length === 0) return { display: '—', raw: 0, nome: '' };
+  const min = candidates.reduce((a, b) => a.score < b.score ? a : b);
+  return { display: `${min.valor}${min.letra}`, raw: min.raw, nome: min.nome };
+}
+
+function formatTime(seconds: number): string {
+  if (!isFinite(seconds) || seconds <= 0) return '—';
+  const d = Math.floor(seconds / 86400);
+  const h = Math.floor((seconds % 86400) / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+
+// Acumula produção por segmentos de tempo conforme artefatos expiram
+function computeAccumulated(
+  islandMines: Mine[],
+  factors: Factor[],
+  somaOff: number,
+  totalComprado: number,
+  busterAnuncio: number,
+  entries: ArtefatoEntry[],
+): { accumulated: number; currentBoosterFactor: number } {
+  const validEntries = entries.filter(e => Number(e.qtd) > 0 && toSeconds(e.duracao, e.unidade) > 0);
+  if (validEntries.length === 0) return { accumulated: 0, currentBoosterFactor: 0 };
+
+  // Ordena por duração crescente para construir os segmentos
+  const sorted = [...validEntries]
+    .map(e => ({ qtd: Number(e.qtd), seconds: toSeconds(e.duracao, e.unidade) }))
+    .sort((a, b) => a.seconds - b.seconds);
+
+  let accumulated = 0;
+  let prevTime = 0;
+  let activeQtd = sorted.reduce((s, e) => s + e.qtd, 0); // começa com tudo ativo
+
+  for (let i = 0; i < sorted.length; i++) {
+    const segEnd = sorted[i].seconds;
+    const segDuration = segEnd - prevTime;
+
+    if (segDuration > 0) {
+      const boosterFactor = (somaOff + activeQtd + totalComprado) * busterAnuncio;
+      const prod = computeProduction(islandMines, factors, boosterFactor);
+      accumulated += prod.raw * segDuration;
+    }
+
+    activeQtd -= sorted[i].qtd; // artefato expira
+    prevTime = segEnd;
+  }
+
+  const currentBoosterFactor = (somaOff + totalComprado) * busterAnuncio;
+  return { accumulated, currentBoosterFactor };
+}
+
+export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, boosterTotal }: Props) {
+  const [entries, setEntries] = useState<ArtefatoEntry[]>([
+    { id: nextId++, qtd: '', duracao: '', unidade: 'h' },
+  ]);
+
+  const busterAnuncio = boosterCfg.buster_anuncio ?? 0;
+  const totalComprado = boosterCfg.total_comprado ?? 0;
+  const somaOff = artefatos.filter(a => a.ativo).reduce((acc, a) => acc + a.quantidade, 0);
+
+  const totalPromoQtd = entries.reduce((acc, e) => acc + (Number(e.qtd) || 0), 0);
+  const totalPromoBooster = Math.round((somaOff + totalPromoQtd + totalComprado) * busterAnuncio * 10) / 10;
+
+  const hasInput = entries.some(e => Number(e.qtd) > 0 && toSeconds(e.duracao, e.unidade) > 0);
+
+  function addEntry() {
+    setEntries(es => [...es, { id: nextId++, qtd: '', duracao: '', unidade: 'h' }]);
+  }
+
+  function removeEntry(id: number) {
+    setEntries(es => es.filter(e => e.id !== id));
+  }
+
+  function updateEntry(id: number, field: Partial<Omit<ArtefatoEntry, 'id'>>) {
+    setEntries(es => es.map(e => e.id === id ? { ...e, ...field } : e));
+  }
+
+  return (
+    <section className="panel">
+      <div className="panel-header">
+        <h2>Simulação de Promoção</h2>
+      </div>
+
+      <div className="promo-form-card">
+        <div className="promo-field" style={{ flex: 1, minWidth: 280 }}>
+          <div className="promo-entries-header">
+            <span className="promo-field-label">Artefatos</span>
+            <span className="promo-field-label" style={{ width: 90, textAlign: 'right' }}>Duração</span>
+            <span className="promo-field-label" style={{ width: 70 }}></span>
+          </div>
+
+          <div className="promo-entries">
+            {entries.map(e => (
+              <div key={e.id} className="promo-entry-row">
+                <input
+                  type="number"
+                  className="promo-input"
+                  placeholder="ex: 1000"
+                  value={e.qtd}
+                  onChange={ev => updateEntry(e.id, { qtd: ev.target.value })}
+                />
+                <input
+                  type="number"
+                  className="promo-input"
+                  placeholder="ex: 3"
+                  value={e.duracao}
+                  onChange={ev => updateEntry(e.id, { duracao: ev.target.value })}
+                  style={{ width: 70 }}
+                />
+                <select
+                  className="promo-unit-select"
+                  value={e.unidade}
+                  onChange={ev => updateEntry(e.id, { unidade: ev.target.value as 'min' | 'h' | 'dias' })}
+                >
+                  <option value="min">min</option>
+                  <option value="h">horas</option>
+                  <option value="dias">dias</option>
+                </select>
+                {entries.length > 1 && (
+                  <button className="promo-btn-remove" onClick={() => removeEntry(e.id)} title="Remover">×</button>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="promo-entries-footer">
+            <button className="promo-btn-add" onClick={addEntry} title="Adicionar artefato">+</button>
+            {entries.length > 1 && totalPromoQtd > 0 && (
+              <span className="promo-total-qtd">
+                Total: <strong>{totalPromoQtd}</strong> artefatos · Booster {boosterTotal}x → <strong>{totalPromoBooster}x</strong>
+              </span>
+            )}
+            {entries.length === 1 && totalPromoQtd > 0 && (
+              <span className="promo-total-qtd">
+                Booster {boosterTotal}x → <strong>{totalPromoBooster}x</strong>
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {hasInput ? (
+        <div className="islands-list">
+          {islands.map(island => {
+            const islandMines = mines.filter(m => m.island_id === island.id);
+            if (islandMines.length === 0) return null;
+
+            const nextPrestige = minNextPrestige(islandMines, factors);
+            const currentBoosterFactor = boosterTotal / 10;
+            const currentProduction = computeProduction(islandMines, factors, currentBoosterFactor);
+            const promoProduction   = computeProduction(islandMines, factors, (somaOff + totalPromoQtd + totalComprado) * busterAnuncio);
+
+            const { accumulated } = computeAccumulated(
+              islandMines, factors, somaOff, totalComprado, busterAnuncio, entries
+            );
+
+            const hasPrestige = nextPrestige.raw > 0;
+            const timeAtualSec = currentProduction.raw > 0 && hasPrestige
+              ? nextPrestige.raw / currentProduction.raw : null;
+
+            const vaiAtingir = hasPrestige && accumulated >= nextPrestige.raw;
+            const pct = hasPrestige ? Math.min((accumulated / nextPrestige.raw) * 100, 100) : 0;
+
+            const rowClass = !hasPrestige ? '' : vaiAtingir ? 'promo-row-vai' : 'promo-row-nao';
+
+            return (
+              <div key={island.id} className={`island-row promo-island-row ${rowClass}`}>
+                <div className="island-summary">
+                  <div className="island-name-area" style={{ width: '100%', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <strong className="island-title">{island.nome}</strong>
+
+                      {currentProduction.display !== '—' && (
+                        <span className="island-production">
+                          <span className="prod-label">Produção</span>
+                          <span className="prod-value promo-prod-atual">{currentProduction.display}</span>
+                          <span className="promo-arrow-sep">→</span>
+                          <span className="prod-value">{promoProduction.display}</span>
+                        </span>
+                      )}
+
+                      {hasPrestige && (
+                        <span className="island-production">
+                          <span className="prod-label">Próx. Prestígio</span>
+                          <span className="prod-value prod-prestige">{nextPrestige.display}</span>
+                          <span className="prod-label" style={{ marginLeft: 3 }}>({nextPrestige.nome})</span>
+                        </span>
+                      )}
+
+                      {hasPrestige && timeAtualSec != null && (
+                        <span className="island-production">
+                          <span className="prod-label">Sem promo</span>
+                          <span className="promo-time-val promo-time-atual">{formatTime(timeAtualSec)}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      {hasPrestige && (
+                        <span className="promo-pct-label-only" style={{ color: vaiAtingir ? 'var(--ok)' : 'var(--warn)' }}>
+                          {pct.toFixed(0)}%
+                        </span>
+                      )}
+
+                      {hasPrestige && (
+                        <span className={`promo-status-icon ${vaiAtingir ? 'promo-status-vai' : 'promo-status-nao'}`}>
+                          {vaiAtingir ? '✓' : '✗'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="no-mines" style={{ marginTop: 24 }}>
+          Preencha os campos acima para ver a simulação.
+        </p>
+      )}
+    </section>
+  );
+}
