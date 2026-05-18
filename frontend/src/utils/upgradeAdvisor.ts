@@ -5,6 +5,7 @@ export type UpgradeSignal = 'up' | 'ok' | 'skip';
 export interface UpgradeHint {
   signal: UpgradeSignal;
   targetRaw: number;
+  bottleneckRaw: number;
 }
 
 // Reference percentages for 5 active mines; scaled by index-picking for other counts.
@@ -65,6 +66,8 @@ export function formatRaw(rawValue: number, factors: Factor[]): string {
 export function computeUpgradeHints(
   mines: Mine[],
   factors: Factor[],
+  targetPct: number = 100,
+  boosterFactor: number = 1,
 ): Record<number, UpgradeHint | null> {
   const result: Record<number, UpgradeHint | null> = {};
 
@@ -87,16 +90,18 @@ export function computeUpgradeHints(
 
   sorted.forEach((m, i) => {
     const targetRaw = baseRaw * pcts[i];
+    const effectiveTarget = targetRaw * targetPct / 100;
     const bottleneck = mineBottleneckRaw(m, factors);
+    const boostedBottleneck = bottleneck * boosterFactor;
     let signal: UpgradeSignal;
-    if (bottleneck < targetRaw * 0.9) {
+    if (boostedBottleneck < effectiveTarget * 0.9) {
       signal = 'up';
-    } else if (bottleneck > targetRaw * 1.1) {
+    } else if (boostedBottleneck > effectiveTarget * 1.1) {
       signal = 'skip';
     } else {
       signal = 'ok';
     }
-    result[m.id] = { signal, targetRaw };
+    result[m.id] = { signal, targetRaw, bottleneckRaw: boostedBottleneck };
   });
 
   return result;

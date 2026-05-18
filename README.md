@@ -17,6 +17,7 @@ Tracker para o jogo Idle Miner Tycom. Registra e calcula produção, prestígio 
 - **Ilhas** — lista expansível por ilha com header mostrando produção, próximo prestígio, tempo e indicador de balanço (Equilibrado / Trabalhar); edição inline de cada mina com botão salvar por linha
 - **Minas** — tabela somente leitura com filtro por ilha, coluna de ordem de prestígio com bullet de validação e percentual de contribuição por ilha
 - **Boosters / Artefatos** — gestão de artefatos ativos/inativos e configuração de booster (comprados + multiplicador de anúncio)
+- **Promoção** — simulador de pacotes promocionais de artefatos: informe um ou mais artefatos com quantidades e durações independentes, e veja por ilha se a produção acumulada no período será suficiente para atingir o próximo prestígio
 - **Cadastros** — criação e edição de Continentes, Ilhas e Minas com select de edição inline por entidade
 
 ## Multi-Continente
@@ -49,6 +50,25 @@ boosterTotal = ROUND((somaArtefatosAtivos + totalComprado) × multiplicadorAnunc
 
 bottleneck = mínimo entre Armazém, Elevador e Extração (por score de letra + nível)
 ```
+
+## Simulação de Promoção
+
+Permite avaliar se vale a pena comprar um pacote promocional de artefatos antes de gastar dinheiro real.
+
+O cálculo considera que cada artefato da promo tem duração própria e expira em momentos diferentes. A produção acumulada é calculada em **segmentos de tempo**:
+
+```
+Segmentos ordenados por duração crescente (t1 < t2 < t3 …):
+
+Acumulado = produção(todos ativos) × t1
+          + produção(sem os que expiraram em t1) × (t2 - t1)
+          + produção(sem os que expiraram em t2) × (t3 - t2)
+          + …
+
+Resultado: Acumulado ≥ próximo_prestígio → vai atingir ✓
+```
+
+O booster de cada segmento usa a mesma fórmula base, somando apenas os artefatos ainda ativos àquele momento.
 
 ## Pré-requisitos
 
@@ -100,6 +120,7 @@ app_idle/
 │       │   ├── MinesTable.tsx
 │       │   ├── ArtefatosPanel.tsx
 │       │   ├── BoosterBar.tsx
+│       │   ├── PromocaoPanel.tsx
 │       │   └── CadastrosPanel.tsx
 │       ├── api/client.ts
 │       ├── types/index.ts

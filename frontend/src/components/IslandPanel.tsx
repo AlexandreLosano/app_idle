@@ -99,6 +99,28 @@ function mineRawBottleneck(m: Mine, factors: Factor[]): number {
   return min.n * Math.pow(1000, min.cont - 1);
 }
 
+function scoreNum(nivel: number | null, letra: string | null, factors: Factor[]): number {
+  if (nivel == null || !letra) return -Infinity;
+  const cont = factors.find(f => f.letra === letra)?.cont ?? 1;
+  return (cont - 1) * 100 + Math.log10(nivel > 0 ? nivel : 0.001);
+}
+
+function extracaoIslandStatus(islandMines: Mine[], factors: Factor[]): 'green' | 'red' | null {
+  const withData = islandMines.filter(m =>
+    m.armazem_nivel != null && m.armazem_letra &&
+    m.elevador_nivel != null && m.elevador_letra &&
+    m.extracao_nivel != null && m.extracao_letra
+  );
+  if (withData.length === 0) return null;
+  const allMin = withData.every(m => {
+    const a = scoreNum(m.armazem_nivel,  m.armazem_letra,  factors);
+    const e = scoreNum(m.elevador_nivel, m.elevador_letra, factors);
+    const x = scoreNum(m.extracao_nivel, m.extracao_letra, factors);
+    return x <= Math.min(a, e) + 1e-9;
+  });
+  return allMin ? 'green' : 'red';
+}
+
 type BalanceStatus = 'ok' | 'warn' | 'bad' | 'unknown';
 
 function islandBalance(islandMines: Mine[], factors: Factor[]): BalanceStatus {
@@ -142,14 +164,33 @@ function islandBalance(islandMines: Mine[], factors: Factor[]): BalanceStatus {
 
 function formatTime(seconds: number): string {
   if (!isFinite(seconds) || seconds <= 0) return '—';
-  const d = Math.floor(seconds / 86400);
-  const h = Math.floor((seconds % 86400) / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = Math.floor(seconds % 60);
-  if (d > 0) return `${d}d ${h}h`;
-  if (h > 0) return `${h}h ${m}m`;
-  if (m > 0) return `${m}m ${s}s`;
-  return `${s}s`;
+  const totalDays = Math.floor(seconds / 86400);
+  const years  = Math.floor(totalDays / 365);
+  const months = Math.floor((totalDays % 365) / 30);
+  const days   = totalDays % 30;
+  const hours  = Math.floor((seconds % 86400) / 3600);
+  const parts: string[] = [];
+  if (years  > 0) parts.push(`${years}A`);
+  if (months > 0) parts.push(`${months}M`);
+  if (days   > 0) parts.push(`${days}D`);
+  if (hours  > 0 || parts.length === 0) parts.push(`${hours}h`);
+  return parts.join(' ');
+}
+
+function timeColorClass(seconds: number): 'time-purple' | 'time-red' | 'time-warn' | 'time-green' {
+  const days = seconds / 86400;
+  if (days > 365) return 'time-purple';
+  if (days > 30)  return 'time-red';
+  if (days > 10)  return 'time-warn';
+  return 'time-green';
+}
+
+function estimatedDateTooltip(seconds: number): string {
+  if (!isFinite(seconds) || seconds <= 0) return '';
+  const d = new Date(Date.now() + seconds * 1000);
+  const date = d.toLocaleDateString('pt-BR');
+  const time = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  return `Data Estimada: ${date} ${time}`;
 }
 
 export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo, targetPct, onMineUpdate }: Props) {
@@ -161,48 +202,70 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
         <h2>Ilhas</h2>
         {boosterInfo && <BoosterBar info={boosterInfo} />}
       </div>
+
+      <div className="islands-table-header">
+        <div className="islands-th">Ilha</div>
+        <div className="islands-th islands-th-right">Produção/s</div>
+        <div className="islands-th islands-th-right">Próx. Prestígio</div>
+        <div className="islands-th islands-th-right">Tempo</div>
+        <div className="islands-th islands-th-end">Balanço</div>
+      </div>
+
       <div className="islands-list">
         {islands.map(island => {
-          const islandMines = mines.filter(m => m.island_id === island.id);
-          const isExpanded = expandedId === island.id;
-          const upgradeHints = computeUpgradeHints(islandMines, factors);
-          const production  = computeProduction(islandMines, factors, (boosterTotal ?? 0) / 10);
+          const islandMines  = mines.filter(m => m.island_id === island.id);
+          const isExpanded   = expandedId === island.id;
+          const upgradeHints = computeUpgradeHints(islandMines, factors, targetPct ?? 100, (boosterTotal ?? 0) / 10);
+          const extStatus    = extracaoIslandStatus(islandMines, factors);
+          const production   = computeProduction(islandMines, factors, (boosterTotal ?? 0) / 10);
           const nextPrestige = minNextPrestige(islandMines, factors);
-          const timeEst = production.raw > 0 && nextPrestige.raw > 0
-            ? formatTime(nextPrestige.raw / production.raw)
-            : '—';
-          const balance = islandBalance(islandMines, factors);
+          const timeSeconds  = production.raw > 0 && nextPrestige.raw > 0
+            ? nextPrestige.raw / production.raw : 0;
+          const timeEst     = formatTime(timeSeconds);
+          const timeCls     = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
+          const timeTooltip = estimatedDateTooltip(timeSeconds);
+          const balance     = islandBalance(islandMines, factors);
 
           return (
             <div key={island.id} className="island-row">
               <div className="island-summary">
-                <div className="island-name-area">
+
+                <div className="isl-col-name">
                   <button
                     className={`island-toggle ${isExpanded ? 'open' : ''}`}
                     onClick={() => setExpandedId(isExpanded ? null : island.id)}
                   >
                     {isExpanded ? '▾' : '▸'}
                   </button>
+                  {extStatus && (
+                    <span
+                      className={`status-bullet ${extStatus === 'green' ? 'bullet-green' : 'bullet-red'}`}
+                      title={extStatus === 'green' ? 'Extração é o gargalo em todas as minas' : 'Ao menos uma mina não tem extração como gargalo'}
+                    />
+                  )}
                   <strong className="island-title">{island.nome}</strong>
                   <span className="mine-count">{islandMines.length} minas</span>
-                  {production.display !== '—' && (
-                    <span className="island-production">
-                      <span className="prod-label">Produção</span>
-                      <span className="prod-value">{production.display}</span>
-                    </span>
-                  )}
-                  {nextPrestige.display !== '—' && (
-                    <span className="island-production">
-                      <span className="prod-label">Próx. Prestígio</span>
-                      <span className="prod-value prod-prestige">{nextPrestige.display}</span>
-                    </span>
-                  )}
-                  {timeEst !== '—' && (
-                    <span className="island-production">
-                      <span className="prod-label">Tempo</span>
-                      <span className="prod-value prod-prestige">{timeEst}</span>
-                    </span>
-                  )}
+                </div>
+
+                <div className="isl-col-val">
+                  {production.display !== '—'
+                    ? <span className="prod-value">{production.display}</span>
+                    : <span className="isl-empty">—</span>}
+                </div>
+
+                <div className="isl-col-val">
+                  {nextPrestige.display !== '—'
+                    ? <span className="prod-value prod-prestige">{nextPrestige.display}</span>
+                    : <span className="isl-empty">—</span>}
+                </div>
+
+                <div className="isl-col-val">
+                  {timeEst !== '—'
+                    ? <span className={`time-badge ${timeCls}`} title={timeTooltip}>{timeEst}</span>
+                    : <span className="isl-empty">—</span>}
+                </div>
+
+                <div className="isl-col-val">
                   {balance !== 'unknown' && (
                     <span className="island-balance">
                       <span className={`status-bullet ${balance === 'ok' ? 'bullet-green' : balance === 'warn' ? 'bullet-warn' : 'bullet-red'}`} />
@@ -212,6 +275,7 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
                     </span>
                   )}
                 </div>
+
               </div>
 
               {isExpanded && (

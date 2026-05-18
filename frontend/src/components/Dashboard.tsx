@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import type { Mine, Island, Factor, Artefato, Continent } from '../types';
 import { api } from '../api/client';
-import { MinesTable } from './MinesTable';
 import { IslandPanel } from './IslandPanel';
 import { ArtefatosPanel } from './ArtefatosPanel';
 import { SummaryPanel } from './SummaryPanel';
 import { CadastrosPanel } from './CadastrosPanel';
 import { PromocaoPanel } from './PromocaoPanel';
+import { ProducaoPanel } from './ProducaoPanel';
 
 export function Dashboard() {
   const [mines, setMines]       = useState<Mine[]>([]);
@@ -14,11 +14,10 @@ export function Dashboard() {
   const [factors, setFactors]   = useState<Factor[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'mines' | 'boosters' | 'promocao' | 'cadastros'>('summary');
+  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'boosters' | 'producao' | 'promocao' | 'cadastros'>('summary');
   const [artefatos, setArtefatos] = useState<Artefato[]>([]);
-  const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null }>({ buster_anuncio: null, total_comprado: null });
-  const [islandFilter, setIslandFilter] = useState<string>('');
-  const [targetPct, setTargetPct] = useState(() => Number(localStorage.getItem('targetPct') || 10));
+  const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null }>({ buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null });
+  const [targetPct, setTargetPct] = useState(10);
   const [targetPctSaved, setTargetPctSaved] = useState(false);
 
   const [continents, setContinents]           = useState<Continent[]>([]);
@@ -50,7 +49,8 @@ export function Dashboard() {
       setIslands(i);
       setFactors(f);
       setArtefatos(art);
-      setBoosterCfg(cfg ?? { buster_anuncio: null, total_comprado: null });
+      setBoosterCfg(cfg ?? { buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null });
+      if (cfg?.target_pct != null) setTargetPct(cfg.target_pct);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -80,10 +80,6 @@ export function Dashboard() {
     busterAnuncio: boosterCfg.buster_anuncio ?? 0,
     total: boosterTotal,
   };
-
-  const filteredMines = islandFilter
-    ? mines.filter(m => m.island_id?.toString() === islandFilter)
-    : mines;
 
   if (loading) return <div className="loading">Carregando…</div>;
   if (error) return <div className="error">Erro: {error} <button onClick={load}>Tentar novamente</button></div>;
@@ -117,16 +113,16 @@ export function Dashboard() {
           Ilhas ({islands.length})
         </button>
         <button
-          className={activeTab === 'mines' ? 'tab active' : 'tab'}
-          onClick={() => setActiveTab('mines')}
-        >
-          Minas ({mines.length})
-        </button>
-        <button
           className={activeTab === 'boosters' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('boosters')}
         >
           Boosters / Artefatos
+        </button>
+        <button
+          className={activeTab === 'producao' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('producao')}
+        >
+          Produção
         </button>
         <button
           className={activeTab === 'promocao' ? 'tab active' : 'tab'}
@@ -186,7 +182,10 @@ export function Dashboard() {
             />
             <button
               className={`btn-row-save${targetPctSaved ? ' saved' : ''}`}
-              onClick={() => { localStorage.setItem('targetPct', String(targetPct)); setTargetPctSaved(true); }}
+              onClick={async () => {
+                await api.artefatos.updateConfig({ target_pct: targetPct });
+                setTargetPctSaved(true);
+              }}
             >
               {targetPctSaved ? '✓' : 'Salvar'}
             </button>
@@ -194,31 +193,14 @@ export function Dashboard() {
         </>
       )}
 
-      {activeTab === 'mines' && (
-        <section className="panel">
-          <div className="panel-header">
-            <h2>Minas</h2>
-            <select
-              className="island-filter"
-              value={islandFilter}
-              onChange={e => setIslandFilter(e.target.value)}
-            >
-              <option value="">Todas as ilhas</option>
-              {islands.map(i => (
-                <option key={i.id} value={i.id}>{i.nome}</option>
-              ))}
-            </select>
-          </div>
-          <MinesTable
-            mines={filteredMines}
-            factors={factors}
-            islands={islands}
-            showIsland={true}
-            boosterTotal={boosterTotal}
-            readOnly={true}
-            onUpdate={handleMineUpdate}
-          />
-        </section>
+      {activeTab === 'producao' && (
+        <ProducaoPanel
+          islands={islands}
+          mines={mines}
+          factors={factors}
+          boosterTotal={boosterTotal}
+          multOff={boosterCfg.mult_off}
+        />
       )}
 
       {activeTab === 'promocao' && (
