@@ -14,11 +14,11 @@ Tracker para o jogo Idle Miner Tycom. Registra e calcula produção, prestígio 
 ## Funcionalidades
 
 - **Resumo** — visão geral com produção total, cards por ilha (produção + próximo prestígio + tempo estimado), gráfico discreto de prestígio por ilha e rosca comparativa do total geral
-- **Ilhas** — lista expansível por ilha com header mostrando produção, próximo prestígio, tempo e indicador de balanço (Equilibrado / Trabalhar); edição inline de cada mina com botão salvar por linha
-- **Minas** — tabela somente leitura com filtro por ilha, coluna de ordem de prestígio com bullet de validação e percentual de contribuição por ilha
-- **Boosters / Artefatos** — gestão de artefatos ativos/inativos e configuração de booster (comprados + multiplicador de anúncio)
-- **Promoção** — simulador de pacotes promocionais de artefatos: informe um ou mais artefatos com quantidades e durações independentes, e veja por ilha se a produção acumulada no período será suficiente para atingir o próximo prestígio
-- **Cadastros** — criação e edição de Continentes, Ilhas e Minas com select de edição inline por entidade
+- **Ilhas** — tabela com colunas alinhadas (Produção/s · Próx. Prestígio · Tempo · Balanço); bullet de extração por ilha (verde = todas as minas têm extração como gargalo); tempo colorido por faixa (verde ≤10d · amarelo ≤1 mês · vermelho ≤1 ano · roxo >1 ano) com tooltip de data estimada; ao expandir mostra tabela de minas editável com setas de upgrade (↑ ↑↑ ↑↑↑)
+- **Boosters / Artefatos** — gestão de artefatos ativos/inativos e configuração de booster (multiplicador de anúncio + total comprado); slider de **% do Target** com botão Salvar (persiste no banco)
+- **Produção** — tabela por ilha com produção /s /min /hora /dia /semana; campo de multiplicador de anúncio offline com botão Salvar (persiste no banco); coluna /hora destacada em amarelo quando valor ≥ próximo prestígio da ilha
+- **Promoção** — simulador de pacotes promocionais: informe um ou mais artefatos com quantidades e durações independentes e veja por ilha se a produção acumulada no período será suficiente para atingir o próximo prestígio
+- **Cadastros** — criação e edição de continentes e ilhas com edição inline
 
 ## Multi-Continente
 
@@ -110,7 +110,7 @@ Migrações ficam em `backend/src/migrations/` e são aplicadas automaticamente 
 app_idle/
 ├── CLAUDE.md               # Regras de desenvolvimento
 ├── docker-compose.yml
-├── docs/                   # Histórico de alterações (alteracao_XXXX.md)
+├── docs/                   # Histórico de alterações (alteracao_0001.md … alteracao_0030.md)
 ├── frontend/
 │   └── src/
 │       ├── components/
@@ -120,8 +120,11 @@ app_idle/
 │       │   ├── MinesTable.tsx
 │       │   ├── ArtefatosPanel.tsx
 │       │   ├── BoosterBar.tsx
+│       │   ├── ProducaoPanel.tsx
 │       │   ├── PromocaoPanel.tsx
-│       │   └── CadastrosPanel.tsx
+│       │   ├── CadastrosPanel.tsx
+│       │   └── UpgradeArrow.tsx
+│       ├── utils/upgradeAdvisor.ts
 │       ├── api/client.ts
 │       ├── types/index.ts
 │       └── index.css
@@ -132,10 +135,9 @@ app_idle/
         │   ├── islands.ts
         │   ├── continents.ts
         │   ├── artefatos.ts
-        │   ├── prestige.ts
         │   └── gameState.ts
         └── migrations/
-            └── 001_initial.sql … 012_continents.sql
+            └── 001_initial.sql … 015_mult_off.sql
 ```
 
 ## Histórico de Alterações
