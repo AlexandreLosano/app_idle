@@ -6,6 +6,7 @@ import islandsRouter from './routes/islands';
 import gameStateRouter from './routes/gameState';
 import artefatosRouter from './routes/artefatos';
 import continentsRouter from './routes/continents';
+import detalheValoresRouter from './routes/detalheValores';
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
@@ -18,6 +19,7 @@ app.use('/api/islands', islandsRouter);
 app.use('/api/game', gameStateRouter);
 app.use('/api/artefatos', artefatosRouter);
 app.use('/api/continents', continentsRouter);
+app.use('/api/detalhe-valores', detalheValoresRouter);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

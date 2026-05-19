@@ -7,13 +7,14 @@ interface Props {
   artefatos: Artefato[];
   onUpdate: (updated: Artefato) => void;
   onAdd: (created: Artefato) => void;
+  onConfigChange: (partial: { buster_anuncio?: number | null; total_comprado?: number | null }) => void;
 }
 
 function fmtQtd(n: number): string {
   return n >= 1000 ? n.toLocaleString('pt-BR') : String(n);
 }
 
-export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
+export function ArtefatosPanel({ artefatos, onUpdate, onAdd, onConfigChange }: Props) {
   const { t } = useTranslation();
   const [busterAnuncio, setBusterAnuncio] = useState<string>('');
   const [totalComprado, setTotalComprado] = useState<string>('');
@@ -42,6 +43,7 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
   async function saveConfig(field: 'buster_anuncio' | 'total_comprado', raw: string) {
     const val = raw.trim() === '' ? null : parseFloat(raw);
     await api.artefatos.updateConfig({ [field]: val });
+    onConfigChange({ [field]: val });
   }
 
   async function handleCreate(e: React.FormEvent) {

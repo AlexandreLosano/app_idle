@@ -1387,3 +1387,207 @@ button { cursor: pointer; font-family: inherit; }
   .mines-table .col-action { width: 44px; }
   .btn-row-save { padding: 3px 6px; font-size: 11px; }
 }
+
+/* ── Detalhe de Ilha ─────────────────────────────────────────────── */
+.detalhe-filters {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.detalhe-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detalhe-filter-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  color: var(--text-muted);
+}
+
+.detalhe-filter-label-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detalhe-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  min-width: 180px;
+}
+.detalhe-select:focus { border-color: var(--accent); }
+
+.detalhe-toggle-all {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.detalhe-toggle-all:hover { border-color: var(--accent); color: var(--accent); }
+
+.detalhe-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.detalhe-check-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: background .12s, color .12s;
+  user-select: none;
+}
+.detalhe-check-item:hover { background: var(--surface2); color: var(--text); }
+.detalhe-check-item.checked { color: var(--text); }
+.detalhe-check-item input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+
+.detalhe-result-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.detalhe-result-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+/* First header row: Mina (rowspan) | NÍVEIS (colspan) | Produção | Ordem */
+.detalhe-res-th-nome,
+.detalhe-res-th {
+  padding: 8px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.detalhe-res-th-nome { text-align: left;   width: 110px; }
+.detalhe-res-th      { text-align: center; width: 76px; }
+
+/* rowspan cells span both header rows */
+.detalhe-th-rowspan {
+  border-bottom: 2px solid var(--border);
+  vertical-align: middle;
+}
+
+/* NÍVEIS group header */
+.detalhe-niveis-header {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  padding: 6px 4px;
+}
+
+/* Sub-headers: Armazém | Elevador | 25 … 35 */
+.detalhe-sub-th {
+  padding: 4px 2px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  color: var(--text-muted);
+  text-align: center;
+  border-bottom: 2px solid var(--border);
+  border-left: 1px solid var(--border);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.detalhe-sub-th:first-child { border-left: 1px solid var(--border); }
+.detalhe-sub-th:last-child  { border-right: 1px solid var(--border); }
+
+.detalhe-res-td-nome,
+.detalhe-res-td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.detalhe-result-table tbody tr:last-child td { border-bottom: none; }
+.detalhe-result-table tbody tr:hover td { background: var(--surface2); }
+
+.detalhe-res-td-nome { font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.detalhe-res-td      { text-align: center; font-family: 'Courier New', monospace; font-weight: 700; color: var(--accent); white-space: nowrap; }
+
+/* Cells inside the NÍVEIS group */
+.detalhe-input-td {
+  padding: 3px 2px;
+  border-bottom: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  text-align: center;
+}
+.detalhe-input-td-first { border-left: 1px solid var(--border); }
+.detalhe-input-td-last  { border-right: 1px solid var(--border); }
+.detalhe-result-table tbody tr:last-child .detalhe-input-td { border-bottom: none; }
+
+/* Input fields for NÍVEIS columns */
+.detalhe-col-input {
+  width: 100%;
+  max-width: 52px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-size: 11px;
+  padding: 2px 3px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  box-sizing: border-box;
+}
+.detalhe-col-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.detalhe-col-input.cell-purple { color: #c084fc;       border-color: #c084fc; }
+.detalhe-col-input.cell-green  { color: var(--ok);    border-color: var(--ok); }
+.detalhe-col-input.cell-yellow { color: var(--warn);  border-color: var(--warn); }
+.detalhe-col-input.cell-red    { color: #e05555;      border-color: #e05555; }
+
+.detalhe-rank {
+  color: var(--warn);
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  font-size: 13px;
+}

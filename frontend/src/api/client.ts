@@ -58,6 +58,17 @@ export const api = {
       put<Island>(`/islands/${id}`, data),
   },
   factors: () => get<Factor[]>('/game/factors'),
+  detalheValores: {
+    list: (mineIds: number[]) =>
+      get<{ mine_id: number; col_key: string; valor: string }[]>(
+        `/detalhe-valores?mine_ids=${mineIds.join(',')}`
+      ),
+    save: (mineId: number, colKey: string, valor: string) =>
+      put<{ mine_id: number; col_key: string; valor: string }>(
+        `/detalhe-valores/${mineId}/${encodeURIComponent(colKey)}`,
+        { valor } as never
+      ),
+  },
   artefatos: {
     list: () => get<Artefato[]>('/artefatos'),
     create: (data: { quantidade: number; tipo?: string }) => post<Artefato>('/artefatos', data),

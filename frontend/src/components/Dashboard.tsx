@@ -8,6 +8,7 @@ import { SummaryPanel } from './SummaryPanel';
 import { CadastrosPanel } from './CadastrosPanel';
 import { PromocaoPanel } from './PromocaoPanel';
 import { ProducaoPanel } from './ProducaoPanel';
+import { DetalheIlhaPanel } from './DetalheIlhaPanel';
 import { LanguageSelector } from './LanguageSelector';
 
 export function Dashboard() {
@@ -17,7 +18,7 @@ export function Dashboard() {
   const [factors, setFactors]   = useState<Factor[]>([]);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'boosters' | 'producao' | 'promocao' | 'cadastros'>('summary');
+  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'detalhe' | 'boosters' | 'producao' | 'promocao' | 'cadastros'>('summary');
   const [artefatos, setArtefatos] = useState<Artefato[]>([]);
   const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>({ buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null });
   const [targetPct, setTargetPct] = useState(10);
@@ -119,6 +120,12 @@ export function Dashboard() {
           {t('dashboard.tabs.islands', { count: islands.length })}
         </button>
         <button
+          className={activeTab === 'detalhe' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('detalhe')}
+        >
+          Detalhe Ilha
+        </button>
+        <button
           className={activeTab === 'boosters' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('boosters')}
         >
@@ -166,12 +173,22 @@ export function Dashboard() {
         />
       )}
 
+      {activeTab === 'detalhe' && (
+        <DetalheIlhaPanel
+          islands={islands}
+          mines={mines}
+          factors={factors}
+          boosterTotal={boosterTotal}
+        />
+      )}
+
       {activeTab === 'boosters' && (
         <>
           <ArtefatosPanel
             artefatos={artefatos}
             onUpdate={updated => setArtefatos(arr => arr.map(a => a.id === updated.id ? updated : a))}
             onAdd={created => setArtefatos(arr => [...arr, created].sort((a, b) => a.quantidade - b.quantidade))}
+            onConfigChange={partial => setBoosterCfg(prev => ({ ...prev, ...partial }))}
           />
           <div className="target-pct-bar">
             <span className="target-pct-label">
