@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Mine, Factor, Island } from '../types';
 import { api } from '../api/client';
 import { UpgradeArrow } from './UpgradeArrow';
@@ -113,6 +114,7 @@ function extracaoStatus(f: FormRow, factors: Factor[]): 'min' | 'notmin' | 'unkn
 }
 
 export function MinesTable({ mines, factors, islands = [], showIsland = false, boosterTotal = 0, readOnly = false, upgradeHints, targetPct = 10, onUpdate }: Props) {
+  const { t } = useTranslation();
   const [rows,   setRows]   = useState<Record<number, FormRow>>({});
   const [saving, setSaving] = useState<Record<number, boolean>>({});
   const [saved,  setSaved]  = useState<Record<number, boolean>>({});
@@ -199,7 +201,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
       .forEach((m, i) => { pctRank[m.id] = i + 1; });
   });
 
-  if (mines.length === 0) return <p className="no-mines">Sem minas cadastradas.</p>;
+  if (mines.length === 0) return <p className="no-mines">{t('mines.empty')}</p>;
 
   return (
     <div className="mines-table-wrap">
@@ -219,29 +221,29 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
         <thead>
           <tr>
             <th className="col-status" rowSpan={2}></th>
-            <th className="col-nome"   rowSpan={2}>Mina</th>
-            {showIsland && <th className="col-ilha" rowSpan={2}>Ilha</th>}
-            <th colSpan={2} className="grp-a-l">Armazém</th>
-            <th colSpan={2}>Elevador</th>
-            <th colSpan={2}>Extração</th>
-            <th className="col-prestige" rowSpan={2}>Prest.<br />Atual</th>
-            <th className="col-prestige grp-a-r" rowSpan={2}>Prest.<br />Máx.</th>
-            <th colSpan={2} className="grp-b-l grp-b-r">Próx. Prestígio</th>
-            <th className="col-rank"     rowSpan={2}>Ordem<br />Prestígio</th>
-            <th className="col-producao" rowSpan={2}>Produção</th>
+            <th className="col-nome"   rowSpan={2}>{t('mines.col_mine')}</th>
+            {showIsland && <th className="col-ilha" rowSpan={2}>{t('mines.col_island')}</th>}
+            <th colSpan={2} className="grp-a-l">{t('mines.col_warehouse')}</th>
+            <th colSpan={2}>{t('mines.col_elevator')}</th>
+            <th colSpan={2}>{t('mines.col_extraction')}</th>
+            <th className="col-prestige" rowSpan={2}>{t('mines.col_prestige_current')}</th>
+            <th className="col-prestige grp-a-r" rowSpan={2}>{t('mines.col_prestige_max')}</th>
+            <th colSpan={2} className="grp-b-l grp-b-r">{t('mines.col_next_prestige')}</th>
+            <th className="col-rank"     rowSpan={2}>{t('mines.col_prestige_order')}</th>
+            <th className="col-producao" rowSpan={2}>{t('mines.col_production')}</th>
             <th className="col-pct"     rowSpan={2}>%</th>
-            {upgradeHints && <th className="col-target" rowSpan={2}>Target</th>}
+            {upgradeHints && <th className="col-target" rowSpan={2}>{t('mines.col_target')}</th>}
             {!readOnly && <th className="col-action" rowSpan={2}></th>}
           </tr>
           <tr>
-            <th className="col-nivel sub grp-a-l">Nível</th>
-            <th className="col-letra sub">Letra</th>
-            <th className="col-nivel sub">Nível</th>
-            <th className="col-letra sub">Letra</th>
-            <th className="col-nivel sub">Nível</th>
-            <th className="col-letra sub">Letra</th>
-            <th className="col-nivel sub grp-b-l">Valor</th>
-            <th className="col-letra sub grp-b-r">Letra</th>
+            <th className="col-nivel sub grp-a-l">{t('mines.sub_level')}</th>
+            <th className="col-letra sub">{t('mines.sub_letter')}</th>
+            <th className="col-nivel sub">{t('mines.sub_level')}</th>
+            <th className="col-letra sub">{t('mines.sub_letter')}</th>
+            <th className="col-nivel sub">{t('mines.sub_level')}</th>
+            <th className="col-letra sub">{t('mines.sub_letter')}</th>
+            <th className="col-nivel sub grp-b-l">{t('mines.sub_value')}</th>
+            <th className="col-letra sub grp-b-r">{t('mines.sub_letter')}</th>
           </tr>
         </thead>
         <tbody>
@@ -278,10 +280,10 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                     {status !== 'unknown' && (
                       <span
                         className={`status-bullet ${status === 'min' ? 'bullet-green' : 'bullet-red'}`}
-                        title={status === 'min' ? 'Extração é o gargalo' : 'Extração não é o gargalo'}
+                        title={status === 'min' ? t('mines.tooltip_extraction_ok') : t('mines.tooltip_extraction_nok')}
                       />
                     )}
-                    {maxPrestige && <span className="prestige-star" title="Prestígio máximo atingido">★</span>}
+                    {maxPrestige && <span className="prestige-star" title={t('mines.max_prestige')}>★</span>}
                   </div>
                 </td>
 
@@ -396,7 +398,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                       onClick={() => handleSaveRow(m)}
                       disabled={isSaving || (!isDirty && !isSaved)}
                     >
-                      {isSaving ? '…' : isSaved && !isDirty ? '✓' : 'Salvar'}
+                      {isSaving ? '…' : isSaved && !isDirty ? t('common.saved') : t('common.save')}
                     </button>
                   </td>
                 )}

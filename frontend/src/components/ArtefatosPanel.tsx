@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Artefato } from '../types';
 import { api } from '../api/client';
 
@@ -13,11 +14,12 @@ function fmtQtd(n: number): string {
 }
 
 export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
+  const { t } = useTranslation();
   const [busterAnuncio, setBusterAnuncio] = useState<string>('');
   const [totalComprado, setTotalComprado] = useState<string>('');
   const [adding, setAdding] = useState(false);
   const [newQtd, setNewQtd] = useState<string>('');
-  const [newTipo, setNewTipo] = useState<string>('Por tempo');
+  const [newTipo, setNewTipo] = useState<string>('');
   const [saving, setSaving] = useState(false);
   const qtdRef = useRef<HTMLInputElement>(null);
 
@@ -48,10 +50,10 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
     if (!qtd || qtd <= 0) return;
     setSaving(true);
     try {
-      const created = await api.artefatos.create({ quantidade: qtd, tipo: newTipo.trim() || 'Por tempo' });
+      const created = await api.artefatos.create({ quantidade: qtd, tipo: newTipo.trim() || t('boosters.by_time') });
       onAdd(created);
       setNewQtd('');
-      setNewTipo('Por tempo');
+      setNewTipo('');
       setAdding(false);
     } finally {
       setSaving(false);
@@ -61,7 +63,7 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
   function cancelAdd() {
     setAdding(false);
     setNewQtd('');
-    setNewTipo('Por tempo');
+    setNewTipo('');
   }
 
   const sorted = [...artefatos].sort((a, b) => a.quantidade - b.quantidade);
@@ -74,9 +76,9 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
   return (
     <section className="panel">
       <div className="panel-header">
-        <h2>Boosters / Artefatos</h2>
+        <h2>{t('boosters.header')}</h2>
         {!adding && (
-          <button className="btn-add-artefato" onClick={() => setAdding(true)}>+ Novo</button>
+          <button className="btn-add-artefato" onClick={() => setAdding(true)}>{t('common.new')}</button>
         )}
       </div>
 
@@ -88,21 +90,21 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
             type="number"
             min="1"
             step="1"
-            placeholder="Quantidade"
+            placeholder={t('boosters.quantity')}
             value={newQtd}
             onChange={e => setNewQtd(e.target.value)}
           />
           <input
             className="config-input artefato-tipo-input"
             type="text"
-            placeholder="Tipo"
+            placeholder={t('boosters.by_time')}
             value={newTipo}
             onChange={e => setNewTipo(e.target.value)}
           />
           <button className="btn-save" type="submit" disabled={saving}>
-            {saving ? '…' : 'Salvar'}
+            {saving ? '…' : t('common.save')}
           </button>
-          <button className="btn-cancel" type="button" onClick={cancelAdd}>Cancelar</button>
+          <button className="btn-cancel" type="button" onClick={cancelAdd}>{t('common.cancel')}</button>
         </form>
       )}
 
@@ -114,7 +116,7 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
               key={a.id}
               className={`artefato-card ${a.ativo ? 'ativo' : ''}`}
               onClick={() => toggle(a)}
-              title={a.ativo ? 'Clique para desativar' : 'Clique para ativar'}
+              title={a.ativo ? t('boosters.click_deactivate') : t('boosters.click_activate')}
             >
               <span className="artefato-qtd">{fmtQtd(a.quantidade)}</span>
               <span className="artefato-tipo">{a.tipo}</span>
@@ -124,15 +126,15 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
         </div>
 
         <div className="booster-config">
-          <p className="config-section-title">Multiplicadores</p>
+          <p className="config-section-title">{t('boosters.multipliers')}</p>
 
           <div className="config-row">
-            <span className="config-label">Soma Off</span>
+            <span className="config-label">{t('boosters.soma_off')}</span>
             <span className="config-value">{somaOff}</span>
           </div>
 
           <div className="config-row">
-            <span className="config-label">Buster Anúncio</span>
+            <span className="config-label">{t('boosters.ad_booster')}</span>
             <input
               className="config-input"
               type="number"
@@ -145,7 +147,7 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
           </div>
 
           <div className="config-row">
-            <span className="config-label">Total Comprado</span>
+            <span className="config-label">{t('boosters.total_purchased')}</span>
             <input
               className="config-input"
               type="number"
@@ -160,9 +162,9 @@ export function ArtefatosPanel({ artefatos, onUpdate, onAdd }: Props) {
           <div className="config-divider" />
 
           <div className="config-row">
-            <span className="config-label">Total</span>
+            <span className="config-label">{t('boosters.total')}</span>
             <span className="config-total-value">
-              {total.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+              {total.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
             </span>
           </div>
         </div>

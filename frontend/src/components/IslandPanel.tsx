@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Island, Mine, Factor } from '../types';
 import { MinesTable } from './MinesTable';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
@@ -162,7 +163,9 @@ function islandBalance(islandMines: Mine[], factors: Factor[]): BalanceStatus {
   return 'bad';
 }
 
-function formatTime(seconds: number): string {
+interface TimeLabels { year: string; month: string; day: string; hour: string; }
+
+function formatTime(seconds: number, lbl: TimeLabels): string {
   if (!isFinite(seconds) || seconds <= 0) return '—';
   const totalDays = Math.floor(seconds / 86400);
   const years  = Math.floor(totalDays / 365);
@@ -170,10 +173,10 @@ function formatTime(seconds: number): string {
   const days   = totalDays % 30;
   const hours  = Math.floor((seconds % 86400) / 3600);
   const parts: string[] = [];
-  if (years  > 0) parts.push(`${years}A`);
-  if (months > 0) parts.push(`${months}M`);
-  if (days   > 0) parts.push(`${days}D`);
-  if (hours  > 0 || parts.length === 0) parts.push(`${hours}h`);
+  if (years  > 0) parts.push(`${years}${lbl.year}`);
+  if (months > 0) parts.push(`${months}${lbl.month}`);
+  if (days   > 0) parts.push(`${days}${lbl.day}`);
+  if (hours  > 0 || parts.length === 0) parts.push(`${hours}${lbl.hour}`);
   return parts.join(' ');
 }
 
@@ -185,30 +188,37 @@ function timeColorClass(seconds: number): 'time-purple' | 'time-red' | 'time-war
   return 'time-green';
 }
 
-function estimatedDateTooltip(seconds: number): string {
+function estimatedDateTooltip(seconds: number, label: string): string {
   if (!isFinite(seconds) || seconds <= 0) return '';
   const d = new Date(Date.now() + seconds * 1000);
-  const date = d.toLocaleDateString('pt-BR');
-  const time = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  return `Data Estimada: ${date} ${time}`;
+  const date = d.toLocaleDateString();
+  const time = d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+  return `${label}: ${date} ${time}`;
 }
 
 export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo, targetPct, onMineUpdate }: Props) {
+  const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const timeLbl: TimeLabels = {
+    year:  t('islands.time_year'),
+    month: t('islands.time_month'),
+    day:   t('islands.time_day'),
+    hour:  t('islands.time_hour'),
+  };
 
   return (
     <section className="panel">
       <div className="panel-header">
-        <h2>Ilhas</h2>
+        <h2>{t('islands.header')}</h2>
         {boosterInfo && <BoosterBar info={boosterInfo} />}
       </div>
 
       <div className="islands-table-header">
-        <div className="islands-th">Ilha</div>
-        <div className="islands-th islands-th-right">Produção/s</div>
-        <div className="islands-th islands-th-right">Próx. Prestígio</div>
-        <div className="islands-th islands-th-right">Tempo</div>
-        <div className="islands-th islands-th-end">Balanço</div>
+        <div className="islands-th">{t('islands.col_island')}</div>
+        <div className="islands-th islands-th-right">{t('islands.col_production')}</div>
+        <div className="islands-th islands-th-right">{t('islands.col_next_prestige')}</div>
+        <div className="islands-th islands-th-right">{t('islands.col_time')}</div>
+        <div className="islands-th islands-th-end">{t('islands.col_balance')}</div>
       </div>
 
       <div className="islands-list">
@@ -221,9 +231,9 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
           const nextPrestige = minNextPrestige(islandMines, factors);
           const timeSeconds  = production.raw > 0 && nextPrestige.raw > 0
             ? nextPrestige.raw / production.raw : 0;
-          const timeEst     = formatTime(timeSeconds);
+          const timeEst     = formatTime(timeSeconds, timeLbl);
           const timeCls     = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
-          const timeTooltip = estimatedDateTooltip(timeSeconds);
+          const timeTooltip = estimatedDateTooltip(timeSeconds, t('islands.estimated_date'));
           const balance     = islandBalance(islandMines, factors);
 
           return (
@@ -240,37 +250,37 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
                   {extStatus && (
                     <span
                       className={`status-bullet ${extStatus === 'green' ? 'bullet-green' : 'bullet-red'}`}
-                      title={extStatus === 'green' ? 'Extração é o gargalo em todas as minas' : 'Ao menos uma mina não tem extração como gargalo'}
+                      title={extStatus === 'green' ? t('islands.tooltip_extraction_ok') : t('islands.tooltip_extraction_nok')}
                     />
                   )}
                   <strong className="island-title">{island.nome}</strong>
-                  <span className="mine-count">{islandMines.length} minas</span>
+                  <span className="mine-count">{t('islands.mines_count', { count: islandMines.length })}</span>
                 </div>
 
-                <div className="isl-col-val">
+                <div className="isl-col-val" data-label={t('islands.col_production')}>
                   {production.display !== '—'
                     ? <span className="prod-value">{production.display}</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 
-                <div className="isl-col-val">
+                <div className="isl-col-val" data-label={t('islands.col_next_prestige')}>
                   {nextPrestige.display !== '—'
                     ? <span className="prod-value prod-prestige">{nextPrestige.display}</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 
-                <div className="isl-col-val">
+                <div className="isl-col-val" data-label={t('islands.col_time')}>
                   {timeEst !== '—'
                     ? <span className={`time-badge ${timeCls}`} title={timeTooltip}>{timeEst}</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 
-                <div className="isl-col-val">
+                <div className="isl-col-val" data-label={t('islands.col_balance')}>
                   {balance !== 'unknown' && (
                     <span className="island-balance">
                       <span className={`status-bullet ${balance === 'ok' ? 'bullet-green' : balance === 'warn' ? 'bullet-warn' : 'bullet-red'}`} />
                       <span className={`balance-label balance-${balance}`}>
-                        {balance === 'ok' ? 'Equilibrado' : 'Trabalhar'}
+                        {balance === 'ok' ? t('islands.balanced') : t('islands.needs_work')}
                       </span>
                     </span>
                   )}

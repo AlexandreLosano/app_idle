@@ -55,6 +55,67 @@ body {
 }
 .continent-select:focus { border-color: var(--accent); }
 
+/* Header controls (continent select + language selector) */
+.header-controls { display: flex; align-items: center; gap: 8px; }
+
+/* Language picker — custom dropdown */
+.lang-picker { position: relative; }
+
+.lang-trigger {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.lang-trigger:hover,
+.lang-trigger.open { border-color: var(--accent); }
+.lang-trigger .fi { width: 20px; border-radius: 2px; flex-shrink: 0; }
+.lang-sigla { font-weight: 700; }
+.lang-caret { font-size: 10px; color: var(--text-muted); margin-left: 2px; }
+
+.lang-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  z-index: 100;
+  min-width: 170px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: left;
+  transition: background .1s;
+}
+.lang-option:hover { background: var(--surface2); }
+.lang-option.active { background: var(--surface2); color: var(--accent); }
+.lang-option .fi { width: 20px; border-radius: 2px; flex-shrink: 0; }
+.lang-name { color: var(--text-muted); font-size: 12px; }
+
 /* Tabs */
 .tabs {
   display: flex;
@@ -102,7 +163,8 @@ body {
 
 .mines-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 13px;
 }
 
@@ -110,7 +172,6 @@ body {
 .mines-table td {
   border: none;
   padding: 6px 8px;
-  white-space: nowrap;
   vertical-align: middle;
 }
 
@@ -122,6 +183,10 @@ body {
   letter-spacing: .5px;
   color: var(--text);
   text-align: center;
+  white-space: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  line-height: 1.2;
 }
 
 /* Sub-header row (Nível / Letra) */
@@ -134,26 +199,36 @@ body {
 }
 
 /* Data cells */
-.mines-table td { padding: 5px 6px; border: none; }
+.mines-table td { padding: 5px 6px; border: none; white-space: nowrap; }
 
 .mines-table tbody tr:hover td { background: var(--surface2); }
 
-/* Status bullet column: no border, narrow */
+/* Status bullet column: sticky, narrow */
 .mines-table th.col-status,
-.mines-table td.col-status { border: none; width: 36px; text-align: center; padding: 0 4px; vertical-align: middle; }
+.mines-table td.col-status {
+  border: none; width: 36px; text-align: center; padding: 0 4px; vertical-align: middle;
+  position: sticky; left: 0; z-index: 2; background: var(--surface);
+}
 .mines-table td.col-status { display: table-cell; }
 .col-status-inner { display: flex; align-items: center; justify-content: center; gap: 2px; }
 
-.mines-table .col-nome    { width: 100px; text-align: left; }
-.mines-table .col-ilha    { width: 100px; }
-.mines-table .col-nivel   { width: 86px; }
-.mines-table .col-letra   { width: 56px; }
-.mines-table .col-prestige{ width: 56px; text-align: center; line-height: 1.2; }
-.mines-table .col-rank    { width: 72px; text-align: center; font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--warn); }
-.mines-table .col-producao{ width: 90px; text-align: center; font-weight: 700; font-family: 'Courier New', monospace; color: var(--accent); }
-.mines-table .col-pct     { width: 58px; text-align: center; font-size: 12px; color: var(--text); font-weight: 600; font-family: 'Courier New', monospace; }
-.mines-table .col-target  { width: 72px; text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; font-family: 'Courier New', monospace; }
-.mines-table .col-action  { width: 68px; text-align: center; border-left: none; }
+.mines-table .col-nome {
+  width: 100px; text-align: left;
+  position: sticky; left: 36px; z-index: 2; background: var(--surface);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.25);
+}
+.mines-table tbody tr:hover td.col-status,
+.mines-table tbody tr:hover td.col-nome { background: var(--surface2); }
+
+.mines-table .col-ilha    { width: 90px; }
+.mines-table .col-nivel   { width: 72px; }
+.mines-table .col-letra   { width: 48px; }
+.mines-table .col-prestige{ width: 50px; text-align: center; line-height: 1.2; }
+.mines-table .col-rank    { width: 60px; text-align: center; font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--warn); }
+.mines-table .col-producao{ width: 80px; text-align: center; font-weight: 700; font-family: 'Courier New', monospace; color: var(--accent); }
+.mines-table .col-pct     { width: 50px; text-align: center; font-size: 12px; color: var(--text); font-weight: 600; font-family: 'Courier New', monospace; }
+.mines-table .col-target  { width: 64px; text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 600; font-family: 'Courier New', monospace; }
+.mines-table .col-action  { width: 60px; text-align: center; border-left: none; }
 
 /* Boosters / Artefatos */
 .boosters-layout {
@@ -1204,3 +1279,111 @@ button { cursor: pointer; font-family: inherit; }
 
 /* Status icon (right side) */
 .promo-status-icon { font-size: 20px; font-weight: 700; flex-shrink: 0; width: 28px; text-align: center; }
+
+/* ── Responsividade ──────────────────────────────────────────────── */
+
+/* Tabs: quebra linha em telas estreitas */
+.tabs { flex-wrap: wrap; }
+
+/* Panel-header: deixa o BoosterBar ir para a linha de baixo se não couber */
+.panel-header { flex-wrap: wrap; }
+
+/* Header: compacta em telas muito pequenas */
+@media (max-width: 500px) {
+  .app-header h1 { font-size: 15px; letter-spacing: 0; }
+  .header-controls { gap: 6px; }
+  .lang-trigger { padding: 4px 7px; gap: 5px; font-size: 12px; }
+}
+
+/* Tela de Ilhas: modo card em telas < 700px ─────────────────────── */
+@media (max-width: 699px) {
+
+  /* Oculta o cabeçalho da tabela — os labels aparecem inline nos cards */
+  .islands-table-header { display: none; }
+
+  /* Cada linha vira um layout vertical */
+  .island-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 12px 14px;
+  }
+
+  /* Linha do nome: nome + badge de minas */
+  .isl-col-name {
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+
+  /* Cada célula de valor vira uma linha label : valor */
+  .isl-col-val {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .isl-col-val:last-child { border-bottom: none; }
+
+  /* Label da célula, extraído do atributo data-label */
+  .isl-col-val::before {
+    content: attr(data-label);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    text-align: left;
+    flex-shrink: 0;
+    padding-right: 8px;
+  }
+
+  /* Balanço: alinha à direita no card */
+  .island-balance { justify-content: flex-end; }
+
+  /* Área expandida de minas: padding menor */
+  .island-mines { padding: 12px 8px; }
+}
+
+/* Tela de Ilhas: ajuste intermediário (700-900px) ───────────────── */
+@media (min-width: 700px) and (max-width: 899px) {
+  .islands-table-header,
+  .island-summary {
+    grid-template-columns: minmax(140px, 2fr) 0.8fr 1.6fr 0.9fr 1.2fr;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .island-title { font-size: 14px; }
+}
+
+/* Tabela de minas: compacta em telas menores ────────────────────── */
+@media (max-width: 1100px) {
+  .mines-table { font-size: 12px; }
+  .mines-table th, .mines-table td { padding: 5px 5px; }
+  .mines-table th.sub { padding: 2px 4px; }
+  .mines-table .col-nivel   { width: 62px; }
+  .mines-table .col-letra   { width: 42px; }
+  .mines-table .col-prestige{ width: 44px; }
+  .mines-table .col-rank    { width: 52px; }
+  .mines-table .col-producao{ width: 70px; }
+  .mines-table .col-pct     { width: 44px; }
+  .mines-table .col-target  { width: 56px; }
+  .mines-table .col-action  { width: 52px; }
+}
+
+@media (max-width: 699px) {
+  .mines-table { font-size: 11px; }
+  .mines-table th, .mines-table td { padding: 4px 4px; }
+  .mines-table .col-nome { width: 80px; }
+  .mines-table .col-nivel { width: 54px; }
+  .mines-table .col-letra { width: 36px; }
+  .mines-table .col-prestige { width: 38px; }
+  .mines-table .col-rank { width: 44px; }
+  .mines-table .col-producao { width: 60px; }
+  .mines-table .col-pct { width: 38px; }
+  .mines-table .col-target { width: 48px; }
+  .mines-table .col-action { width: 44px; }
+  .btn-row-save { padding: 3px 6px; font-size: 11px; }
+}

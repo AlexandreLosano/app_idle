@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Speichern",
+    "saved": "✓",
+    "cancel": "Abbrechen",
+    "loading": "Laden…",
+    "error": "Fehler",
+    "retry": "Erneut versuchen",
+    "new": "+ Neu",
+    "create": "Erstellen",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Übersicht",
+      "islands": "Inseln ({{count}})",
+      "boosters": "Booster / Artefakte",
+      "production": "Produktion",
+      "promotion": "Promotion",
+      "register": "Verwaltung"
+    }
+  },
+  "islands": {
+    "header": "Inseln",
+    "col_island": "Insel",
+    "col_production": "Produktion/s",
+    "col_next_prestige": "Nächstes Prestige",
+    "col_time": "Zeit",
+    "col_balance": "Bilanz",
+    "mines_count": "{{count}} Minen",
+    "balanced": "Ausgeglichen",
+    "needs_work": "Verbesserbar",
+    "tooltip_extraction_ok": "Förderung ist in allen Minen der Engpass",
+    "tooltip_extraction_nok": "Mindestens eine Mine hat Förderung nicht als Engpass",
+    "estimated_date": "Geschätztes Datum",
+    "time_year": "J",
+    "time_month": "M",
+    "time_day": "T",
+    "time_hour": "h"
+  },
+  "mines": {
+    "col_mine": "Mine",
+    "col_island": "Insel",
+    "col_warehouse": "Lager",
+    "col_elevator": "Aufzug",
+    "col_extraction": "Förderung",
+    "col_prestige_current": "Prestige",
+    "col_prestige_max": "Max Prestige",
+    "col_next_prestige": "Nächstes Prestige",
+    "col_prestige_order": "Prestige-Reihenfolge",
+    "col_production": "Produktion",
+    "col_target": "Ziel",
+    "sub_level": "Level",
+    "sub_letter": "Buchstabe",
+    "sub_value": "Wert",
+    "tooltip_extraction_ok": "Förderung ist der Engpass",
+    "tooltip_extraction_nok": "Förderung ist nicht der Engpass",
+    "max_prestige": "Maximales Prestige erreicht",
+    "empty": "Keine Minen registriert."
+  },
+  "prestige": {
+    "current": "Prestige",
+    "max": "Max Prestige",
+    "next": "Nächstes Prestige",
+    "order": "Prestige-Reihenfolge",
+    "target_label": "Zielanzeige:"
+  },
+  "summary": {
+    "header": "Prestige je Insel",
+    "production": "Produktion",
+    "next_prestige": "Nächstes Prestige",
+    "mine": "Mine",
+    "time": "Zeit",
+    "prestiges": "Prestiges"
+  },
+  "boosters": {
+    "header": "Booster / Artefakte",
+    "multipliers": "Multiplikatoren",
+    "soma_off": "Offline-Summe",
+    "ad_booster": "Werbebooster",
+    "total_purchased": "Gesamt gekauft",
+    "total": "Gesamt",
+    "artifacts": "Artefakte",
+    "active_count": "{{count}} aktiv",
+    "click_deactivate": "Zum Deaktivieren klicken",
+    "click_activate": "Zum Aktivieren klicken",
+    "quantity": "Menge",
+    "type": "Typ",
+    "by_time": "Zeitbasiert"
+  },
+  "production": {
+    "header": "Produktion nach Zeitraum",
+    "offline_multiplier": "Offline-Werbemultiplikator",
+    "sleep_hours": "Schlafstunden",
+    "applied": "×{{n}} angewendet",
+    "col_island": "Insel",
+    "col_real": "REAL",
+    "col_next_prestige": "Nächstes Prestige",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/Std",
+    "sleep": "Schlaf",
+    "per_day": "/Tag",
+    "per_week": "/Woche"
+  },
+  "promo": {
+    "header": "Promotions-Simulation",
+    "artifacts": "Artefakte",
+    "duration": "Dauer",
+    "minutes": "min",
+    "hours": "Stunden",
+    "days": "Tage",
+    "placeholder_artifacts": "z.B. 1000",
+    "placeholder_duration": "z.B. 3",
+    "production": "Produktion",
+    "next_prestige": "Nächstes Prestige",
+    "without_promo": "Ohne Promo",
+    "empty": "Felder oben ausfüllen, um die Simulation zu sehen."
+  },
+  "register": {
+    "header": "Verwaltung",
+    "continents": "Kontinente",
+    "islands": "Inseln",
+    "mines": "Minen",
+    "continent_name": "Kontinentname",
+    "island_name": "Inselname",
+    "mine_name": "Minenname",
+    "select_continent": "Kontinent…",
+    "select_island": "Insel…",
+    "select_to_edit": "Zum Bearbeiten auswählen…"
+  },
+  "continents": {
+    "grass": "Gras Kontinent",
+    "ice": "Eis Kontinent",
+    "fire": "Feuer Kontinent",
+    "dawn": "Morgenrot Kontinent",
+    "dusk": "Abendrot Kontinent",
+    "ancient": "Antiker Kontinent",
+    "lost_desert": "Verlorene Wüste",
+    "underwater": "Unterwasser Kontinent"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Salva",
+    "saved": "✓",
+    "cancel": "Annulla",
+    "loading": "Caricamento…",
+    "error": "Errore",
+    "retry": "Riprova",
+    "new": "+ Nuovo",
+    "create": "Crea",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Riepilogo",
+      "islands": "Isole ({{count}})",
+      "boosters": "Booster / Artefatti",
+      "production": "Produzione",
+      "promotion": "Promozione",
+      "register": "Gestione"
+    }
+  },
+  "islands": {
+    "header": "Isole",
+    "col_island": "Isola",
+    "col_production": "Produzione/s",
+    "col_next_prestige": "Pross. Prestigio",
+    "col_time": "Tempo",
+    "col_balance": "Bilancio",
+    "mines_count": "{{count}} miniere",
+    "balanced": "Equilibrato",
+    "needs_work": "Da migliorare",
+    "tooltip_extraction_ok": "L'estrazione è il collo di bottiglia in tutte le miniere",
+    "tooltip_extraction_nok": "Almeno una miniera non ha l'estrazione come collo di bottiglia",
+    "estimated_date": "Data Stimata",
+    "time_year": "A",
+    "time_month": "M",
+    "time_day": "G",
+    "time_hour": "h"
+  },
+  "mines": {
+    "col_mine": "Miniera",
+    "col_island": "Isola",
+    "col_warehouse": "Magazzino",
+    "col_elevator": "Ascensore",
+    "col_extraction": "Estrazione",
+    "col_prestige_current": "Prestigio",
+    "col_prestige_max": "Prestigio Màx.",
+    "col_next_prestige": "Pross. Prestigio",
+    "col_prestige_order": "Ordine Prestigio",
+    "col_production": "Produzione",
+    "col_target": "Obiettivo",
+    "sub_level": "Livello",
+    "sub_letter": "Lettera",
+    "sub_value": "Valore",
+    "tooltip_extraction_ok": "L'estrazione è il collo di bottiglia",
+    "tooltip_extraction_nok": "L'estrazione non è il collo di bottiglia",
+    "max_prestige": "Prestigio massimo raggiunto",
+    "empty": "Nessuna miniera registrata."
+  },
+  "prestige": {
+    "current": "Prestigio",
+    "max": "Prestigio Màx.",
+    "next": "Pross. Prestigio",
+    "order": "Ordine Prestigio",
+    "target_label": "Obiettivo mostrato:"
+  },
+  "summary": {
+    "header": "Prestigio per Isola",
+    "production": "Produzione",
+    "next_prestige": "Pross. Prestigio",
+    "mine": "Miniera",
+    "time": "Tempo",
+    "prestiges": "prestigio"
+  },
+  "boosters": {
+    "header": "Booster / Artefatti",
+    "multipliers": "Moltiplicatori",
+    "soma_off": "Somma Offline",
+    "ad_booster": "Booster Annuncio",
+    "total_purchased": "Totale Acquistato",
+    "total": "Totale",
+    "artifacts": "Artefatti",
+    "active_count": "{{count}} attivi",
+    "click_deactivate": "Clicca per disattivare",
+    "click_activate": "Clicca per attivare",
+    "quantity": "Quantità",
+    "type": "Tipo",
+    "by_time": "A tempo"
+  },
+  "production": {
+    "header": "Produzione per Periodo",
+    "offline_multiplier": "Moltiplicatore annuncio offline",
+    "sleep_hours": "Ore di sonno",
+    "applied": "×{{n}} applicato",
+    "col_island": "Isola",
+    "col_real": "REALE",
+    "col_next_prestige": "Pross. Prestigio",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/ora",
+    "sleep": "Sonno",
+    "per_day": "/giorno",
+    "per_week": "/settimana"
+  },
+  "promo": {
+    "header": "Simulazione Promozione",
+    "artifacts": "Artefatti",
+    "duration": "Durata",
+    "minutes": "min",
+    "hours": "ore",
+    "days": "giorni",
+    "placeholder_artifacts": "es: 1000",
+    "placeholder_duration": "es: 3",
+    "production": "Produzione",
+    "next_prestige": "Pross. Prestigio",
+    "without_promo": "Senza promo",
+    "empty": "Compila i campi sopra per vedere la simulazione."
+  },
+  "register": {
+    "header": "Gestione",
+    "continents": "Continenti",
+    "islands": "Isole",
+    "mines": "Miniere",
+    "continent_name": "Nome del continente",
+    "island_name": "Nome dell'isola",
+    "mine_name": "Nome della miniera",
+    "select_continent": "Continente…",
+    "select_island": "Isola…",
+    "select_to_edit": "Seleziona per modificare…"
+  },
+  "continents": {
+    "grass": "Continente di Partenza",
+    "ice": "Continente di Ghiaccio",
+    "fire": "Continente di Fuoco",
+    "dawn": "Continente Alba",
+    "dusk": "Continente Crepuscolo",
+    "ancient": "Continente Antico",
+    "lost_desert": "Continente Deserto Perduto",
+    "underwater": "Continente Sottomarino"
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Mine, Island, Factor, Artefato, Continent } from '../types';
 import { api } from '../api/client';
 import { IslandPanel } from './IslandPanel';
@@ -7,8 +8,10 @@ import { SummaryPanel } from './SummaryPanel';
 import { CadastrosPanel } from './CadastrosPanel';
 import { PromocaoPanel } from './PromocaoPanel';
 import { ProducaoPanel } from './ProducaoPanel';
+import { LanguageSelector } from './LanguageSelector';
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const [mines, setMines]       = useState<Mine[]>([]);
   const [islands, setIslands]   = useState<Island[]>([]);
   const [factors, setFactors]   = useState<Factor[]>([]);
@@ -81,22 +84,25 @@ export function Dashboard() {
     total: boosterTotal,
   };
 
-  if (loading) return <div className="loading">Carregando…</div>;
-  if (error) return <div className="error">Erro: {error} <button onClick={load}>Tentar novamente</button></div>;
+  if (loading) return <div className="loading">{t('common.loading')}</div>;
+  if (error) return <div className="error">{t('common.error')}: {error} <button onClick={load}>{t('common.retry')}</button></div>;
 
   return (
     <div className="dashboard">
       <header className="app-header">
-        <h1>Idle Miner Tycom - Tracker</h1>
-        <select
-          className="continent-select"
-          value={activeContinentId ?? ''}
-          onChange={e => setActiveContinentId(Number(e.target.value))}
-        >
-          {continents.map(c => (
-            <option key={c.id} value={c.id}>{c.nome}</option>
-          ))}
-        </select>
+        <h1>{t('dashboard.title')}</h1>
+        <div className="header-controls">
+          <select
+            className="continent-select"
+            value={activeContinentId ?? ''}
+            onChange={e => setActiveContinentId(Number(e.target.value))}
+          >
+            {continents.map(c => (
+              <option key={c.id} value={c.id}>{c.nome}</option>
+            ))}
+          </select>
+          <LanguageSelector />
+        </div>
       </header>
 
       <nav className="tabs">
@@ -104,37 +110,37 @@ export function Dashboard() {
           className={activeTab === 'summary' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('summary')}
         >
-          Resumo
+          {t('dashboard.tabs.summary')}
         </button>
         <button
           className={activeTab === 'islands' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('islands')}
         >
-          Ilhas ({islands.length})
+          {t('dashboard.tabs.islands', { count: islands.length })}
         </button>
         <button
           className={activeTab === 'boosters' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('boosters')}
         >
-          Boosters / Artefatos
+          {t('dashboard.tabs.boosters')}
         </button>
         <button
           className={activeTab === 'producao' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('producao')}
         >
-          Produção
+          {t('dashboard.tabs.production')}
         </button>
         <button
           className={activeTab === 'promocao' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('promocao')}
         >
-          Promoção
+          {t('dashboard.tabs.promotion')}
         </button>
         <button
           className={activeTab === 'cadastros' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('cadastros')}
         >
-          Cadastros
+          {t('dashboard.tabs.register')}
         </button>
       </nav>
 
@@ -169,7 +175,7 @@ export function Dashboard() {
           />
           <div className="target-pct-bar">
             <span className="target-pct-label">
-              % do Target exibido: <strong>{targetPct}%</strong>
+              {t('prestige.target_label')} <strong>{targetPct}%</strong>
             </span>
             <input
               type="range"
@@ -187,7 +193,7 @@ export function Dashboard() {
                 setTargetPctSaved(true);
               }}
             >
-              {targetPctSaved ? '✓' : 'Salvar'}
+              {targetPctSaved ? t('common.saved') : t('common.save')}
             </button>
           </div>
         </>

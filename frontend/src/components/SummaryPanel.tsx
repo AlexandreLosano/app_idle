@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { Island, Mine, Factor } from '../types';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
 
@@ -146,7 +147,7 @@ function PrestigeBar({ atual, maximo }: { atual: number; maximo: number }) {
 
 /* ── donut chart ─────────────────────────────────────────────────────── */
 
-function DonutChart({ atual, maximo }: { atual: number; maximo: number }) {
+function DonutChart({ atual, maximo, prestiges }: { atual: number; maximo: number; prestiges: string }) {
   const r    = 70;
   const cx   = 90;
   const cy   = 90;
@@ -179,7 +180,7 @@ function DonutChart({ atual, maximo }: { atual: number; maximo: number }) {
         {atual}/{maximo}
       </text>
       <text x={cx} y={cy + 30} textAnchor="middle" fill="var(--text-muted)" fontSize={11}>
-        prestígios
+        {prestiges}
       </text>
     </svg>
   );
@@ -188,6 +189,7 @@ function DonutChart({ atual, maximo }: { atual: number; maximo: number }) {
 /* ── main component ──────────────────────────────────────────────────── */
 
 export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInfo }: Props) {
+  const { t } = useTranslation();
   const bf = boosterTotal / 10;
 
   const data = islands.map(island => {
@@ -214,26 +216,26 @@ export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInf
           <div key={island.id} className="summary-card">
             <div className="sc-header">
               <strong className="sc-name">{island.nome}</strong>
-              <span className="sc-count">{im.length} minas</span>
+              <span className="sc-count">{t('islands.mines_count', { count: im.length })}</span>
             </div>
 
             <div className="sc-row">
-              <span className="sc-label">Produção</span>
+              <span className="sc-label">{t('summary.production')}</span>
               <span className="sc-value sc-prod">{production}</span>
             </div>
 
             {next && (
               <>
                 <div className="sc-row">
-                  <span className="sc-label">Próx. Prestígio</span>
+                  <span className="sc-label">{t('summary.next_prestige')}</span>
                   <span className="sc-value sc-prestige">{next.valor}{next.letra}</span>
                 </div>
                 <div className="sc-row">
-                  <span className="sc-label">Mina</span>
+                  <span className="sc-label">{t('summary.mine')}</span>
                   <span className="sc-value sc-mine">{next.nome}</span>
                 </div>
                 <div className="sc-row">
-                  <span className="sc-label">Tempo</span>
+                  <span className="sc-label">{t('summary.time')}</span>
                   <span className="sc-value sc-time">{timeEst}</span>
                 </div>
               </>
@@ -244,7 +246,7 @@ export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInf
 
       {/* Prestige comparison chart */}
       <div className="summary-prestige-chart">
-        <h2>Prestígio por Ilha</h2>
+        <h2>{t('summary.header')}</h2>
         <div className="prestige-chart-layout">
           <div className="prestige-rows">
             {data.map(({ island, totalAtual, totalMaximo }) => (
@@ -255,7 +257,7 @@ export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInf
             ))}
           </div>
           <div className="prestige-donut">
-            <DonutChart atual={grandAtual} maximo={grandMaximo} />
+            <DonutChart atual={grandAtual} maximo={grandMaximo} prestiges={t('summary.prestiges')} />
             <span className="donut-label">Total Geral</span>
           </div>
         </div>

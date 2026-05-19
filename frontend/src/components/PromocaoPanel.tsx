@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Mine, Island, Factor, Artefato } from '../types';
 
 interface Props {
@@ -143,6 +144,7 @@ function computeAccumulated(
 }
 
 export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, boosterTotal }: Props) {
+  const { t } = useTranslation();
   const [entries, setEntries] = useState<ArtefatoEntry[]>([
     { id: nextId++, qtd: '', duracao: '', unidade: 'h' },
   ]);
@@ -171,14 +173,14 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
   return (
     <section className="panel">
       <div className="panel-header">
-        <h2>Simulação de Promoção</h2>
+        <h2>{t('promo.header')}</h2>
       </div>
 
       <div className="promo-form-card">
         <div className="promo-field" style={{ flex: 1, minWidth: 280 }}>
           <div className="promo-entries-header">
-            <span className="promo-field-label">Artefatos</span>
-            <span className="promo-field-label" style={{ width: 90, textAlign: 'right' }}>Duração</span>
+            <span className="promo-field-label">{t('promo.artifacts')}</span>
+            <span className="promo-field-label" style={{ width: 90, textAlign: 'right' }}>{t('promo.duration')}</span>
             <span className="promo-field-label" style={{ width: 70 }}></span>
           </div>
 
@@ -188,14 +190,14 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
                 <input
                   type="number"
                   className="promo-input"
-                  placeholder="ex: 1000"
+                  placeholder={t('promo.placeholder_artifacts')}
                   value={e.qtd}
                   onChange={ev => updateEntry(e.id, { qtd: ev.target.value })}
                 />
                 <input
                   type="number"
                   className="promo-input"
-                  placeholder="ex: 3"
+                  placeholder={t('promo.placeholder_duration')}
                   value={e.duracao}
                   onChange={ev => updateEntry(e.id, { duracao: ev.target.value })}
                   style={{ width: 70 }}
@@ -205,22 +207,22 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
                   value={e.unidade}
                   onChange={ev => updateEntry(e.id, { unidade: ev.target.value as 'min' | 'h' | 'dias' })}
                 >
-                  <option value="min">min</option>
-                  <option value="h">horas</option>
-                  <option value="dias">dias</option>
+                  <option value="min">{t('promo.minutes')}</option>
+                  <option value="h">{t('promo.hours')}</option>
+                  <option value="dias">{t('promo.days')}</option>
                 </select>
                 {entries.length > 1 && (
-                  <button className="promo-btn-remove" onClick={() => removeEntry(e.id)} title="Remover">×</button>
+                  <button className="promo-btn-remove" onClick={() => removeEntry(e.id)}>×</button>
                 )}
               </div>
             ))}
           </div>
 
           <div className="promo-entries-footer">
-            <button className="promo-btn-add" onClick={addEntry} title="Adicionar artefato">+</button>
+            <button className="promo-btn-add" onClick={addEntry}>+</button>
             {entries.length > 1 && totalPromoQtd > 0 && (
               <span className="promo-total-qtd">
-                Total: <strong>{totalPromoQtd}</strong> artefatos · Booster {boosterTotal}x → <strong>{totalPromoBooster}x</strong>
+                Total: <strong>{totalPromoQtd}</strong> {t('promo.artifacts')} · Booster {boosterTotal}x → <strong>{totalPromoBooster}x</strong>
               </span>
             )}
             {entries.length === 1 && totalPromoQtd > 0 && (
@@ -265,7 +267,7 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
                   </div>
 
                   <div className="promo-cell">
-                    <span className="promo-cell-label">Produção</span>
+                    <span className="promo-cell-label">{t('promo.production')}</span>
                     <span className="promo-cell-val">
                       <span className="promo-prod-atual">{currentProduction.display}</span>
                       <span className="promo-arrow-sep">→</span>
@@ -274,7 +276,7 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
                   </div>
 
                   <div className="promo-cell">
-                    <span className="promo-cell-label">Próx. Prestígio</span>
+                    <span className="promo-cell-label">{t('promo.next_prestige')}</span>
                     <span className="promo-cell-val">
                       <span className="prod-value prod-prestige">{hasPrestige ? nextPrestige.display : '—'}</span>
                       {hasPrestige && <span className="promo-mine-name">({nextPrestige.nome})</span>}
@@ -282,7 +284,7 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
                   </div>
 
                   <div className="promo-cell">
-                    <span className="promo-cell-label">Sem promo</span>
+                    <span className="promo-cell-label">{t('promo.without_promo')}</span>
                     <span className="promo-time-val promo-time-atual">
                       {timeAtualSec != null ? formatTime(timeAtualSec) : '—'}
                     </span>
@@ -308,7 +310,7 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
         </div>
       ) : (
         <p className="no-mines" style={{ marginTop: 24 }}>
-          Preencha os campos acima para ver a simulação.
+          {t('promo.empty')}
         </p>
       )}
     </section>

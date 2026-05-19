@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Opslaan",
+    "saved": "✓",
+    "cancel": "Annuleren",
+    "loading": "Laden…",
+    "error": "Fout",
+    "retry": "Opnieuw proberen",
+    "new": "+ Nieuw",
+    "create": "Aanmaken",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Overzicht",
+      "islands": "Eilanden ({{count}})",
+      "boosters": "Boosters / Artefacten",
+      "production": "Productie",
+      "promotion": "Promotie",
+      "register": "Beheer"
+    }
+  },
+  "islands": {
+    "header": "Eilanden",
+    "col_island": "Eiland",
+    "col_production": "Productie/s",
+    "col_next_prestige": "Volgend Prestige",
+    "col_time": "Tijd",
+    "col_balance": "Balans",
+    "mines_count": "{{count}} mijnen",
+    "balanced": "Uitgebalanceerd",
+    "needs_work": "Verbeteren",
+    "tooltip_extraction_ok": "Extractie is het knelpunt in alle mijnen",
+    "tooltip_extraction_nok": "Minstens één mijn heeft extractie niet als knelpunt",
+    "estimated_date": "Geschatte Datum",
+    "time_year": "J",
+    "time_month": "M",
+    "time_day": "D",
+    "time_hour": "u"
+  },
+  "mines": {
+    "col_mine": "Mijn",
+    "col_island": "Eiland",
+    "col_warehouse": "Magazijn",
+    "col_elevator": "Lift",
+    "col_extraction": "Extractie",
+    "col_prestige_current": "Prestige",
+    "col_prestige_max": "Max Prestige",
+    "col_next_prestige": "Volgend Prestige",
+    "col_prestige_order": "Prestige Volgorde",
+    "col_production": "Productie",
+    "col_target": "Doel",
+    "sub_level": "Niveau",
+    "sub_letter": "Letter",
+    "sub_value": "Waarde",
+    "tooltip_extraction_ok": "Extractie is het knelpunt",
+    "tooltip_extraction_nok": "Extractie is niet het knelpunt",
+    "max_prestige": "Maximaal prestige bereikt",
+    "empty": "Geen mijnen geregistreerd."
+  },
+  "prestige": {
+    "current": "Prestige",
+    "max": "Max Prestige",
+    "next": "Volgend Prestige",
+    "order": "Prestige Volgorde",
+    "target_label": "Doelweergave:"
+  },
+  "summary": {
+    "header": "Prestige per Eiland",
+    "production": "Productie",
+    "next_prestige": "Volgend Prestige",
+    "mine": "Mijn",
+    "time": "Tijd",
+    "prestiges": "prestiges"
+  },
+  "boosters": {
+    "header": "Boosters / Artefacten",
+    "multipliers": "Vermenigvuldigers",
+    "soma_off": "Offline Som",
+    "ad_booster": "Advertentiebooster",
+    "total_purchased": "Totaal Gekocht",
+    "total": "Totaal",
+    "artifacts": "Artefacten",
+    "active_count": "{{count}} actief",
+    "click_deactivate": "Klik om te deactiveren",
+    "click_activate": "Klik om te activeren",
+    "quantity": "Hoeveelheid",
+    "type": "Type",
+    "by_time": "Op tijd"
+  },
+  "production": {
+    "header": "Productie per Periode",
+    "offline_multiplier": "Offline advertentievermenigvuldiger",
+    "sleep_hours": "Slaapuren",
+    "applied": "×{{n}} toegepast",
+    "col_island": "Eiland",
+    "col_real": "ECHT",
+    "col_next_prestige": "Volgend Prestige",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/uur",
+    "sleep": "Slaap",
+    "per_day": "/dag",
+    "per_week": "/week"
+  },
+  "promo": {
+    "header": "Promotiesimulatie",
+    "artifacts": "Artefacten",
+    "duration": "Duur",
+    "minutes": "min",
+    "hours": "uren",
+    "days": "dagen",
+    "placeholder_artifacts": "bijv. 1000",
+    "placeholder_duration": "bijv. 3",
+    "production": "Productie",
+    "next_prestige": "Volgend Prestige",
+    "without_promo": "Zonder promo",
+    "empty": "Vul de velden hierboven in om de simulatie te zien."
+  },
+  "register": {
+    "header": "Beheer",
+    "continents": "Continenten",
+    "islands": "Eilanden",
+    "mines": "Mijnen",
+    "continent_name": "Naam van het continent",
+    "island_name": "Naam van het eiland",
+    "mine_name": "Naam van de mijn",
+    "select_continent": "Continent…",
+    "select_island": "Eiland…",
+    "select_to_edit": "Selecteren om te bewerken…"
+  },
+  "continents": {
+    "grass": "Gras Continent",
+    "ice": "IJs Continent",
+    "fire": "Vuur Continent",
+    "dawn": "Dageraad Continent",
+    "dusk": "Schemering Continent",
+    "ancient": "Antiek Continent",
+    "lost_desert": "Verloren Woestijn",
+    "underwater": "Onderwater Continent"
+  }
+}

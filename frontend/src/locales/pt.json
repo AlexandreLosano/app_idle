@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Salvar",
+    "saved": "✓",
+    "cancel": "Cancelar",
+    "loading": "Carregando…",
+    "error": "Erro",
+    "retry": "Tentar novamente",
+    "new": "+ Novo",
+    "create": "Criar",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Resumo",
+      "islands": "Ilhas ({{count}})",
+      "boosters": "Boosters / Artefatos",
+      "production": "Produção",
+      "promotion": "Promoção",
+      "register": "Cadastros"
+    }
+  },
+  "islands": {
+    "header": "Ilhas",
+    "col_island": "Ilha",
+    "col_production": "Produção/s",
+    "col_next_prestige": "Próx. Prestígio",
+    "col_time": "Tempo",
+    "col_balance": "Balanço",
+    "mines_count": "{{count}} minas",
+    "balanced": "Equilibrado",
+    "needs_work": "Trabalhar",
+    "tooltip_extraction_ok": "Extração é o gargalo em todas as minas",
+    "tooltip_extraction_nok": "Ao menos uma mina não tem extração como gargalo",
+    "estimated_date": "Data Estimada",
+    "time_year": "A",
+    "time_month": "M",
+    "time_day": "D",
+    "time_hour": "h"
+  },
+  "mines": {
+    "col_mine": "Mina",
+    "col_island": "Ilha",
+    "col_warehouse": "Armazém",
+    "col_elevator": "Elevador",
+    "col_extraction": "Extração",
+    "col_prestige_current": "Prest. Atual",
+    "col_prestige_max": "Prest. Máx.",
+    "col_next_prestige": "Próx. Prestígio",
+    "col_prestige_order": "Ordem Prestígio",
+    "col_production": "Produção",
+    "col_target": "Target",
+    "sub_level": "Nível",
+    "sub_letter": "Letra",
+    "sub_value": "Valor",
+    "tooltip_extraction_ok": "Extração é o gargalo",
+    "tooltip_extraction_nok": "Extração não é o gargalo",
+    "max_prestige": "Prestígio máximo atingido",
+    "empty": "Sem minas cadastradas."
+  },
+  "prestige": {
+    "current": "Prest. Atual",
+    "max": "Prest. Máx.",
+    "next": "Próx. Prestígio",
+    "order": "Ordem Prestígio",
+    "target_label": "% do Target exibido:"
+  },
+  "summary": {
+    "header": "Prestígio por Ilha",
+    "production": "Produção",
+    "next_prestige": "Próx. Prestígio",
+    "mine": "Mina",
+    "time": "Tempo",
+    "prestiges": "prestígios"
+  },
+  "boosters": {
+    "header": "Boosters / Artefatos",
+    "multipliers": "Multiplicadores",
+    "soma_off": "Soma Off",
+    "ad_booster": "Buster Anúncio",
+    "total_purchased": "Total Comprado",
+    "total": "Total",
+    "artifacts": "Artefatos",
+    "active_count": "{{count}} ativos",
+    "click_deactivate": "Clique para desativar",
+    "click_activate": "Clique para ativar",
+    "quantity": "Quantidade",
+    "type": "Tipo",
+    "by_time": "Por tempo"
+  },
+  "production": {
+    "header": "Produção por Período",
+    "offline_multiplier": "Multiplicador de anúncio offline",
+    "sleep_hours": "Horas de sono",
+    "applied": "×{{n}} aplicado",
+    "col_island": "Ilha",
+    "col_real": "REAL",
+    "col_next_prestige": "Próx. Prestígio",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/hora",
+    "sleep": "Sono",
+    "per_day": "/dia",
+    "per_week": "/semana"
+  },
+  "promo": {
+    "header": "Simulação de Promoção",
+    "artifacts": "Artefatos",
+    "duration": "Duração",
+    "minutes": "min",
+    "hours": "horas",
+    "days": "dias",
+    "placeholder_artifacts": "ex: 1000",
+    "placeholder_duration": "ex: 3",
+    "production": "Produção",
+    "next_prestige": "Próx. Prestígio",
+    "without_promo": "Sem promo",
+    "empty": "Preencha os campos acima para ver a simulação."
+  },
+  "register": {
+    "header": "Cadastros",
+    "continents": "Continentes",
+    "islands": "Ilhas",
+    "mines": "Minas",
+    "continent_name": "Nome do continente",
+    "island_name": "Nome da ilha",
+    "mine_name": "Nome da mina",
+    "select_continent": "Continente…",
+    "select_island": "Ilha…",
+    "select_to_edit": "Selecione para editar…"
+  },
+  "continents": {
+    "grass": "Principal",
+    "ice": "Gelo",
+    "fire": "Fogo",
+    "dawn": "Aurora",
+    "dusk": "Crepúsculo",
+    "ancient": "Antigo",
+    "lost_desert": "Deserto Perdido",
+    "underwater": "Oceano"
+  }
+}

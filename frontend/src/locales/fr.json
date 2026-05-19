@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "saved": "✓",
+    "cancel": "Annuler",
+    "loading": "Chargement…",
+    "error": "Erreur",
+    "retry": "Réessayer",
+    "new": "+ Nouveau",
+    "create": "Créer",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Résumé",
+      "islands": "Îles ({{count}})",
+      "boosters": "Boosters / Artefacts",
+      "production": "Production",
+      "promotion": "Promotion",
+      "register": "Gestion"
+    }
+  },
+  "islands": {
+    "header": "Îles",
+    "col_island": "Île",
+    "col_production": "Production/s",
+    "col_next_prestige": "Prochain Prestige",
+    "col_time": "Temps",
+    "col_balance": "Équilibre",
+    "mines_count": "{{count}} mines",
+    "balanced": "Équilibré",
+    "needs_work": "À améliorer",
+    "tooltip_extraction_ok": "L'extraction est le goulot d'étranglement dans toutes les mines",
+    "tooltip_extraction_nok": "Au moins une mine n'a pas l'extraction comme goulot d'étranglement",
+    "estimated_date": "Date Estimée",
+    "time_year": "A",
+    "time_month": "M",
+    "time_day": "J",
+    "time_hour": "h"
+  },
+  "mines": {
+    "col_mine": "Mine",
+    "col_island": "Île",
+    "col_warehouse": "Entrepôt",
+    "col_elevator": "Ascenseur",
+    "col_extraction": "Extraction",
+    "col_prestige_current": "Prestige",
+    "col_prestige_max": "Prestige Max",
+    "col_next_prestige": "Prochain Prestige",
+    "col_prestige_order": "Ordre Prestige",
+    "col_production": "Production",
+    "col_target": "Objectif",
+    "sub_level": "Niveau",
+    "sub_letter": "Lettre",
+    "sub_value": "Valeur",
+    "tooltip_extraction_ok": "L'extraction est le goulot d'étranglement",
+    "tooltip_extraction_nok": "L'extraction n'est pas le goulot d'étranglement",
+    "max_prestige": "Prestige maximum atteint",
+    "empty": "Aucune mine enregistrée."
+  },
+  "prestige": {
+    "current": "Prestige",
+    "max": "Prestige Max",
+    "next": "Prochain Prestige",
+    "order": "Ordre Prestige",
+    "target_label": "Affichage cible :"
+  },
+  "summary": {
+    "header": "Prestige par Île",
+    "production": "Production",
+    "next_prestige": "Prochain Prestige",
+    "mine": "Mine",
+    "time": "Temps",
+    "prestiges": "prestiges"
+  },
+  "boosters": {
+    "header": "Boosters / Artefacts",
+    "multipliers": "Multiplicateurs",
+    "soma_off": "Somme Hors-ligne",
+    "ad_booster": "Booster Pub",
+    "total_purchased": "Total Acheté",
+    "total": "Total",
+    "artifacts": "Artefacts",
+    "active_count": "{{count}} actifs",
+    "click_deactivate": "Cliquer pour désactiver",
+    "click_activate": "Cliquer pour activer",
+    "quantity": "Quantité",
+    "type": "Type",
+    "by_time": "Par durée"
+  },
+  "production": {
+    "header": "Production par Période",
+    "offline_multiplier": "Multiplicateur pub hors-ligne",
+    "sleep_hours": "Heures de sommeil",
+    "applied": "×{{n}} appliqué",
+    "col_island": "Île",
+    "col_real": "RÉEL",
+    "col_next_prestige": "Prochain Prestige",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/heure",
+    "sleep": "Sommeil",
+    "per_day": "/jour",
+    "per_week": "/semaine"
+  },
+  "promo": {
+    "header": "Simulation de Promotion",
+    "artifacts": "Artefacts",
+    "duration": "Durée",
+    "minutes": "min",
+    "hours": "heures",
+    "days": "jours",
+    "placeholder_artifacts": "ex : 1000",
+    "placeholder_duration": "ex : 3",
+    "production": "Production",
+    "next_prestige": "Prochain Prestige",
+    "without_promo": "Sans promo",
+    "empty": "Remplissez les champs ci-dessus pour voir la simulation."
+  },
+  "register": {
+    "header": "Gestion",
+    "continents": "Continents",
+    "islands": "Îles",
+    "mines": "Mines",
+    "continent_name": "Nom du continent",
+    "island_name": "Nom de l'île",
+    "mine_name": "Nom de la mine",
+    "select_continent": "Continent…",
+    "select_island": "Île…",
+    "select_to_edit": "Sélectionner pour modifier…"
+  },
+  "continents": {
+    "grass": "Continent Herbe",
+    "ice": "Continent Glace",
+    "fire": "Continent Feu",
+    "dawn": "Continent Aube",
+    "dusk": "Continent Crépuscule",
+    "ancient": "Continent Antique",
+    "lost_desert": "Continent Désert Perdu",
+    "underwater": "Continent Sous-Marin"
+  }
+}

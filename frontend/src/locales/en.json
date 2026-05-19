@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Save",
+    "saved": "✓",
+    "cancel": "Cancel",
+    "loading": "Loading…",
+    "error": "Error",
+    "retry": "Try again",
+    "new": "+ New",
+    "create": "Create",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Summary",
+      "islands": "Islands ({{count}})",
+      "boosters": "Boosters / Artifacts",
+      "production": "Production",
+      "promotion": "Promotion",
+      "register": "Management"
+    }
+  },
+  "islands": {
+    "header": "Islands",
+    "col_island": "Island",
+    "col_production": "Production/s",
+    "col_next_prestige": "Next Prestige",
+    "col_time": "Time",
+    "col_balance": "Balance",
+    "mines_count": "{{count}} mines",
+    "balanced": "Balanced",
+    "needs_work": "Needs work",
+    "tooltip_extraction_ok": "Extraction is the bottleneck in all mines",
+    "tooltip_extraction_nok": "At least one mine does not have extraction as bottleneck",
+    "estimated_date": "Estimated Date",
+    "time_year": "Y",
+    "time_month": "M",
+    "time_day": "D",
+    "time_hour": "h"
+  },
+  "mines": {
+    "col_mine": "Mine",
+    "col_island": "Island",
+    "col_warehouse": "Warehouse",
+    "col_elevator": "Elevator",
+    "col_extraction": "Extraction",
+    "col_prestige_current": "Cur. Prestige",
+    "col_prestige_max": "Max Prestige",
+    "col_next_prestige": "Next Prestige",
+    "col_prestige_order": "Prestige Order",
+    "col_production": "Production",
+    "col_target": "Target",
+    "sub_level": "Level",
+    "sub_letter": "Letter",
+    "sub_value": "Value",
+    "tooltip_extraction_ok": "Extraction is the bottleneck",
+    "tooltip_extraction_nok": "Extraction is not the bottleneck",
+    "max_prestige": "Max prestige reached",
+    "empty": "No mines registered."
+  },
+  "prestige": {
+    "current": "Cur. Prestige",
+    "max": "Max Prestige",
+    "next": "Next Prestige",
+    "order": "Prestige Order",
+    "target_label": "Target display:"
+  },
+  "summary": {
+    "header": "Prestige by Island",
+    "production": "Production",
+    "next_prestige": "Next Prestige",
+    "mine": "Mine",
+    "time": "Time",
+    "prestiges": "prestiges"
+  },
+  "boosters": {
+    "header": "Boosters / Artifacts",
+    "multipliers": "Multipliers",
+    "soma_off": "Offline Sum",
+    "ad_booster": "Ad Booster",
+    "total_purchased": "Total Purchased",
+    "total": "Total",
+    "artifacts": "Artifacts",
+    "active_count": "{{count}} active",
+    "click_deactivate": "Click to deactivate",
+    "click_activate": "Click to activate",
+    "quantity": "Quantity",
+    "type": "Type",
+    "by_time": "By time"
+  },
+  "production": {
+    "header": "Production by Period",
+    "offline_multiplier": "Offline ad multiplier",
+    "sleep_hours": "Sleep hours",
+    "applied": "×{{n}} applied",
+    "col_island": "Island",
+    "col_real": "REAL",
+    "col_next_prestige": "Next Prestige",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/hour",
+    "sleep": "Sleep",
+    "per_day": "/day",
+    "per_week": "/week"
+  },
+  "promo": {
+    "header": "Promotion Simulation",
+    "artifacts": "Artifacts",
+    "duration": "Duration",
+    "minutes": "min",
+    "hours": "hours",
+    "days": "days",
+    "placeholder_artifacts": "e.g. 1000",
+    "placeholder_duration": "e.g. 3",
+    "production": "Production",
+    "next_prestige": "Next Prestige",
+    "without_promo": "No promo",
+    "empty": "Fill in the fields above to see the simulation."
+  },
+  "register": {
+    "header": "Management",
+    "continents": "Continents",
+    "islands": "Islands",
+    "mines": "Mines",
+    "continent_name": "Continent name",
+    "island_name": "Island name",
+    "mine_name": "Mine name",
+    "select_continent": "Continent…",
+    "select_island": "Island…",
+    "select_to_edit": "Select to edit…"
+  },
+  "continents": {
+    "grass": "Grass Continent",
+    "ice": "Ice Continent",
+    "fire": "Fire Continent",
+    "dawn": "Dawn Continent",
+    "dusk": "Dusk Continent",
+    "ancient": "Ancient Continent",
+    "lost_desert": "Lost Desert Continent",
+    "underwater": "Underwater Continent"
+  }
+}

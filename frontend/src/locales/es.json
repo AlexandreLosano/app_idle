@@ -1,0 +1,143 @@
+{
+  "common": {
+    "save": "Guardar",
+    "saved": "✓",
+    "cancel": "Cancelar",
+    "loading": "Cargando…",
+    "error": "Error",
+    "retry": "Reintentar",
+    "new": "+ Nuevo",
+    "create": "Crear",
+    "add": "+"
+  },
+  "dashboard": {
+    "title": "Idle Miner Tycom - Tracker",
+    "tabs": {
+      "summary": "Resumen",
+      "islands": "Islas ({{count}})",
+      "boosters": "Boosters / Artefactos",
+      "production": "Producción",
+      "promotion": "Promoción",
+      "register": "Gestión"
+    }
+  },
+  "islands": {
+    "header": "Islas",
+    "col_island": "Isla",
+    "col_production": "Producción/s",
+    "col_next_prestige": "Próx. Prestigio",
+    "col_time": "Tiempo",
+    "col_balance": "Balance",
+    "mines_count": "{{count}} minas",
+    "balanced": "Equilibrado",
+    "needs_work": "Mejorar",
+    "tooltip_extraction_ok": "La extracción es el cuello de botella en todas las minas",
+    "tooltip_extraction_nok": "Al menos una mina no tiene extracción como cuello de botella",
+    "estimated_date": "Fecha Estimada",
+    "time_year": "A",
+    "time_month": "M",
+    "time_day": "D",
+    "time_hour": "h"
+  },
+  "mines": {
+    "col_mine": "Mina",
+    "col_island": "Isla",
+    "col_warehouse": "Almacén",
+    "col_elevator": "Ascensor",
+    "col_extraction": "Extracción",
+    "col_prestige_current": "Prestigio",
+    "col_prestige_max": "Prestigio Máx.",
+    "col_next_prestige": "Próx. Prestigio",
+    "col_prestige_order": "Orden Prestigio",
+    "col_production": "Producción",
+    "col_target": "Objetivo",
+    "sub_level": "Nivel",
+    "sub_letter": "Letra",
+    "sub_value": "Valor",
+    "tooltip_extraction_ok": "La extracción es el cuello de botella",
+    "tooltip_extraction_nok": "La extracción no es el cuello de botella",
+    "max_prestige": "Prestigio máximo alcanzado",
+    "empty": "Sin minas registradas."
+  },
+  "prestige": {
+    "current": "Prestigio",
+    "max": "Prestigio Máx.",
+    "next": "Próx. Prestigio",
+    "order": "Orden Prestigio",
+    "target_label": "Objetivo mostrado:"
+  },
+  "summary": {
+    "header": "Prestigio por Isla",
+    "production": "Producción",
+    "next_prestige": "Próx. Prestigio",
+    "mine": "Mina",
+    "time": "Tiempo",
+    "prestiges": "prestigios"
+  },
+  "boosters": {
+    "header": "Boosters / Artefactos",
+    "multipliers": "Multiplicadores",
+    "soma_off": "Suma Sin Conexión",
+    "ad_booster": "Booster Anuncio",
+    "total_purchased": "Total Comprado",
+    "total": "Total",
+    "artifacts": "Artefactos",
+    "active_count": "{{count}} activos",
+    "click_deactivate": "Clic para desactivar",
+    "click_activate": "Clic para activar",
+    "quantity": "Cantidad",
+    "type": "Tipo",
+    "by_time": "Por tiempo"
+  },
+  "production": {
+    "header": "Producción por Período",
+    "offline_multiplier": "Multiplicador anuncio sin conexión",
+    "sleep_hours": "Horas de sueño",
+    "applied": "×{{n}} aplicado",
+    "col_island": "Isla",
+    "col_real": "REAL",
+    "col_next_prestige": "Próx. Prestigio",
+    "per_second": "/s",
+    "per_minute": "/min",
+    "per_hour": "/hora",
+    "sleep": "Sueño",
+    "per_day": "/día",
+    "per_week": "/semana"
+  },
+  "promo": {
+    "header": "Simulación de Promoción",
+    "artifacts": "Artefactos",
+    "duration": "Duración",
+    "minutes": "min",
+    "hours": "horas",
+    "days": "días",
+    "placeholder_artifacts": "ej: 1000",
+    "placeholder_duration": "ej: 3",
+    "production": "Producción",
+    "next_prestige": "Próx. Prestigio",
+    "without_promo": "Sin promo",
+    "empty": "Completa los campos de arriba para ver la simulación."
+  },
+  "register": {
+    "header": "Gestión",
+    "continents": "Continentes",
+    "islands": "Islas",
+    "mines": "Minas",
+    "continent_name": "Nombre del continente",
+    "island_name": "Nombre de la isla",
+    "mine_name": "Nombre de la mina",
+    "select_continent": "Continente…",
+    "select_island": "Isla…",
+    "select_to_edit": "Seleccionar para editar…"
+  },
+  "continents": {
+    "grass": "Continente de Hierba",
+    "ice": "Continente de Hielo",
+    "fire": "Continente de Fuego",
+    "dawn": "Continente Dawn",
+    "dusk": "Continente Crepúsculo",
+    "ancient": "Continente Antiguo",
+    "lost_desert": "Continente Desierto Perdido",
+    "underwater": "Continente Submarino"
+  }
+}

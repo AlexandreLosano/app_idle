@@ -239,3 +239,23 @@ Fator aplicado à produção: `boosterTotal / 10`.
 | Util | Responsabilidade |
 |------|-----------------|
 | `upgradeAdvisor.ts` | Calcula hints de upgrade por mina (`computeUpgradeHints`, `formatRaw`) |
+
+### 5. Internacionalização (i18n)
+- Biblioteca: `react-i18next` + `i18next`
+- Arquivos de tradução em `frontend/src/locales/{lang}.json`
+- Idiomas suportados: `pt` (padrão), `en`, `de`, `fr`, `es`, `it`, `nl`
+- Idioma padrão: `pt`
+- Nunca usar texto hardcoded em componentes — sempre `t('chave')`
+- Seletor de idioma no header do Dashboard
+- Idioma persistido em localStorage
+
+Estrutura de chaves por domínio:
+- `common.*`     — rótulos genéricos (salvar, editar, fechar, etc.)
+- `islands.*`    — nomes de ilhas
+- `mines.*`      — nomes de minas e componentes (armazém, elevador, extração)
+- `prestige.*`   — labels de prestígio, tempo, balanço
+- `production.*` — labels da aba Produção
+- `summary.*`    — labels da aba Resumo
+- `boosters.*`   — labels da aba Boosters/Artefatos
+- `promo.*`      — labels da aba Promoção
+- `register.*`   — labels da aba Cadastros

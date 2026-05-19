@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Continent, Island, Mine } from '../types';
 import { api } from '../api/client';
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export function CadastrosPanel({ continents, onRefresh }: Props) {
+  const { t } = useTranslation();
   const [islands, setIslands] = useState<Island[]>([]);
   const [mines,   setMines]   = useState<Mine[]>([]);
 
@@ -157,22 +159,22 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
 
   return (
     <section className="panel">
-      <h2>Cadastros</h2>
+      <h2>{t('register.header')}</h2>
       <div className="cad-sections">
 
         {/* ── Continentes ─────────────────────────────────────────── */}
         <div className="cad-section">
-          <h3 className="cad-section-title">Continentes</h3>
+          <h3 className="cad-section-title">{t('register.continents')}</h3>
 
           <form className="cad-form" onSubmit={createContinent}>
             <input
               className="cad-input"
-              placeholder="Nome do continente"
+              placeholder={t('register.continent_name')}
               value={contNome}
               onChange={e => setContNome(e.target.value)}
             />
             <button className="btn-save" type="submit" disabled={contSaving || !contNome.trim()}>
-              {contSaving ? '…' : 'Criar'}
+              {contSaving ? '…' : t('common.create')}
             </button>
           </form>
 
@@ -182,7 +184,7 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
               value={selContId}
               onChange={e => onSelectCont(e.target.value)}
             >
-              <option value="">Selecione para editar…</option>
+              <option value="">{t('register.select_to_edit')}</option>
               {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
 
@@ -194,7 +196,7 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
                   onChange={e => setEditContNome(e.target.value)}
                 />
                 <button className="btn-save" type="submit" disabled={contEditSav || !editContNome.trim()}>
-                  {contEditSav ? '…' : 'Salvar'}
+                  {contEditSav ? '…' : t('common.save')}
                 </button>
               </form>
             )}
@@ -203,21 +205,21 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
 
         {/* ── Ilhas ───────────────────────────────────────────────── */}
         <div className="cad-section">
-          <h3 className="cad-section-title">Ilhas</h3>
+          <h3 className="cad-section-title">{t('register.islands')}</h3>
 
           <form className="cad-form" onSubmit={createIsland}>
             <input
               className="cad-input"
-              placeholder="Nome da ilha"
+              placeholder={t('register.island_name')}
               value={iNome}
               onChange={e => setINome(e.target.value)}
             />
             <select className="cad-select" value={iContId} onChange={e => setIContId(e.target.value)}>
-              <option value="">Continente…</option>
+              <option value="">{t('register.select_continent')}</option>
               {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
             <button className="btn-save" type="submit" disabled={iSaving || !iNome.trim() || !iContId}>
-              {iSaving ? '…' : 'Criar'}
+              {iSaving ? '…' : t('common.create')}
             </button>
           </form>
 
@@ -227,7 +229,7 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
               value={selIslId}
               onChange={e => onSelectIsl(e.target.value)}
             >
-              <option value="">Selecione para editar…</option>
+              <option value="">{t('register.select_to_edit')}</option>
               {islands.map(i => {
                 const cont = continents.find(c => c.id === i.continent_id);
                 return (
@@ -246,11 +248,11 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
                   onChange={e => setEditIslNome(e.target.value)}
                 />
                 <select className="cad-select" value={editIslCont} onChange={e => setEditIslCont(e.target.value)}>
-                  <option value="">Continente…</option>
+                  <option value="">{t('register.select_continent')}</option>
                   {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
                 </select>
                 <button className="btn-save" type="submit" disabled={islEditSav}>
-                  {islEditSav ? '…' : 'Salvar'}
+                  {islEditSav ? '…' : t('common.save')}
                 </button>
               </form>
             )}
@@ -259,12 +261,12 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
 
         {/* ── Minas ───────────────────────────────────────────────── */}
         <div className="cad-section">
-          <h3 className="cad-section-title">Minas</h3>
+          <h3 className="cad-section-title">{t('register.mines')}</h3>
 
           <form className="cad-form" onSubmit={createMine}>
             <input
               className="cad-input"
-              placeholder="Nome da mina"
+              placeholder={t('register.mine_name')}
               value={mNome}
               onChange={e => setMNome(e.target.value)}
             />
@@ -273,15 +275,15 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
               value={mContId}
               onChange={e => { setMContId(e.target.value); setMIslandId(''); }}
             >
-              <option value="">Continente…</option>
+              <option value="">{t('register.select_continent')}</option>
               {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
             <select className="cad-select" value={mIslandId} onChange={e => setMIslandId(e.target.value)}>
-              <option value="">Ilha…</option>
+              <option value="">{t('register.select_island')}</option>
               {islandsForCreate.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
             </select>
             <button className="btn-save" type="submit" disabled={mSaving || !mNome.trim()}>
-              {mSaving ? '…' : 'Criar'}
+              {mSaving ? '…' : t('common.create')}
             </button>
           </form>
 
@@ -291,7 +293,7 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
               value={selMineNome}
               onChange={e => onSelectMine(e.target.value)}
             >
-              <option value="">Selecione para editar…</option>
+              <option value="">{t('register.select_to_edit')}</option>
               {mines.map(m => (
                 <option key={m.id} value={m.nome}>
                   {m.nome}{m.island_nome ? ` — ${m.island_nome}` : ''}
@@ -311,15 +313,15 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
                   value={editMCont}
                   onChange={e => { setEditMCont(e.target.value); setEditMIsl(''); }}
                 >
-                  <option value="">Continente…</option>
+                  <option value="">{t('register.select_continent')}</option>
                   {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
                 </select>
                 <select className="cad-select" value={editMIsl} onChange={e => setEditMIsl(e.target.value)}>
-                  <option value="">Ilha…</option>
+                  <option value="">{t('register.select_island')}</option>
                   {islandsForEdit.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
                 </select>
                 <button className="btn-save" type="submit" disabled={mineEditSav}>
-                  {mineEditSav ? '…' : 'Salvar'}
+                  {mineEditSav ? '…' : t('common.save')}
                 </button>
               </form>
             )}
