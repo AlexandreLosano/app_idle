@@ -257,51 +257,50 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
             const rowClass = !hasPrestige ? '' : vaiAtingir ? 'promo-row-vai' : 'promo-row-nao';
 
             return (
-              <div key={island.id} className={`island-row promo-island-row ${rowClass}`}>
-                <div className="island-summary">
-                  <div className="island-name-area" style={{ width: '100%', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <strong className="island-title">{island.nome}</strong>
+              <div key={island.id} className={`promo-island-row ${rowClass}`}>
+                <div className="promo-row-grid">
 
-                      {currentProduction.display !== '—' && (
-                        <span className="island-production">
-                          <span className="prod-label">Produção</span>
-                          <span className="prod-value promo-prod-atual">{currentProduction.display}</span>
-                          <span className="promo-arrow-sep">→</span>
-                          <span className="prod-value">{promoProduction.display}</span>
-                        </span>
-                      )}
+                  <div className="promo-cell-name">
+                    <strong className="island-title">{island.nome}</strong>
+                  </div>
 
-                      {hasPrestige && (
-                        <span className="island-production">
-                          <span className="prod-label">Próx. Prestígio</span>
-                          <span className="prod-value prod-prestige">{nextPrestige.display}</span>
-                          <span className="prod-label" style={{ marginLeft: 3 }}>({nextPrestige.nome})</span>
-                        </span>
-                      )}
+                  <div className="promo-cell">
+                    <span className="promo-cell-label">Produção</span>
+                    <span className="promo-cell-val">
+                      <span className="promo-prod-atual">{currentProduction.display}</span>
+                      <span className="promo-arrow-sep">→</span>
+                      <span className="prod-value">{promoProduction.display}</span>
+                    </span>
+                  </div>
 
-                      {hasPrestige && timeAtualSec != null && (
-                        <span className="island-production">
-                          <span className="prod-label">Sem promo</span>
-                          <span className="promo-time-val promo-time-atual">{formatTime(timeAtualSec)}</span>
-                        </span>
-                      )}
-                    </div>
+                  <div className="promo-cell">
+                    <span className="promo-cell-label">Próx. Prestígio</span>
+                    <span className="promo-cell-val">
+                      <span className="prod-value prod-prestige">{hasPrestige ? nextPrestige.display : '—'}</span>
+                      {hasPrestige && <span className="promo-mine-name">({nextPrestige.nome})</span>}
+                    </span>
+                  </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      {hasPrestige && (
-                        <span className="promo-pct-label-only" style={{ color: vaiAtingir ? 'var(--ok)' : 'var(--warn)' }}>
+                  <div className="promo-cell">
+                    <span className="promo-cell-label">Sem promo</span>
+                    <span className="promo-time-val promo-time-atual">
+                      {timeAtualSec != null ? formatTime(timeAtualSec) : '—'}
+                    </span>
+                  </div>
+
+                  <div className="promo-cell-result">
+                    {hasPrestige && (
+                      <>
+                        <span className="promo-pct-label-only" style={{ color: vaiAtingir ? 'var(--ok)' : '#e05555' }}>
                           {pct.toFixed(0)}%
                         </span>
-                      )}
-
-                      {hasPrestige && (
                         <span className={`promo-status-icon ${vaiAtingir ? 'promo-status-vai' : 'promo-status-nao'}`}>
                           {vaiAtingir ? '✓' : '✗'}
                         </span>
-                      )}
-                    </div>
+                      </>
+                    )}
                   </div>
+
                 </div>
               </div>
             );

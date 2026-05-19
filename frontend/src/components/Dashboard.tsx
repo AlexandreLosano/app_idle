@@ -16,7 +16,7 @@ export function Dashboard() {
   const [error, setError]       = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'boosters' | 'producao' | 'promocao' | 'cadastros'>('summary');
   const [artefatos, setArtefatos] = useState<Artefato[]>([]);
-  const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null }>({ buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null });
+  const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>({ buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null });
   const [targetPct, setTargetPct] = useState(10);
   const [targetPctSaved, setTargetPctSaved] = useState(false);
 
@@ -49,7 +49,7 @@ export function Dashboard() {
       setIslands(i);
       setFactors(f);
       setArtefatos(art);
-      setBoosterCfg(cfg ?? { buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null });
+      setBoosterCfg(cfg ?? { buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null });
       if (cfg?.target_pct != null) setTargetPct(cfg.target_pct);
     } catch (e) {
       setError((e as Error).message);
@@ -200,6 +200,7 @@ export function Dashboard() {
           factors={factors}
           boosterTotal={boosterTotal}
           multOff={boosterCfg.mult_off}
+          horasSonoInit={boosterCfg.horas_sono}
         />
       )}
 

@@ -931,12 +931,14 @@ button { cursor: pointer; font-family: inherit; }
 .prod-table tbody tr:hover td { background: var(--surface2); }
 .prod-table tbody tr:last-child td { border-bottom: none; }
 
-.prod-th-ilha, .prod-td-ilha { text-align: left;  }
-.prod-th-val,  .prod-td-val  { text-align: right; }
+.prod-th-ilha, .prod-td-ilha { text-align: left; }
+.prod-th-val,  .prod-td-val  { text-align: center; }
 
-.prod-td-ilha { font-weight: 600; color: var(--text); }
-.prod-td-val  { font-family: 'Courier New', monospace; font-weight: 700; color: var(--accent); }
+.prod-td-ilha   { font-weight: 600; color: var(--text); }
+.prod-td-val    { font-family: 'Courier New', monospace; font-weight: 700; color: var(--accent); }
+.prod-td-purple { color: #c084fc !important; }
 .prod-td-prestige { color: var(--warn) !important; }
+.prod-td-sono     { color: var(--ok)   !important; }
 
 .prod-row-empty td { color: var(--text-muted); }
 .prod-row-empty .prod-td-ilha { color: var(--text-muted); font-weight: 400; }
@@ -952,7 +954,8 @@ button { cursor: pointer; font-family: inherit; }
   margin-bottom: 14px;
   flex-wrap: wrap;
 }
-.prod-mult-label { font-size: 12px; color: var(--text-muted); }
+.prod-mult-label   { font-size: 12px; color: var(--text-muted); }
+.prod-mult-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
 .prod-mult-input {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -1144,10 +1147,60 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 /* Island row status variants */
-.promo-island-row { border-left: 3px solid transparent; }
+.promo-island-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid transparent;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
 .promo-row-vai { border-left-color: var(--ok); }
 .promo-row-nao { border-left-color: #e05555; }
 .promo-row-max { border-left-color: var(--warn); }
+
+.promo-row-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr 1fr 110px 80px;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.promo-cell-name {
+  display: flex;
+  align-items: center;
+}
+
+.promo-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.promo-cell-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.promo-cell-val {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.promo-mine-name {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.promo-cell-result {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
 
 /* Status icon (right side) */
 .promo-status-icon { font-size: 20px; font-weight: 700; flex-shrink: 0; width: 28px; text-align: center; }

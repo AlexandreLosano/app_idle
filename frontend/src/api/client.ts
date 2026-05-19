@@ -62,8 +62,8 @@ export const api = {
     list: () => get<Artefato[]>('/artefatos'),
     create: (data: { quantidade: number; tipo?: string }) => post<Artefato>('/artefatos', data),
     update: (id: number, data: Partial<Artefato>) => put<Artefato>(`/artefatos/${id}`, data),
-    getConfig: () => get<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null }>('/artefatos/config'),
-    updateConfig: (data: { buster_anuncio?: number | null; total_comprado?: number | null; target_pct?: number | null; mult_off?: number | null }) =>
-      put<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null }>('/artefatos/config', data),
+    getConfig: () => get<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>('/artefatos/config'),
+    updateConfig: (data: { buster_anuncio?: number | null; total_comprado?: number | null; target_pct?: number | null; mult_off?: number | null; horas_sono?: number | null }) =>
+      put<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>('/artefatos/config', data),
   },
 };

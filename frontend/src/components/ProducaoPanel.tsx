@@ -8,6 +8,7 @@ interface Props {
   factors: Factor[];
   boosterTotal: number;
   multOff?: number | null;
+  horasSonoInit?: number | null;
 }
 
 function roundByMagnitude(n: number): number {
@@ -72,21 +73,27 @@ function minNextPrestigeRaw(mines: Mine[], factors: Factor[]): number {
   return Math.min(...candidates);
 }
 
-const PERIODS: { label: string; mult: number }[] = [
-  { label: '/s',      mult: 1 },
-  { label: '/min',    mult: 60 },
-  { label: '/hora',   mult: 3_600 },
-  { label: '/dia',    mult: 86_400 },
-  { label: '/semana', mult: 604_800 },
-];
 
-export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff }: Props) {
+export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff, horasSonoInit }: Props) {
   const [multInput, setMultInput] = useState(() => String(multOff ?? 3));
-  const [multSaved, setMultSaved] = useState(false);
+  const [sonoInput, setSonoInput] = useState(() => String(horasSonoInit ?? 8));
+  const [saved, setSaved] = useState(false);
 
   const boosterFactor = boosterTotal / 10;
-  const mult = Math.max(1, Number(multInput) || 1);
+  const mult  = Math.max(1, Number(multInput) || 1);
+  const sono  = Math.max(0, Number(sonoInput) || 0);
   const hasMult = mult > 1;
+
+  const columns: { label: string; mult: number; noMult?: boolean; isPrestige?: boolean; highlight: null | 'warn' | 'ok' | 'always' }[] = [
+    { label: 'REAL',            mult: 1,            noMult: true,     highlight: 'always' },
+    { label: 'Próx. Prestígio', mult: 0,            isPrestige: true, highlight: null    },
+    { label: '/s',              mult: 1,                               highlight: null    },
+    { label: '/min',            mult: 60,                              highlight: null    },
+    { label: '/hora',           mult: 3_600,                           highlight: 'ok'   },
+    { label: 'Sono',            mult: 3_600 * sono,                    highlight: 'ok'   },
+    { label: '/dia',            mult: 86_400,                          highlight: 'warn' },
+    { label: '/semana',         mult: 604_800,                         highlight: null   },
+  ];
 
   const rows = islands.map(island => {
     const islandMines = mines.filter(m => m.island_id === island.id);
@@ -108,20 +115,34 @@ export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff }
           className="prod-mult-input"
           value={multInput}
           min={1}
-          onChange={e => { setMultInput(e.target.value); setMultSaved(false); }}
+          onChange={e => { setMultInput(e.target.value); setSaved(false); }}
         />
+        {hasMult && <span className="prod-mult-badge">×{mult} aplicado</span>}
+
+        <span className="prod-mult-divider" />
+
+        <span className="prod-mult-label">Horas de sono</span>
+        <input
+          type="number"
+          className="prod-mult-input"
+          value={sonoInput}
+          min={0}
+          max={24}
+          onChange={e => { setSonoInput(e.target.value); setSaved(false); }}
+        />
+
         <button
-          className={`btn-row-save${multSaved ? ' saved' : ''}`}
+          className={`btn-row-save${saved ? ' saved' : ''}`}
           onClick={async () => {
-            await api.artefatos.updateConfig({ mult_off: Number(multInput) || 1 });
-            setMultSaved(true);
+            await api.artefatos.updateConfig({
+              mult_off: Number(multInput) || 1,
+              horas_sono: Number(sonoInput) || 0,
+            });
+            setSaved(true);
           }}
         >
-          {multSaved ? '✓' : 'Salvar'}
+          {saved ? '✓' : 'Salvar'}
         </button>
-        {hasMult && (
-          <span className="prod-mult-badge">×{mult} aplicado</span>
-        )}
       </div>
 
       <div className="prod-table-wrap">
@@ -129,8 +150,8 @@ export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff }
           <thead>
             <tr>
               <th className="prod-th-ilha">Ilha</th>
-              {PERIODS.map(p => (
-                <th key={p.label} className="prod-th-val">{p.label}</th>
+              {columns.map(c => (
+                <th key={c.label} className="prod-th-val">{c.label}</th>
               ))}
             </tr>
           </thead>
@@ -138,11 +159,22 @@ export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff }
             {rows.map(({ island, raw, nextPrestigeRaw }) => (
               <tr key={island.id} className={raw === 0 ? 'prod-row-empty' : ''}>
                 <td className="prod-td-ilha">{island.nome}</td>
-                {PERIODS.map(p => {
-                  const valor = raw * p.mult * mult;
-                  const atingePrestigio = p.label === '/hora' && nextPrestigeRaw > 0 && valor >= nextPrestigeRaw;
+                {columns.map(c => {
+                  if (c.isPrestige) {
+                    return (
+                      <td key={c.label} className="prod-td-val prod-td-purple">
+                        {nextPrestigeRaw > 0 ? formatRaw(nextPrestigeRaw, factors) : '—'}
+                      </td>
+                    );
+                  }
+                  const valor = raw * c.mult * (c.noMult ? 1 : mult);
+                  const atinge = (c.highlight === 'warn' || c.highlight === 'ok') && nextPrestigeRaw > 0 && valor >= nextPrestigeRaw;
+                  const cls =
+                    c.highlight === 'always'        ? ' prod-td-prestige' :
+                    atinge && c.highlight === 'ok'  ? ' prod-td-sono'     :
+                    atinge                          ? ' prod-td-prestige'  : '';
                   return (
-                    <td key={p.label} className={`prod-td-val${atingePrestigio ? ' prod-td-prestige' : ''}`}>
+                    <td key={c.label} className={`prod-td-val${cls}`}>
                       {raw > 0 ? formatRaw(valor, factors) : '—'}
                     </td>
                   );
