@@ -35,8 +35,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    volumes:
-      - ./backend/src:/app/src
 
   frontend:
     build:
@@ -52,8 +50,6 @@ services:
       - "${FRONTEND_PORT:-5173}:5173"
     depends_on:
       - backend
-    volumes:
-      - ./frontend/src:/app/src
 
 volumes:
   pgdata:
