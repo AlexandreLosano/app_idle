@@ -45,12 +45,13 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                     sh '''
                         git fetch https://$GIT_USER:$GIT_TOKEN@github.com/AlexandreLosano/app_idle.git "+refs/heads/*:refs/remotes/origin/*"
-                        git checkout -b develop origin/develop
+                        git checkout develop
                         git merge origin/main
                         git push https://$GIT_USER:$GIT_TOKEN@github.com/AlexandreLosano/app_idle.git develop
                     '''
                 }
             }
         }
+
     }
 }
