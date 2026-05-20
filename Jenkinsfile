@@ -45,7 +45,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
                     sh '''
                         git fetch origin
-                        git checkout develop
+                        git checkout -b develop origin/develop
                         git merge origin/main
                         git push https://$GIT_USER:$GIT_TOKEN@github.com/AlexandreLosano/app_idle.git develop
                     '''
