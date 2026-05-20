@@ -4,6 +4,7 @@ import type { Island, Mine, Factor } from '../types';
 import { MinesTable } from './MinesTable';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
 import { computeUpgradeHints } from '../utils/upgradeAdvisor';
+import { computeProduction, minNextPrestige } from '../utils/gameCalc';
 
 interface Props {
   islands: Island[];
@@ -13,74 +14,6 @@ interface Props {
   boosterInfo?: BoosterInfo;
   targetPct?: number;
   onMineUpdate: (updated: Mine) => void;
-}
-
-function roundByMagnitude(n: number): number {
-  if (n < 10)  return Math.round(n * 100) / 100;
-  if (n < 100) return Math.round(n * 10)  / 10;
-  return Math.round(n);
-}
-
-function computeProduction(mines: Mine[], factors: Factor[], boosterFactor: number): { display: string; raw: number } {
-  const factorMap = new Map(factors.map(f => [f.letra, f]));
-  const values: Array<{ nivel: number; cont: number }> = [];
-
-  for (const m of mines) {
-    const components = [
-      { nivel: m.armazem_nivel,  letra: m.armazem_letra },
-      { nivel: m.elevador_nivel, letra: m.elevador_letra },
-      { nivel: m.extracao_nivel, letra: m.extracao_letra },
-    ];
-    if (components.some(c => c.nivel == null || !c.letra)) continue;
-    const scored = components.map(c => {
-      const cont = factorMap.get(c.letra!)?.cont ?? 1;
-      const n = c.nivel ?? 0;
-      return { nivel: n, cont, score: (cont - 1) * 100 + Math.log10(n > 0 ? n : 0.001) };
-    });
-    const min = scored.reduce((a, b) => a.score < b.score ? a : b);
-    if (min.nivel > 0) values.push({ nivel: min.nivel, cont: min.cont });
-  }
-
-  if (values.length === 0) return { display: '—', raw: 0 };
-
-  const maxCont = Math.max(...values.map(v => v.cont));
-  let total = 0;
-  for (const v of values) {
-    total += v.nivel / Math.pow(1000, maxCont - v.cont);
-  }
-  if (boosterFactor > 0) total *= boosterFactor;
-
-  const sorted = [...factors].sort((a, b) => a.cont - b.cont);
-  let cont = maxCont;
-  while (total >= 1000 && cont < sorted[sorted.length - 1].cont) {
-    total /= 1000;
-    cont++;
-  }
-
-  const letra = sorted.find(f => f.cont === cont)?.letra ?? '?';
-  // raw = total_normalized * 1000^(cont-1), computed via ratio to avoid huge intermediates
-  const raw = total * Math.pow(1000, cont - 1);
-  return { display: `${roundByMagnitude(total)}${letra}`, raw };
-}
-
-function minNextPrestige(mines: Mine[], factors: Factor[]): { display: string; raw: number } {
-  const factorMap = new Map(factors.map(f => [f.letra, f]));
-  const candidates = mines
-    .filter(m => m.proximo_prestigio_valor != null && m.proximo_prestigio_letra)
-    .map(m => {
-      const cont = factorMap.get(m.proximo_prestigio_letra!)?.cont ?? 1;
-      const valor = m.proximo_prestigio_valor!;
-      return {
-        nome: m.nome,
-        valor,
-        letra: m.proximo_prestigio_letra!,
-        score: (cont - 1) * 100 + Math.log10(valor > 0 ? valor : 0.001),
-        raw: valor * Math.pow(1000, cont - 1),
-      };
-    });
-  if (candidates.length === 0) return { display: '—', raw: 0 };
-  const min = candidates.reduce((a, b) => a.score < b.score ? a : b);
-  return { display: `${min.valor}${min.letra} (${min.nome})`, raw: min.raw };
 }
 
 function mineRawBottleneck(m: Mine, factors: Factor[]): number {
@@ -264,8 +197,8 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
                 </div>
 
                 <div className="isl-col-val" data-label={t('islands.col_next_prestige')}>
-                  {nextPrestige.display !== '—'
-                    ? <span className="prod-value prod-prestige">{nextPrestige.display}</span>
+                  {nextPrestige.raw > 0
+                    ? <span className="prod-value prod-prestige">{nextPrestige.display} ({nextPrestige.nome})</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 

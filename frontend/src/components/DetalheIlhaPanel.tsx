@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Island, Mine, Factor } from '../types';
 import { api } from '../api/client';
+import { formatRaw } from '../utils/upgradeAdvisor';
 
 interface Props {
   islands: Island[];
@@ -31,19 +32,9 @@ function mineBottleneckRaw(m: Mine, factors: Factor[]): number {
   return min.n * Math.pow(1000, min.cont - 1);
 }
 
-function formatRaw(raw: number, factors: Factor[]): string {
-  if (raw <= 0) return '—';
-  const sorted = [...factors].sort((a, b) => a.cont - b.cont);
-  let value = raw;
-  let idx = 0;
-  while (value >= 1000 && idx < sorted.length - 1) { value /= 1000; idx++; }
-  const r = value < 10 ? Math.round(value * 100) / 100 : value < 100 ? Math.round(value * 10) / 10 : Math.round(value);
-  return `${r}${sorted[idx].letra}`;
-}
-
 const NIVEIS_COLS: { key: string; label: string }[] = [
-  { key: 'A', label: 'Armazém' },
-  { key: 'E', label: 'Elevador' },
+   { key: 'E', label: 'Elevador' },
+   { key: 'A', label: 'Armazém' },
   ...[25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].map(n => ({ key: String(n), label: String(n) })),
 ];
 

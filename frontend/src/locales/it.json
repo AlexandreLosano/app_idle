@@ -7,8 +7,7 @@
     "error": "Errore",
     "retry": "Riprova",
     "new": "+ Nuovo",
-    "create": "Crea",
-    "add": "+"
+    "create": "Crea"
   },
   "dashboard": {
     "title": "Idle Miner Tycom - Tracker",
@@ -60,10 +59,6 @@
     "empty": "Nessuna miniera registrata."
   },
   "prestige": {
-    "current": "Prestigio",
-    "max": "Prestigio Màx.",
-    "next": "Pross. Prestigio",
-    "order": "Ordine Prestigio",
     "target_label": "Obiettivo mostrato:"
   },
   "summary": {
@@ -86,7 +81,6 @@
     "click_deactivate": "Clicca per disattivare",
     "click_activate": "Clicca per attivare",
     "quantity": "Quantità",
-    "type": "Tipo",
     "by_time": "A tempo"
   },
   "production": {
@@ -129,15 +123,5 @@
     "select_continent": "Continente…",
     "select_island": "Isola…",
     "select_to_edit": "Seleziona per modificare…"
-  },
-  "continents": {
-    "grass": "Continente di Partenza",
-    "ice": "Continente di Ghiaccio",
-    "fire": "Continente di Fuoco",
-    "dawn": "Continente Alba",
-    "dusk": "Continente Crepuscolo",
-    "ancient": "Continente Antico",
-    "lost_desert": "Continente Deserto Perduto",
-    "underwater": "Continente Sottomarino"
   }
 }

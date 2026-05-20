@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Mine, Island, Factor } from '../types';
 import { api } from '../api/client';
+import { formatRaw } from '../utils/upgradeAdvisor';
 
 interface Props {
   islands: Island[];
@@ -10,12 +11,6 @@ interface Props {
   boosterTotal: number;
   multOff?: number | null;
   horasSonoInit?: number | null;
-}
-
-function roundByMagnitude(n: number): number {
-  if (n < 10)  return Math.round(n * 100) / 100;
-  if (n < 100) return Math.round(n * 10)  / 10;
-  return Math.round(n);
 }
 
 function computeProductionRaw(mines: Mine[], factors: Factor[], boosterFactor: number): number {
@@ -48,18 +43,6 @@ function computeProductionRaw(mines: Mine[], factors: Factor[], boosterFactor: n
   if (boosterFactor > 0) total *= boosterFactor;
 
   return total * Math.pow(1000, maxCont - 1);
-}
-
-function formatRaw(raw: number, factors: Factor[]): string {
-  if (raw <= 0) return '—';
-  const sorted = [...factors].sort((a, b) => a.cont - b.cont);
-  let value = raw;
-  let idx = 0;
-  while (value >= 1000 && idx < sorted.length - 1) {
-    value /= 1000;
-    idx++;
-  }
-  return `${roundByMagnitude(value)}${sorted[idx].letra}`;
 }
 
 function minNextPrestigeRaw(mines: Mine[], factors: Factor[]): number {

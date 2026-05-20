@@ -7,8 +7,7 @@
     "error": "Fout",
     "retry": "Opnieuw proberen",
     "new": "+ Nieuw",
-    "create": "Aanmaken",
-    "add": "+"
+    "create": "Aanmaken"
   },
   "dashboard": {
     "title": "Idle Miner Tycom - Tracker",
@@ -60,10 +59,6 @@
     "empty": "Geen mijnen geregistreerd."
   },
   "prestige": {
-    "current": "Prestige",
-    "max": "Max Prestige",
-    "next": "Volgend Prestige",
-    "order": "Prestige Volgorde",
     "target_label": "Doelweergave:"
   },
   "summary": {
@@ -86,7 +81,6 @@
     "click_deactivate": "Klik om te deactiveren",
     "click_activate": "Klik om te activeren",
     "quantity": "Hoeveelheid",
-    "type": "Type",
     "by_time": "Op tijd"
   },
   "production": {
@@ -129,15 +123,5 @@
     "select_continent": "Continent…",
     "select_island": "Eiland…",
     "select_to_edit": "Selecteren om te bewerken…"
-  },
-  "continents": {
-    "grass": "Gras Continent",
-    "ice": "IJs Continent",
-    "fire": "Vuur Continent",
-    "dawn": "Dageraad Continent",
-    "dusk": "Schemering Continent",
-    "ancient": "Antiek Continent",
-    "lost_desert": "Verloren Woestijn",
-    "underwater": "Onderwater Continent"
   }
 }

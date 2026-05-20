@@ -3,7 +3,7 @@
 ## Regras Obrigatórias
 
 ### 1. Documentação de Alterações
-Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0031**.
+Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0039**.
 
 Formato:
 ```
@@ -132,6 +132,8 @@ Prefixo base: `/api`
 | PUT | `/api/artefatos/:id` | Atualiza artefato (ativo, tipo) |
 | GET | `/api/artefatos/config` | Retorna config: `buster_anuncio`, `total_comprado`, `target_pct`, `mult_off` |
 | PUT | `/api/artefatos/config` | Salva um ou mais campos de config |
+| GET | `/api/detalhe-valores` | Lista valores de detalhe por mina (`mine_id`, `col_key`, `valor`) |
+| PUT | `/api/detalhe-valores/:mine_id/:col_key` | Salva valor de detalhe de uma mina |
 
 ---
 
@@ -235,10 +237,13 @@ Fator aplicado à produção: `boosterTotal / 10`.
 | `PromocaoPanel.tsx` | Simulador de pacotes promocionais |
 | `CadastrosPanel.tsx` | CRUD de continentes e ilhas |
 | `UpgradeArrow.tsx` | Renderiza seta de upgrade (↑/↑↑/↑↑↑) com cor |
+| `DetalheIlhaPanel.tsx` | Tabela detalhada de uma ilha com níveis por coluna e ranking de prestígio |
+| `LanguageSelector.tsx` | Seletor de idioma com bandeiras no header do Dashboard |
 
 | Util | Responsabilidade |
 |------|-----------------|
 | `upgradeAdvisor.ts` | Calcula hints de upgrade por mina (`computeUpgradeHints`, `formatRaw`) |
+| `gameCalc.ts` | Funções de cálculo compartilhadas: `roundByMagnitude`, `computeProduction`, `minNextPrestige`, `formatTime` |
 
 ### 5. Internacionalização (i18n)
 - Biblioteca: `react-i18next` + `i18next`

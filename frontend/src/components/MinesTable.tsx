@@ -5,6 +5,7 @@ import { api } from '../api/client';
 import { UpgradeArrow } from './UpgradeArrow';
 import { formatRaw } from '../utils/upgradeAdvisor';
 import type { UpgradeHint } from '../utils/upgradeAdvisor';
+import { roundByMagnitude } from '../utils/gameCalc';
 
 interface Props {
   mines: Mine[];
@@ -76,12 +77,6 @@ function rawBottleneck(f: FormRow, factors: Factor[]): number {
   if (!factor) return 0;
   const n = parseFloat(b.nivel);
   return n * Math.pow(1000, factor.cont - 1);
-}
-
-function roundByMagnitude(n: number): number {
-  if (n < 10)  return Math.round(n * 100) / 100;
-  if (n < 100) return Math.round(n * 10)  / 10;
-  return Math.round(n);
 }
 
 function boostedDisplay(nivel: string, letra: string, booster: number, factors: Factor[]): string {
