@@ -145,3 +145,5 @@ app_idle/
 Todas as mudanças estão documentadas em [`docs/`](docs/) com o formato `alteracao_XXXX.md`.
 
 ## Pipe Line
+
+Atualizar
