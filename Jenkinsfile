@@ -24,12 +24,10 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    file(credentialsId: 'app-idle-env', variable: 'ENV_FILE'),
-                    file(credentialsId: 'optiplex-ssh-key', variable: 'SSH_KEY')
+                    file(credentialsId: 'app-idle-env', variable: 'ENV_FILE')
                 ]) {
                     sh '''
-                        chmod 600 $SSH_KEY
-                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no alosano@192.168.0.10 "
+                        ssh -i /var/jenkins_home/.ssh/id_ed25519 -o StrictHostKeyChecking=no alosano@192.168.0.10 "
                             cd ~/repos/app_idle &&
                             git pull origin main &&
                             docker-compose up -d --build
