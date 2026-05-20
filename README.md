@@ -144,6 +144,9 @@ app_idle/
 
 Todas as mudanças estão documentadas em [`docs/`](docs/) com o formato `alteracao_XXXX.md`.
 
-## Pipe Line
+## Pipeline
 
-Atualizar-2
+### Fluxo de trabalho
+
+- **develop** → push detectado via polling → build e deploy automático no Note (DEV)
+- **main** → merge via PR → deploy automático no Optiplex (PRD) + sincronização automática da branch develop
