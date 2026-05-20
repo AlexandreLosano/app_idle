@@ -44,7 +44,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://localhost:${BACKEND_PORT:-3000}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
       VITE_PROD_IP: ${VITE_PROD_IP}
       VITE_PORT: ${FRONTEND_PORT:-5173}
       BACKEND_PORT: ${BACKEND_PORT:-3000}
