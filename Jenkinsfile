@@ -28,6 +28,7 @@ pipeline {
                     sshUserPrivateKey(credentialsId: 'optiplex-ssh', keyFileVariable: 'SSH_KEY')
                 ]) {
                     sh '''
+                        chmod 600 $SSH_KEY
                         ssh -i $SSH_KEY -o StrictHostKeyChecking=no alosano@192.168.0.10 "
                             cd ~/repos/app_idle &&
                             git pull origin main &&
