@@ -35,8 +35,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    volumes:
-      - ./backend/src:/app/src
 
   frontend:
     build:
@@ -44,16 +42,14 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      VITE_API_URL: http://localhost:${BACKEND_PORT:-3000}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
       VITE_PROD_IP: ${VITE_PROD_IP}
       VITE_PORT: ${FRONTEND_PORT:-5173}
       BACKEND_PORT: ${BACKEND_PORT:-3000}
     ports:
-      - "${FRONTEND_PORT:-5173}:${FRONTEND_PORT:-5173}"
+      - "${FRONTEND_PORT:-5173}:5173"
     depends_on:
       - backend
-    volumes:
-      - ./frontend/src:/app/src
 
 volumes:
   pgdata:
