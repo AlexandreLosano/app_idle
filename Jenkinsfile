@@ -25,7 +25,7 @@ pipeline {
             steps {
                 withCredentials([
                     file(credentialsId: 'app-idle-env', variable: 'ENV_FILE'),
-                    sshUserPrivateKey(credentialsId: 'optiplex-ssh', keyFileVariable: 'SSH_KEY')
+                    file(credentialsId: 'optiplex-ssh-key', variable: 'SSH_KEY')
                 ]) {
                     sh '''
                         chmod 600 $SSH_KEY
