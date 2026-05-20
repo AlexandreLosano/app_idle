@@ -17,5 +17,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy Production') {
+            when {
+                branch 'main'
+            }
+            steps {
+                withCredentials([
+                    file(credentialsId: 'app-idle-env', variable: 'ENV_FILE'),
+                    sshUserPrivateKey(credentialsId: 'optiplex-ssh', keyFileVariable: 'SSH_KEY')
+                ]) {
+                    sh '''
+                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no alosano@192.168.0.10 "
+                            cd ~/repos/app_idle &&
+                            git pull origin main &&
+                            docker-compose up -d --build
+                        "
+                    '''
+                }
+            }
+        }
     }
 }
