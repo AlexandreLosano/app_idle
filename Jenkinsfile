@@ -36,5 +36,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Sync Develop') {
+            when {
+                branch 'main'
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                    sh '''
+                        git checkout develop
+                        git merge main
+                        git push https://$GIT_USER:$GIT_TOKEN@github.com/AlexandreLosano/app_idle.git develop
+                    '''
+                }
+            }
+        }
     }
 }
