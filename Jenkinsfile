@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     triggers {
-        pollSCM('* * * * *') // verifica a cada 1 minuto
+        pollSCM('* * * * *')
     }
 
     stages {
@@ -11,7 +11,10 @@ pipeline {
                 branch 'develop'
             }
             steps {
-                sh 'docker-compose up -d --build'
+                withCredentials([file(credentialsId: 'app-idle-env', variable: 'ENV_FILE')]) {
+                    sh 'cp $ENV_FILE .env'
+                    sh 'docker-compose up -d --build'
+                }
             }
         }
     }
