@@ -17,5 +17,4 @@ jobs:
           script: |
             cd ~/repos/app_idle
             git pull origin main
-            docker compose -p app_idle_prd down --remove-orphans
             docker compose -p app_idle_prd up -d --build
