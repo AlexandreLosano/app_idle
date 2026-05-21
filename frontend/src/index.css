@@ -43,7 +43,7 @@ body {
   letter-spacing: .5px;
 }
 
-.continent-select {
+.game-mode-select {
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text);
@@ -53,7 +53,7 @@ body {
   outline: none;
   cursor: pointer;
 }
-.continent-select:focus { border-color: var(--accent); }
+.game-mode-select:focus { border-color: var(--accent); }
 
 /* Header controls (continent select + language selector) */
 .header-controls { display: flex; align-items: center; gap: 8px; }
@@ -220,7 +220,7 @@ body {
 .mines-table tbody tr:hover td.col-status,
 .mines-table tbody tr:hover td.col-nome { background: var(--surface2); }
 
-.mines-table .col-ilha    { width: 90px; }
+.mines-table .col-continente { width: 90px; }
 .mines-table .col-nivel   { width: 72px; }
 .mines-table .col-letra   { width: 48px; }
 .mines-table .col-prestige{ width: 50px; text-align: center; line-height: 1.2; }
@@ -514,35 +514,35 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .prestige-label { font-size: 11px; color: var(--text-muted); }
 .prestige-value { font-size: 12px; font-weight: 700; color: var(--warn); }
 
-/* Islands list */
-.islands-list { display: flex; flex-direction: column; gap: 8px; }
+/* Continents list */
+.continents-list { display: flex; flex-direction: column; gap: 8px; }
 
 /* ── Island table grid ───────────────────────────────────────────── */
-.islands-table-header {
+.continents-table-header {
   display: grid;
   grid-template-columns: minmax(180px, 2fr) 0.8fr 1.8fr 0.9fr 1.3fr;
   padding: 6px 16px 8px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 4px;
 }
-.islands-th {
+.continents-th {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: .6px;
   color: var(--text-muted);
   font-weight: 600;
 }
-.islands-th-right { text-align: center; }
-.islands-th-end   { text-align: right; }
+.continents-th-right { text-align: center; }
+.continents-th-end   { text-align: right; }
 
-.island-row {
+.continent-row {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
 }
 
-.island-summary {
+.continent-summary {
   display: grid;
   grid-template-columns: minmax(180px, 2fr) 0.8fr 1.8fr 0.9fr 1.3fr;
   align-items: center;
@@ -564,7 +564,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   font-size: 13px;
 }
 
-.island-toggle {
+.continent-toggle {
   background: transparent;
   border: none;
   color: var(--text-muted);
@@ -575,9 +575,9 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   transition: color .15s;
   flex-shrink: 0;
 }
-.island-toggle:hover, .island-toggle.open { color: var(--accent); }
+.continent-toggle:hover, .continent-toggle.open { color: var(--accent); }
 
-.island-title { font-size: 15px; font-weight: 700; }
+.continent-title { font-size: 15px; font-weight: 700; }
 
 .mine-count {
   font-size: 11px;
@@ -608,7 +608,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .time-red    { color: #e05555; }
 .time-purple { color: #c084fc; }
 
-.island-balance {
+.continent-balance {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -623,7 +623,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .balance-warn { color: var(--warn); }
 .balance-bad  { color: #e05555; }
 
-.island-mines {
+.continent-mines {
   border-top: 1px solid var(--border);
   padding: 16px;
   background: var(--bg);
@@ -827,7 +827,7 @@ button { cursor: pointer; font-family: inherit; }
   gap: 10px;
 }
 
-.prestige-island-name {
+.prestige-continent-name {
   width: 110px;
   flex-shrink: 0;
   font-size: 13px;
@@ -1006,17 +1006,17 @@ button { cursor: pointer; font-family: inherit; }
 .prod-table tbody tr:hover td { background: var(--surface2); }
 .prod-table tbody tr:last-child td { border-bottom: none; }
 
-.prod-th-ilha, .prod-td-ilha { text-align: left; }
-.prod-th-val,  .prod-td-val  { text-align: center; }
+.prod-th-continente, .prod-td-continente { text-align: left; }
+.prod-th-val,        .prod-td-val        { text-align: center; }
 
-.prod-td-ilha   { font-weight: 600; color: var(--text); }
+.prod-td-continente { font-weight: 600; color: var(--text); }
 .prod-td-val    { font-family: 'Courier New', monospace; font-weight: 700; color: var(--accent); }
 .prod-td-purple { color: #c084fc !important; }
 .prod-td-prestige { color: var(--warn) !important; }
 .prod-td-sono     { color: var(--ok)   !important; }
 
 .prod-row-empty td { color: var(--text-muted); }
-.prod-row-empty .prod-td-ilha { color: var(--text-muted); font-weight: 400; }
+.prod-row-empty .prod-td-continente { color: var(--text-muted); font-weight: 400; }
 
 .prod-mult-bar {
   display: flex;
@@ -1221,8 +1221,8 @@ button { cursor: pointer; font-family: inherit; }
   color: var(--accent);
 }
 
-/* Island row status variants */
-.promo-island-row {
+/* Continent row status variants */
+.promo-continent-row {
   background: var(--surface);
   border: 1px solid var(--border);
   border-left: 3px solid transparent;
@@ -1299,10 +1299,10 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 699px) {
 
   /* Oculta o cabeçalho da tabela — os labels aparecem inline nos cards */
-  .islands-table-header { display: none; }
+  .continents-table-header { display: none; }
 
   /* Cada linha vira um layout vertical */
-  .island-summary {
+  .continent-summary {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -1341,21 +1341,21 @@ button { cursor: pointer; font-family: inherit; }
   }
 
   /* Balanço: alinha à direita no card */
-  .island-balance { justify-content: flex-end; }
+  .continent-balance { justify-content: flex-end; }
 
   /* Área expandida de minas: padding menor */
-  .island-mines { padding: 12px 8px; }
+  .continent-mines { padding: 12px 8px; }
 }
 
 /* Tela de Ilhas: ajuste intermediário (700-900px) ───────────────── */
 @media (min-width: 700px) and (max-width: 899px) {
-  .islands-table-header,
-  .island-summary {
+  .continents-table-header,
+  .continent-summary {
     grid-template-columns: minmax(140px, 2fr) 0.8fr 1.6fr 0.9fr 1.2fr;
     padding-left: 10px;
     padding-right: 10px;
   }
-  .island-title { font-size: 14px; }
+  .continent-title { font-size: 14px; }
 }
 
 /* Tabela de minas: compacta em telas menores ────────────────────── */

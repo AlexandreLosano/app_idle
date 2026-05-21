@@ -1,15 +1,46 @@
-# Alteração 0043 — Regras de deploy DEV/PRD no CLAUDE.md
+# Alteração 0043 — Renomeação Island → Continent e Continent → Game Mode
 
 **Data:** 2026-05-21
-**Tipo:** chore
+**Tipo:** refactor
 
 ## O que foi alterado
-- Adicionada **Regra 5** ao `CLAUDE.md`: após qualquer alteração de código, reconstruir e subir o ambiente DEV imediatamente (`docker compose up --build -d`), sem aguardar confirmação.
-- Adicionada **Regra 6** ao `CLAUDE.md`: nunca fazer merge em `main` nem disparar o workflow de PRD sem aprovação explícita do usuário. O fluxo correto é desenvolver em `develop`, informar que o DEV foi atualizado e aguardar aprovação antes de subir para PRD via GitHub Actions.
-- Corrigido o próximo número sequencial de alterações de `0041` para `0043`.
+
+Renomeação completa de terminologia para alinhar o código com a nomenclatura oficial do jogo:
+- O que o jogo chama de "Continente" era `Island` no código → passou a ser `Continent`
+- O que o jogo chama de "Modo de Jogo" era `Continent` no código → passou a ser `GameMode`
 
 ## Motivação
-Garantir que toda alteração seja imediatamente testável no DEV e que o ambiente de PRD só seja atualizado com aprovação explícita do usuário, utilizando o workflow do GitHub Actions já configurado em `.github/workflows/deploy.yml`.
+
+Descoberto que "Ilha" no código corresponde a "Continente" no jogo oficial, e "Continente" corresponde a "Modo de Jogo". A nomenclatura errada tornava o código confuso e difícil de manter.
 
 ## Arquivos modificados
-- `CLAUDE.md`
+
+### Banco de Dados
+- `backend/src/migrations/016_rename_continents_to_game_modes.sql` (novo)
+- `backend/src/migrations/017_rename_islands_to_continents.sql` (novo)
+
+### Backend
+- `backend/src/routes/game_modes.ts` (novo — era continents.ts)
+- `backend/src/routes/continents.ts` (reescrito — era islands.ts)
+- `backend/src/routes/islands.ts` (removido)
+- `backend/src/routes/mines.ts` (atualizado)
+- `backend/src/index.ts` (atualizado)
+
+### Frontend
+- `frontend/src/types/index.ts`
+- `frontend/src/api/client.ts`
+- `frontend/src/components/ContinentPanel.tsx` (renomeado de IslandPanel.tsx)
+- `frontend/src/components/DetalheContinentePanel.tsx` (renomeado de DetalheIlhaPanel.tsx)
+- `frontend/src/components/Dashboard.tsx`
+- `frontend/src/components/SummaryPanel.tsx`
+- `frontend/src/components/CadastrosPanel.tsx`
+- `frontend/src/components/PromocaoPanel.tsx`
+- `frontend/src/components/ProducaoPanel.tsx`
+- `frontend/src/components/MinesTable.tsx`
+- `frontend/src/locales/pt.json`
+- `frontend/src/locales/en.json`
+- `frontend/src/locales/es.json`
+- `frontend/src/locales/de.json`
+- `frontend/src/locales/fr.json`
+- `frontend/src/locales/it.json`
+- `frontend/src/locales/nl.json`

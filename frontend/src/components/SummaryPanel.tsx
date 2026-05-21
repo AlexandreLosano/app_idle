@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import type { Island, Mine, Factor } from '../types';
+import type { Continent, Mine, Factor } from '../types';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
 import { computeProduction, minNextPrestige, formatTime } from '../utils/gameCalc';
 
 interface Props {
-  islands: Island[];
+  continents: Continent[];
   mines: Mine[];
   factors: Factor[];
   boosterTotal: number;
@@ -80,12 +80,12 @@ function DonutChart({ atual, maximo, prestiges }: { atual: number; maximo: numbe
 
 /* ── main component ──────────────────────────────────────────────────── */
 
-export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInfo }: Props) {
+export function SummaryPanel({ continents, mines, factors, boosterTotal, boosterInfo }: Props) {
   const { t } = useTranslation();
   const bf = boosterTotal / 10;
 
-  const data = islands.map(island => {
-    const im = mines.filter(m => m.island_id === island.id);
+  const data = continents.map(continent => {
+    const im = mines.filter(m => m.continent_id === continent.id);
     const prodResult = computeProduction(im, factors, bf);
     const next = minNextPrestige(im, factors);
     const totalAtual  = im.reduce((s, m) => s + (m.prestigio_atual  ?? 0), 0);
@@ -93,7 +93,7 @@ export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInf
     const timeEst = prodResult.raw > 0 && next.raw > 0
       ? formatTime(next.raw / prodResult.raw)
       : '—';
-    return { island, im, production: prodResult.display, next, totalAtual, totalMaximo, timeEst };
+    return { continent, im, production: prodResult.display, next, totalAtual, totalMaximo, timeEst };
   });
 
   const grandAtual  = data.reduce((s, d) => s + d.totalAtual,  0);
@@ -102,13 +102,13 @@ export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInf
   return (
     <section className="panel">
       {boosterInfo && <BoosterBar info={boosterInfo} />}
-      {/* Island cards */}
+      {/* Continent cards */}
       <div className="summary-cards">
-        {data.map(({ island, im, production, next, timeEst }) => (
-          <div key={island.id} className="summary-card">
+        {data.map(({ continent, im, production, next, timeEst }) => (
+          <div key={continent.id} className="summary-card">
             <div className="sc-header">
-              <strong className="sc-name">{island.nome}</strong>
-              <span className="sc-count">{t('islands.mines_count', { count: im.length })}</span>
+              <strong className="sc-name">{continent.nome}</strong>
+              <span className="sc-count">{t('continents.mines_count', { count: im.length })}</span>
             </div>
 
             <div className="sc-row">
@@ -141,9 +141,9 @@ export function SummaryPanel({ islands, mines, factors, boosterTotal, boosterInf
         <h2>{t('summary.header')}</h2>
         <div className="prestige-chart-layout">
           <div className="prestige-rows">
-            {data.map(({ island, totalAtual, totalMaximo }) => (
-              <div key={island.id} className="prestige-row">
-                <span className="prestige-island-name">{island.nome}</span>
+            {data.map(({ continent, totalAtual, totalMaximo }) => (
+              <div key={continent.id} className="prestige-row">
+                <span className="prestige-continent-name">{continent.nome}</span>
                 <PrestigeBar atual={totalAtual} maximo={totalMaximo} />
               </div>
             ))}

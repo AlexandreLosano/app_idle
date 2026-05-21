@@ -1,4 +1,4 @@
-import type { Mine, Island, Factor, Artefato, Continent } from '../types';
+import type { Mine, Continent, GameMode, Factor, Artefato } from '../types';
 
 const BASE = '/api';
 
@@ -29,33 +29,33 @@ async function post<T>(path: string, body: object): Promise<T> {
 }
 
 export const api = {
+  gameModes: {
+    list: () => get<GameMode[]>('/game-modes'),
+    create: (nome: string) => post<GameMode>('/game-modes', { nome }),
+    update: (id: number, data: { nome: string }) => put<GameMode>(`/game-modes/${id}`, data),
+  },
   continents: {
-    list: () => get<Continent[]>('/continents'),
-    create: (nome: string) => post<Continent>('/continents', { nome }),
-    update: (id: number, data: { nome: string }) => put<Continent>(`/continents/${id}`, data),
+    list: (game_mode_id?: number) => {
+      const qs = game_mode_id ? `?game_mode_id=${game_mode_id}` : '';
+      return get<Continent[]>(`/continents${qs}`);
+    },
+    create: (data: { nome: string; game_mode_id: number }) =>
+      post<Continent>('/continents', data),
+    update: (id: number, data: { nome?: string; game_mode_id?: number }) =>
+      put<Continent>(`/continents/${id}`, data),
   },
   mines: {
-    list: (island_id?: number, continent_id?: number) => {
+    list: (continent_id?: number, game_mode_id?: number) => {
       const qs = new URLSearchParams();
-      if (island_id)    qs.set('island_id',    String(island_id));
       if (continent_id) qs.set('continent_id', String(continent_id));
+      if (game_mode_id) qs.set('game_mode_id', String(game_mode_id));
       const q = qs.toString();
       return get<Mine[]>(`/mines${q ? '?' + q : ''}`);
     },
-    create: (data: { nome: string; island_id?: number }) =>
+    create: (data: { nome: string; continent_id?: number }) =>
       post<Mine>('/mines', data),
     update: (nome: string, data: Partial<Mine>) =>
       put<Mine>(`/mines/${encodeURIComponent(nome)}`, data),
-  },
-  islands: {
-    list: (continent_id?: number) => {
-      const qs = continent_id ? `?continent_id=${continent_id}` : '';
-      return get<Island[]>(`/islands${qs}`);
-    },
-    create: (data: { nome: string; continent_id: number }) =>
-      post<Island>('/islands', data),
-    update: (id: number, data: { nome?: string; continent_id?: number }) =>
-      put<Island>(`/islands/${id}`, data),
   },
   factors: () => get<Factor[]>('/game/factors'),
   detalheValores: {

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Mine, Island, Factor } from '../types';
+import type { Mine, Continent, Factor } from '../types';
 import { api } from '../api/client';
 import { formatRaw } from '../utils/upgradeAdvisor';
 
 interface Props {
-  islands: Island[];
+  continents: Continent[];
   mines: Mine[];
   factors: Factor[];
   boosterTotal: number;
@@ -58,7 +58,7 @@ function minNextPrestigeRaw(mines: Mine[], factors: Factor[]): number {
 }
 
 
-export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff, horasSonoInit }: Props) {
+export function ProducaoPanel({ continents, mines, factors, boosterTotal, multOff, horasSonoInit }: Props) {
   const { t } = useTranslation();
   const [multInput, setMultInput] = useState(() => String(multOff ?? 3));
   const [sonoInput, setSonoInput] = useState(() => String(horasSonoInit ?? 8));
@@ -80,11 +80,11 @@ export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff, 
     { label: t('production.per_week'),         mult: 604_800,                         highlight: null   },
   ];
 
-  const rows = islands.map(island => {
-    const islandMines = mines.filter(m => m.island_id === island.id);
-    const raw = computeProductionRaw(islandMines, factors, boosterFactor);
-    const nextPrestigeRaw = minNextPrestigeRaw(islandMines, factors);
-    return { island, raw, nextPrestigeRaw };
+  const rows = continents.map(continent => {
+    const continentMines = mines.filter(m => m.continent_id === continent.id);
+    const raw = computeProductionRaw(continentMines, factors, boosterFactor);
+    const nextPrestigeRaw = minNextPrestigeRaw(continentMines, factors);
+    return { continent, raw, nextPrestigeRaw };
   });
 
   return (
@@ -134,16 +134,16 @@ export function ProducaoPanel({ islands, mines, factors, boosterTotal, multOff, 
         <table className="prod-table">
           <thead>
             <tr>
-              <th className="prod-th-ilha">{t('production.col_island')}</th>
+              <th className="prod-th-continente">{t('production.col_continent')}</th>
               {columns.map(c => (
                 <th key={c.label} className="prod-th-val">{c.label}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ island, raw, nextPrestigeRaw }) => (
-              <tr key={island.id} className={raw === 0 ? 'prod-row-empty' : ''}>
-                <td className="prod-td-ilha">{island.nome}</td>
+            {rows.map(({ continent, raw, nextPrestigeRaw }) => (
+              <tr key={continent.id} className={raw === 0 ? 'prod-row-empty' : ''}>
+                <td className="prod-td-continente">{continent.nome}</td>
                 {columns.map(c => {
                   if (c.isPrestige) {
                     return (

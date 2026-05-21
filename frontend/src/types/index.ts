@@ -6,8 +6,8 @@ export interface Factor {
 export interface Mine {
   id: number;
   nome: string;
-  island_id: number | null;
-  island_nome: string | null;
+  continent_id: number | null;
+  continent_nome: string | null;
   armazem_nivel: number | null;
   armazem_letra: string | null;
   elevador_nivel: number | null;
@@ -29,14 +29,14 @@ export interface Artefato {
   updated_at: string;
 }
 
-export interface Island {
+export interface Continent {
   id: number;
   nome: string;
-  continent_id: number;
+  game_mode_id: number;
   updated_at: string;
 }
 
-export interface Continent {
+export interface GameMode {
   id: number;
   nome: string;
   updated_at: string;

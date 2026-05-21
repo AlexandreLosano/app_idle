@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Mine, Island, Factor, Artefato } from '../types';
+import type { Mine, Continent, Factor, Artefato } from '../types';
 import { computeProduction, minNextPrestige, formatTime } from '../utils/gameCalc';
 
 interface Props {
-  islands: Island[];
+  continents: Continent[];
   mines: Mine[];
   factors: Factor[];
   artefatos: Artefato[];
@@ -28,7 +28,7 @@ function toSeconds(duracao: string, unidade: 'min' | 'h' | 'dias'): number {
 
 // Acumula produção por segmentos de tempo conforme artefatos expiram
 function computeAccumulated(
-  islandMines: Mine[],
+  continentMines: Mine[],
   factors: Factor[],
   somaOff: number,
   totalComprado: number,
@@ -53,7 +53,7 @@ function computeAccumulated(
 
     if (segDuration > 0) {
       const boosterFactor = (somaOff + activeQtd + totalComprado) * busterAnuncio;
-      const prod = computeProduction(islandMines, factors, boosterFactor);
+      const prod = computeProduction(continentMines, factors, boosterFactor);
       accumulated += prod.raw * segDuration;
     }
 
@@ -65,7 +65,7 @@ function computeAccumulated(
   return { accumulated, currentBoosterFactor };
 }
 
-export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, boosterTotal }: Props) {
+export function PromocaoPanel({ continents, mines, factors, artefatos, boosterCfg, boosterTotal }: Props) {
   const { t } = useTranslation();
   const [entries, setEntries] = useState<ArtefatoEntry[]>([
     { id: nextId++, qtd: '', duracao: '', unidade: 'h' },
@@ -157,18 +157,18 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
       </div>
 
       {hasInput ? (
-        <div className="islands-list">
-          {islands.map(island => {
-            const islandMines = mines.filter(m => m.island_id === island.id);
-            if (islandMines.length === 0) return null;
+        <div className="continents-list">
+          {continents.map(continent => {
+            const continentMines = mines.filter(m => m.continent_id === continent.id);
+            if (continentMines.length === 0) return null;
 
-            const nextPrestige = minNextPrestige(islandMines, factors);
+            const nextPrestige = minNextPrestige(continentMines, factors);
             const currentBoosterFactor = boosterTotal / 10;
-            const currentProduction = computeProduction(islandMines, factors, currentBoosterFactor);
-            const promoProduction   = computeProduction(islandMines, factors, (somaOff + totalPromoQtd + totalComprado) * busterAnuncio);
+            const currentProduction = computeProduction(continentMines, factors, currentBoosterFactor);
+            const promoProduction   = computeProduction(continentMines, factors, (somaOff + totalPromoQtd + totalComprado) * busterAnuncio);
 
             const { accumulated } = computeAccumulated(
-              islandMines, factors, somaOff, totalComprado, busterAnuncio, entries
+              continentMines, factors, somaOff, totalComprado, busterAnuncio, entries
             );
 
             const hasPrestige = nextPrestige.raw > 0;
@@ -181,11 +181,11 @@ export function PromocaoPanel({ islands, mines, factors, artefatos, boosterCfg, 
             const rowClass = !hasPrestige ? '' : vaiAtingir ? 'promo-row-vai' : 'promo-row-nao';
 
             return (
-              <div key={island.id} className={`promo-island-row ${rowClass}`}>
+              <div key={continent.id} className={`promo-continent-row ${rowClass}`}>
                 <div className="promo-row-grid">
 
                   <div className="promo-cell-name">
-                    <strong className="island-title">{island.nome}</strong>
+                    <strong className="continent-title">{continent.nome}</strong>
                   </div>
 
                   <div className="promo-cell">

@@ -1,142 +1,142 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Continent, Island, Mine } from '../types';
+import type { GameMode, Continent, Mine } from '../types';
 import { api } from '../api/client';
 
 interface Props {
-  continents: Continent[];
+  gameModes: GameMode[];
   onRefresh: () => void;
 }
 
-export function CadastrosPanel({ continents, onRefresh }: Props) {
+export function CadastrosPanel({ gameModes, onRefresh }: Props) {
   const { t } = useTranslation();
-  const [islands, setIslands] = useState<Island[]>([]);
-  const [mines,   setMines]   = useState<Mine[]>([]);
+  const [continents, setContinents] = useState<Continent[]>([]);
+  const [mines,      setMines]      = useState<Mine[]>([]);
 
-  async function reloadIslands() {
-    setIslands(await api.islands.list());
+  async function reloadContinents() {
+    setContinents(await api.continents.list());
   }
   async function reloadMines() {
     setMines(await api.mines.list());
   }
 
   useEffect(() => {
-    reloadIslands();
+    reloadContinents();
     reloadMines();
   }, []);
 
-  /* ── Continentes ────────────────────────────────────────────────── */
-  const [contNome,      setContNome]      = useState('');
-  const [contSaving,    setContSaving]    = useState(false);
-  const [selContId,     setSelContId]     = useState('');
-  const [editContNome,  setEditContNome]  = useState('');
-  const [contEditSav,   setContEditSav]   = useState(false);
+  /* ── Modos de Jogo (ex-Continentes) ────────────────────────────── */
+  const [gmNome,      setGmNome]      = useState('');
+  const [gmSaving,    setGmSaving]    = useState(false);
+  const [selGmId,     setSelGmId]     = useState('');
+  const [editGmNome,  setEditGmNome]  = useState('');
+  const [gmEditSav,   setGmEditSav]   = useState(false);
+
+  function onSelectGameMode(id: string) {
+    setSelGmId(id);
+    setEditGmNome(gameModes.find(gm => gm.id === Number(id))?.nome ?? '');
+  }
+
+  async function createGameMode(e: React.FormEvent) {
+    e.preventDefault();
+    if (!gmNome.trim()) return;
+    setGmSaving(true);
+    try {
+      await api.gameModes.create(gmNome.trim());
+      setGmNome('');
+      onRefresh();
+    } finally { setGmSaving(false); }
+  }
+
+  async function saveGameModeEdit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selGmId || !editGmNome.trim()) return;
+    setGmEditSav(true);
+    try {
+      await api.gameModes.update(Number(selGmId), { nome: editGmNome.trim() });
+      setSelGmId('');
+      onRefresh();
+    } finally { setGmEditSav(false); }
+  }
+
+  /* ── Continentes (ex-Ilhas) ─────────────────────────────────────── */
+  const [cNome,          setCNome]          = useState('');
+  const [cGameModeId,    setCGameModeId]    = useState('');
+  const [cSaving,        setCSaving]        = useState(false);
+  const [selContId,      setSelContId]      = useState('');
+  const [editContNome,   setEditContNome]   = useState('');
+  const [editContGmId,   setEditContGmId]   = useState('');
+  const [contEditSav,    setContEditSav]    = useState(false);
 
   function onSelectCont(id: string) {
     setSelContId(id);
-    setEditContNome(continents.find(c => c.id === Number(id))?.nome ?? '');
+    const cont = continents.find(c => c.id === Number(id));
+    setEditContNome(cont?.nome ?? '');
+    setEditContGmId(cont?.game_mode_id?.toString() ?? '');
   }
 
   async function createContinent(e: React.FormEvent) {
     e.preventDefault();
-    if (!contNome.trim()) return;
-    setContSaving(true);
+    if (!cNome.trim() || !cGameModeId) return;
+    setCSaving(true);
     try {
-      await api.continents.create(contNome.trim());
-      setContNome('');
+      await api.continents.create({ nome: cNome.trim(), game_mode_id: Number(cGameModeId) });
+      setCNome('');
+      await reloadContinents();
       onRefresh();
-    } finally { setContSaving(false); }
+    } finally { setCSaving(false); }
   }
 
-  async function saveContEdit(e: React.FormEvent) {
+  async function saveContinentEdit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selContId || !editContNome.trim()) return;
+    if (!selContId) return;
     setContEditSav(true);
     try {
-      await api.continents.update(Number(selContId), { nome: editContNome.trim() });
+      await api.continents.update(Number(selContId), {
+        nome:         editContNome.trim() || undefined,
+        game_mode_id: editContGmId ? Number(editContGmId) : undefined,
+      });
       setSelContId('');
+      await reloadContinents();
       onRefresh();
     } finally { setContEditSav(false); }
   }
 
-  /* ── Ilhas ──────────────────────────────────────────────────────── */
-  const [iNome,        setINome]        = useState('');
-  const [iContId,      setIContId]      = useState('');
-  const [iSaving,      setISaving]      = useState(false);
-  const [selIslId,     setSelIslId]     = useState('');
-  const [editIslNome,  setEditIslNome]  = useState('');
-  const [editIslCont,  setEditIslCont]  = useState('');
-  const [islEditSav,   setIslEditSav]   = useState(false);
-
-  function onSelectIsl(id: string) {
-    setSelIslId(id);
-    const isl = islands.find(i => i.id === Number(id));
-    setEditIslNome(isl?.nome ?? '');
-    setEditIslCont(isl?.continent_id?.toString() ?? '');
-  }
-
-  async function createIsland(e: React.FormEvent) {
-    e.preventDefault();
-    if (!iNome.trim() || !iContId) return;
-    setISaving(true);
-    try {
-      await api.islands.create({ nome: iNome.trim(), continent_id: Number(iContId) });
-      setINome('');
-      await reloadIslands();
-      onRefresh();
-    } finally { setISaving(false); }
-  }
-
-  async function saveIslandEdit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!selIslId) return;
-    setIslEditSav(true);
-    try {
-      await api.islands.update(Number(selIslId), {
-        nome:         editIslNome.trim() || undefined,
-        continent_id: editIslCont ? Number(editIslCont) : undefined,
-      });
-      setSelIslId('');
-      await reloadIslands();
-      onRefresh();
-    } finally { setIslEditSav(false); }
-  }
-
   /* ── Minas ──────────────────────────────────────────────────────── */
-  const [mNome,       setMNome]       = useState('');
-  const [mContId,     setMContId]     = useState('');
-  const [mIslandId,   setMIslandId]   = useState('');
-  const [mSaving,     setMSaving]     = useState(false);
-  const [selMineNome, setSelMineNome] = useState('');
-  const [editMNome,   setEditMNome]   = useState('');
-  const [editMCont,   setEditMCont]   = useState('');
-  const [editMIsl,    setEditMIsl]    = useState('');
-  const [mineEditSav, setMineEditSav] = useState(false);
+  const [mNome,          setMNome]          = useState('');
+  const [mGameModeId,    setMGameModeId]    = useState('');
+  const [mContinentId,   setMContinentId]   = useState('');
+  const [mSaving,        setMSaving]        = useState(false);
+  const [selMineNome,    setSelMineNome]    = useState('');
+  const [editMNome,      setEditMNome]      = useState('');
+  const [editMGameMode,  setEditMGameMode]  = useState('');
+  const [editMCont,      setEditMCont]      = useState('');
+  const [mineEditSav,    setMineEditSav]    = useState(false);
 
   function onSelectMine(nome: string) {
     setSelMineNome(nome);
     const m = mines.find(m => m.nome === nome);
     setEditMNome(m?.nome ?? '');
-    const isl = islands.find(i => i.id === m?.island_id);
-    setEditMCont(isl?.continent_id?.toString() ?? '');
-    setEditMIsl(m?.island_id?.toString() ?? '');
+    const cont = continents.find(c => c.id === m?.continent_id);
+    setEditMGameMode(cont?.game_mode_id?.toString() ?? '');
+    setEditMCont(m?.continent_id?.toString() ?? '');
   }
 
-  const islandsForCreate = mContId
-    ? islands.filter(i => i.continent_id === Number(mContId))
-    : islands;
-  const islandsForEdit = editMCont
-    ? islands.filter(i => i.continent_id === Number(editMCont))
-    : islands;
+  const continentsForCreate = mGameModeId
+    ? continents.filter(c => c.game_mode_id === Number(mGameModeId))
+    : continents;
+  const continentsForEdit = editMGameMode
+    ? continents.filter(c => c.game_mode_id === Number(editMGameMode))
+    : continents;
 
   async function createMine(e: React.FormEvent) {
     e.preventDefault();
     if (!mNome.trim()) return;
     setMSaving(true);
     try {
-      await api.mines.create({ nome: mNome.trim(), island_id: mIslandId ? Number(mIslandId) : undefined });
+      await api.mines.create({ nome: mNome.trim(), continent_id: mContinentId ? Number(mContinentId) : undefined });
       setMNome('');
-      setMIslandId('');
+      setMContinentId('');
       await reloadMines();
       onRefresh();
     } finally { setMSaving(false); }
@@ -148,8 +148,8 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
     setMineEditSav(true);
     try {
       await api.mines.update(selMineNome, {
-        nome:      editMNome.trim() || undefined,
-        island_id: editMIsl ? Number(editMIsl) : undefined,
+        nome:         editMNome.trim() || undefined,
+        continent_id: editMCont ? Number(editMCont) : undefined,
       });
       setSelMineNome('');
       await reloadMines();
@@ -162,6 +162,47 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
       <h2>{t('register.header')}</h2>
       <div className="cad-sections">
 
+        {/* ── Modos de Jogo ───────────────────────────────────────── */}
+        <div className="cad-section">
+          <h3 className="cad-section-title">{t('register.game_modes')}</h3>
+
+          <form className="cad-form" onSubmit={createGameMode}>
+            <input
+              className="cad-input"
+              placeholder={t('register.game_mode_name')}
+              value={gmNome}
+              onChange={e => setGmNome(e.target.value)}
+            />
+            <button className="btn-save" type="submit" disabled={gmSaving || !gmNome.trim()}>
+              {gmSaving ? '…' : t('common.create')}
+            </button>
+          </form>
+
+          <div className="cad-edit-row">
+            <select
+              className="cad-select cad-select-wide"
+              value={selGmId}
+              onChange={e => onSelectGameMode(e.target.value)}
+            >
+              <option value="">{t('register.select_to_edit')}</option>
+              {gameModes.map(gm => <option key={gm.id} value={gm.id}>{gm.nome}</option>)}
+            </select>
+
+            {selGmId && (
+              <form className="cad-edit-form" onSubmit={saveGameModeEdit}>
+                <input
+                  className="cad-input"
+                  value={editGmNome}
+                  onChange={e => setEditGmNome(e.target.value)}
+                />
+                <button className="btn-save" type="submit" disabled={gmEditSav || !editGmNome.trim()}>
+                  {gmEditSav ? '…' : t('common.save')}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+
         {/* ── Continentes ─────────────────────────────────────────── */}
         <div className="cad-section">
           <h3 className="cad-section-title">{t('register.continents')}</h3>
@@ -170,11 +211,15 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
             <input
               className="cad-input"
               placeholder={t('register.continent_name')}
-              value={contNome}
-              onChange={e => setContNome(e.target.value)}
+              value={cNome}
+              onChange={e => setCNome(e.target.value)}
             />
-            <button className="btn-save" type="submit" disabled={contSaving || !contNome.trim()}>
-              {contSaving ? '…' : t('common.create')}
+            <select className="cad-select" value={cGameModeId} onChange={e => setCGameModeId(e.target.value)}>
+              <option value="">{t('register.select_game_mode')}</option>
+              {gameModes.map(gm => <option key={gm.id} value={gm.id}>{gm.nome}</option>)}
+            </select>
+            <button className="btn-save" type="submit" disabled={cSaving || !cNome.trim() || !cGameModeId}>
+              {cSaving ? '…' : t('common.create')}
             </button>
           </form>
 
@@ -185,74 +230,29 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
               onChange={e => onSelectCont(e.target.value)}
             >
               <option value="">{t('register.select_to_edit')}</option>
-              {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-            </select>
-
-            {selContId && (
-              <form className="cad-edit-form" onSubmit={saveContEdit}>
-                <input
-                  className="cad-input"
-                  value={editContNome}
-                  onChange={e => setEditContNome(e.target.value)}
-                />
-                <button className="btn-save" type="submit" disabled={contEditSav || !editContNome.trim()}>
-                  {contEditSav ? '…' : t('common.save')}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-
-        {/* ── Ilhas ───────────────────────────────────────────────── */}
-        <div className="cad-section">
-          <h3 className="cad-section-title">{t('register.islands')}</h3>
-
-          <form className="cad-form" onSubmit={createIsland}>
-            <input
-              className="cad-input"
-              placeholder={t('register.island_name')}
-              value={iNome}
-              onChange={e => setINome(e.target.value)}
-            />
-            <select className="cad-select" value={iContId} onChange={e => setIContId(e.target.value)}>
-              <option value="">{t('register.select_continent')}</option>
-              {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-            </select>
-            <button className="btn-save" type="submit" disabled={iSaving || !iNome.trim() || !iContId}>
-              {iSaving ? '…' : t('common.create')}
-            </button>
-          </form>
-
-          <div className="cad-edit-row">
-            <select
-              className="cad-select cad-select-wide"
-              value={selIslId}
-              onChange={e => onSelectIsl(e.target.value)}
-            >
-              <option value="">{t('register.select_to_edit')}</option>
-              {islands.map(i => {
-                const cont = continents.find(c => c.id === i.continent_id);
+              {continents.map(c => {
+                const gm = gameModes.find(gm => gm.id === c.game_mode_id);
                 return (
-                  <option key={i.id} value={i.id}>
-                    {i.nome} — {cont?.nome ?? '?'}
+                  <option key={c.id} value={c.id}>
+                    {c.nome} — {gm?.nome ?? '?'}
                   </option>
                 );
               })}
             </select>
 
-            {selIslId && (
-              <form className="cad-edit-form" onSubmit={saveIslandEdit}>
+            {selContId && (
+              <form className="cad-edit-form" onSubmit={saveContinentEdit}>
                 <input
                   className="cad-input"
-                  value={editIslNome}
-                  onChange={e => setEditIslNome(e.target.value)}
+                  value={editContNome}
+                  onChange={e => setEditContNome(e.target.value)}
                 />
-                <select className="cad-select" value={editIslCont} onChange={e => setEditIslCont(e.target.value)}>
-                  <option value="">{t('register.select_continent')}</option>
-                  {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                <select className="cad-select" value={editContGmId} onChange={e => setEditContGmId(e.target.value)}>
+                  <option value="">{t('register.select_game_mode')}</option>
+                  {gameModes.map(gm => <option key={gm.id} value={gm.id}>{gm.nome}</option>)}
                 </select>
-                <button className="btn-save" type="submit" disabled={islEditSav}>
-                  {islEditSav ? '…' : t('common.save')}
+                <button className="btn-save" type="submit" disabled={contEditSav}>
+                  {contEditSav ? '…' : t('common.save')}
                 </button>
               </form>
             )}
@@ -272,15 +272,15 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
             />
             <select
               className="cad-select"
-              value={mContId}
-              onChange={e => { setMContId(e.target.value); setMIslandId(''); }}
+              value={mGameModeId}
+              onChange={e => { setMGameModeId(e.target.value); setMContinentId(''); }}
             >
-              <option value="">{t('register.select_continent')}</option>
-              {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+              <option value="">{t('register.select_game_mode')}</option>
+              {gameModes.map(gm => <option key={gm.id} value={gm.id}>{gm.nome}</option>)}
             </select>
-            <select className="cad-select" value={mIslandId} onChange={e => setMIslandId(e.target.value)}>
-              <option value="">{t('register.select_island')}</option>
-              {islandsForCreate.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
+            <select className="cad-select" value={mContinentId} onChange={e => setMContinentId(e.target.value)}>
+              <option value="">{t('register.select_continent')}</option>
+              {continentsForCreate.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
             <button className="btn-save" type="submit" disabled={mSaving || !mNome.trim()}>
               {mSaving ? '…' : t('common.create')}
@@ -296,7 +296,7 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
               <option value="">{t('register.select_to_edit')}</option>
               {mines.map(m => (
                 <option key={m.id} value={m.nome}>
-                  {m.nome}{m.island_nome ? ` — ${m.island_nome}` : ''}
+                  {m.nome}{m.continent_nome ? ` — ${m.continent_nome}` : ''}
                 </option>
               ))}
             </select>
@@ -310,15 +310,15 @@ export function CadastrosPanel({ continents, onRefresh }: Props) {
                 />
                 <select
                   className="cad-select"
-                  value={editMCont}
-                  onChange={e => { setEditMCont(e.target.value); setEditMIsl(''); }}
+                  value={editMGameMode}
+                  onChange={e => { setEditMGameMode(e.target.value); setEditMCont(''); }}
                 >
-                  <option value="">{t('register.select_continent')}</option>
-                  {continents.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                  <option value="">{t('register.select_game_mode')}</option>
+                  {gameModes.map(gm => <option key={gm.id} value={gm.id}>{gm.nome}</option>)}
                 </select>
-                <select className="cad-select" value={editMIsl} onChange={e => setEditMIsl(e.target.value)}>
-                  <option value="">{t('register.select_island')}</option>
-                  {islandsForEdit.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
+                <select className="cad-select" value={editMCont} onChange={e => setEditMCont(e.target.value)}>
+                  <option value="">{t('register.select_continent')}</option>
+                  {continentsForEdit.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
                 </select>
                 <button className="btn-save" type="submit" disabled={mineEditSav}>
                   {mineEditSav ? '…' : t('common.save')}

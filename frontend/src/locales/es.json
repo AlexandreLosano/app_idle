@@ -13,16 +13,16 @@
     "title": "Idle Miner Tycom - Tracker",
     "tabs": {
       "summary": "Resumen",
-      "islands": "Islas ({{count}})",
+      "continents": "Continentes ({{count}})",
       "boosters": "Boosters / Artefactos",
       "production": "Producción",
       "promotion": "Promoción",
       "register": "Gestión"
     }
   },
-  "islands": {
-    "header": "Islas",
-    "col_island": "Isla",
+  "continents": {
+    "header": "Continentes",
+    "col_continent": "Continente",
     "col_production": "Producción/s",
     "col_next_prestige": "Próx. Prestigio",
     "col_time": "Tiempo",
@@ -40,7 +40,7 @@
   },
   "mines": {
     "col_mine": "Mina",
-    "col_island": "Isla",
+    "col_continent": "Continente",
     "col_warehouse": "Almacén",
     "col_elevator": "Ascensor",
     "col_extraction": "Extracción",
@@ -62,7 +62,7 @@
     "target_label": "Objetivo mostrado:"
   },
   "summary": {
-    "header": "Prestigio por Isla",
+    "header": "Prestigio por Continente",
     "production": "Producción",
     "next_prestige": "Próx. Prestigio",
     "mine": "Mina",
@@ -88,7 +88,7 @@
     "offline_multiplier": "Multiplicador anuncio sin conexión",
     "sleep_hours": "Horas de sueño",
     "applied": "×{{n}} aplicado",
-    "col_island": "Isla",
+    "col_continent": "Continente",
     "col_real": "REAL",
     "col_next_prestige": "Próx. Prestigio",
     "per_second": "/s",
@@ -114,14 +114,14 @@
   },
   "register": {
     "header": "Gestión",
+    "game_modes": "Modos de Juego",
     "continents": "Continentes",
-    "islands": "Islas",
     "mines": "Minas",
+    "game_mode_name": "Nombre del modo de juego",
     "continent_name": "Nombre del continente",
-    "island_name": "Nombre de la isla",
     "mine_name": "Nombre de la mina",
+    "select_game_mode": "Modo de Juego…",
     "select_continent": "Continente…",
-    "select_island": "Isla…",
     "select_to_edit": "Seleccionar para editar…"
   }
 }

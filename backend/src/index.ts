@@ -2,10 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import { runMigrations } from './db';
 import minesRouter from './routes/mines';
-import islandsRouter from './routes/islands';
+import continentsRouter from './routes/continents';
 import gameStateRouter from './routes/gameState';
 import artefatosRouter from './routes/artefatos';
-import continentsRouter from './routes/continents';
+import gameModesRouter from './routes/game_modes';
 import detalheValoresRouter from './routes/detalheValores';
 
 const app = express();
@@ -15,10 +15,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/mines', minesRouter);
-app.use('/api/islands', islandsRouter);
+app.use('/api/continents', continentsRouter);
 app.use('/api/game', gameStateRouter);
 app.use('/api/artefatos', artefatosRouter);
-app.use('/api/continents', continentsRouter);
+app.use('/api/game-modes', gameModesRouter);
 app.use('/api/detalhe-valores', detalheValoresRouter);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));

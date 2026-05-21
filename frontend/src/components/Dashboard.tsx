@@ -1,56 +1,56 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Mine, Island, Factor, Artefato, Continent } from '../types';
+import type { Mine, Continent, GameMode, Factor, Artefato } from '../types';
 import { api } from '../api/client';
-import { IslandPanel } from './IslandPanel';
+import { ContinentPanel } from './ContinentPanel';
 import { ArtefatosPanel } from './ArtefatosPanel';
 import { SummaryPanel } from './SummaryPanel';
 import { CadastrosPanel } from './CadastrosPanel';
 import { PromocaoPanel } from './PromocaoPanel';
 import { ProducaoPanel } from './ProducaoPanel';
-import { DetalheIlhaPanel } from './DetalheIlhaPanel';
+import { DetalheContinentePanel } from './DetalheContinentePanel';
 import { LanguageSelector } from './LanguageSelector';
 
 export function Dashboard() {
   const { t } = useTranslation();
-  const [mines, setMines]       = useState<Mine[]>([]);
-  const [islands, setIslands]   = useState<Island[]>([]);
-  const [factors, setFactors]   = useState<Factor[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'summary' | 'islands' | 'detalhe' | 'boosters' | 'producao' | 'promocao' | 'cadastros'>('summary');
-  const [artefatos, setArtefatos] = useState<Artefato[]>([]);
-  const [boosterCfg, setBoosterCfg] = useState<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>({ buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null });
-  const [targetPct, setTargetPct] = useState(10);
+  const [mines,      setMines]      = useState<Mine[]>([]);
+  const [continents, setContinents] = useState<Continent[]>([]);
+  const [factors,    setFactors]    = useState<Factor[]>([]);
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState<string | null>(null);
+  const [activeTab, setActiveTab]   = useState<'summary' | 'continents' | 'detalhe' | 'boosters' | 'producao' | 'promocao' | 'cadastros'>('summary');
+  const [artefatos,   setArtefatos]   = useState<Artefato[]>([]);
+  const [boosterCfg,  setBoosterCfg]  = useState<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>({ buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null });
+  const [targetPct,      setTargetPct]      = useState(10);
   const [targetPctSaved, setTargetPctSaved] = useState(false);
 
-  const [continents, setContinents]           = useState<Continent[]>([]);
-  const [activeContinentId, setActiveContinentId] = useState<number | null>(null);
+  const [gameModes,       setGameModes]       = useState<GameMode[]>([]);
+  const [activeGameModeId, setActiveGameModeId] = useState<number | null>(null);
 
-  // Load continents once on mount; set first as active
+  // Load game modes once on mount; set first as active
   useEffect(() => {
-    api.continents.list()
-      .then(cs => {
-        setContinents(cs);
-        if (cs.length > 0) setActiveContinentId(cs[0].id);
+    api.gameModes.list()
+      .then(gms => {
+        setGameModes(gms);
+        if (gms.length > 0) setActiveGameModeId(gms[0].id);
       })
       .catch(e => setError((e as Error).message));
   }, []);
 
   const load = useCallback(async () => {
-    if (activeContinentId === null) return;
+    if (activeGameModeId === null) return;
     setLoading(true);
     setError(null);
     try {
-      const [m, i, f, art, cfg] = await Promise.all([
-        api.mines.list(undefined, activeContinentId),
-        api.islands.list(activeContinentId),
+      const [m, c, f, art, cfg] = await Promise.all([
+        api.mines.list(undefined, activeGameModeId),
+        api.continents.list(activeGameModeId),
         api.factors(),
         api.artefatos.list(),
         api.artefatos.getConfig(),
       ]);
       setMines(m);
-      setIslands(i);
+      setContinents(c);
       setFactors(f);
       setArtefatos(art);
       setBoosterCfg(cfg ?? { buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null });
@@ -60,14 +60,14 @@ export function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [activeContinentId]);
+  }, [activeGameModeId]);
 
   useEffect(() => { load(); }, [load]);
 
-  // Reloads continents list + main data; passed to CadastrosPanel
+  // Reloads game modes list + main data; passed to CadastrosPanel
   const handleRefresh = useCallback(async () => {
-    const cs = await api.continents.list();
-    setContinents(cs);
+    const gms = await api.gameModes.list();
+    setGameModes(gms);
     await load();
   }, [load]);
 
@@ -94,12 +94,12 @@ export function Dashboard() {
         <h1>{t('dashboard.title')}</h1>
         <div className="header-controls">
           <select
-            className="continent-select"
-            value={activeContinentId ?? ''}
-            onChange={e => setActiveContinentId(Number(e.target.value))}
+            className="game-mode-select"
+            value={activeGameModeId ?? ''}
+            onChange={e => setActiveGameModeId(Number(e.target.value))}
           >
-            {continents.map(c => (
-              <option key={c.id} value={c.id}>{c.nome}</option>
+            {gameModes.map(gm => (
+              <option key={gm.id} value={gm.id}>{gm.nome}</option>
             ))}
           </select>
           <LanguageSelector />
@@ -114,16 +114,16 @@ export function Dashboard() {
           {t('dashboard.tabs.summary')}
         </button>
         <button
-          className={activeTab === 'islands' ? 'tab active' : 'tab'}
-          onClick={() => setActiveTab('islands')}
+          className={activeTab === 'continents' ? 'tab active' : 'tab'}
+          onClick={() => setActiveTab('continents')}
         >
-          {t('dashboard.tabs.islands', { count: islands.length })}
+          {t('dashboard.tabs.continents', { count: continents.length })}
         </button>
         <button
           className={activeTab === 'detalhe' ? 'tab active' : 'tab'}
           onClick={() => setActiveTab('detalhe')}
         >
-          Detalhe Ilha
+          Detalhe Continente
         </button>
         <button
           className={activeTab === 'boosters' ? 'tab active' : 'tab'}
@@ -153,7 +153,7 @@ export function Dashboard() {
 
       {activeTab === 'summary' && (
         <SummaryPanel
-          islands={islands}
+          continents={continents}
           mines={mines}
           factors={factors}
           boosterTotal={boosterTotal}
@@ -161,9 +161,9 @@ export function Dashboard() {
         />
       )}
 
-      {activeTab === 'islands' && (
-        <IslandPanel
-          islands={islands}
+      {activeTab === 'continents' && (
+        <ContinentPanel
+          continents={continents}
           mines={mines}
           factors={factors}
           boosterTotal={boosterTotal}
@@ -174,8 +174,8 @@ export function Dashboard() {
       )}
 
       {activeTab === 'detalhe' && (
-        <DetalheIlhaPanel
-          islands={islands}
+        <DetalheContinentePanel
+          continents={continents}
           mines={mines}
           factors={factors}
           boosterTotal={boosterTotal}
@@ -218,7 +218,7 @@ export function Dashboard() {
 
       {activeTab === 'producao' && (
         <ProducaoPanel
-          islands={islands}
+          continents={continents}
           mines={mines}
           factors={factors}
           boosterTotal={boosterTotal}
@@ -229,7 +229,7 @@ export function Dashboard() {
 
       {activeTab === 'promocao' && (
         <PromocaoPanel
-          islands={islands}
+          continents={continents}
           mines={mines}
           factors={factors}
           artefatos={artefatos}
@@ -240,7 +240,7 @@ export function Dashboard() {
 
       {activeTab === 'cadastros' && (
         <CadastrosPanel
-          continents={continents}
+          gameModes={gameModes}
           onRefresh={handleRefresh}
         />
       )}

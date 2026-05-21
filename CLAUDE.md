@@ -3,7 +3,7 @@
 ## Regras Obrigatórias
 
 ### 1. Documentação de Alterações
-Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0043**.
+Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0044**.
 
 Formato:
 ```
@@ -102,7 +102,8 @@ app_idle/
 │       │   └── upgradeAdvisor.ts
 │       └── components/
 │           ├── Dashboard.tsx
-│           ├── IslandPanel.tsx
+│           ├── ContinentPanel.tsx
+│           ├── DetalheContinentePanel.tsx
 │           ├── MinesTable.tsx
 │           ├── SummaryPanel.tsx
 │           ├── ArtefatosPanel.tsx
@@ -120,9 +121,9 @@ app_idle/
         ├── db.ts
         ├── routes/
         │   ├── artefatos.ts
-        │   ├── continents.ts
+        │   ├── game_modes.ts
         │   ├── gameState.ts
-        │   ├── islands.ts
+        │   ├── continents.ts
         │   └── mines.ts
         └── migrations/
             ├── 001_initial.sql
@@ -139,7 +140,9 @@ app_idle/
             ├── 012_continents.sql
             ├── 013_drop_unused_columns.sql
             ├── 014_target_pct.sql
-            └── 015_mult_off.sql
+            ├── 015_mult_off.sql
+            ├── 016_rename_continents_to_game_modes.sql
+            └── 017_rename_islands_to_continents.sql
 ```
 
 ---
@@ -151,13 +154,13 @@ Prefixo base: `/api`
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | GET | `/api/game/factors` | Lista fatores de magnitude (letra, cont) |
-| GET | `/api/continents` | Lista continentes |
+| GET | `/api/game-modes` | Lista modos de jogo |
+| POST | `/api/game-modes` | Cria modo de jogo |
+| PUT | `/api/game-modes/:id` | Edita modo de jogo |
+| GET | `/api/continents?game_mode_id=` | Lista continentes (filtro opcional por modo de jogo) |
 | POST | `/api/continents` | Cria continente |
 | PUT | `/api/continents/:id` | Edita continente |
-| GET | `/api/islands?continent_id=` | Lista ilhas (filtro opcional por continente) |
-| POST | `/api/islands` | Cria ilha |
-| PUT | `/api/islands/:id` | Edita ilha |
-| GET | `/api/mines?island_id=&continent_id=` | Lista minas (filtros opcionais) |
+| GET | `/api/mines?continent_id=&game_mode_id=` | Lista minas (filtros opcionais) |
 | POST | `/api/mines` | Cria mina |
 | PUT | `/api/mines/:nome` | Atualiza dados de uma mina |
 | GET | `/api/artefatos` | Lista artefatos (apenas registros com `quantidade IS NOT NULL`) |
@@ -176,17 +179,17 @@ Prefixo base: `/api`
 Fatores de magnitude do jogo. Populados na migração 001 e limpos na 013.
 - `letra` (PK), `cont` (ordem: 1=`-`, 2=`k`, 3=`m`, …)
 
-### `continents`
-Continentes (contextos de jogo separados).
+### `game_modes`
+Modos de Jogo (contextos de jogo separados).
 - `id`, `nome`, `updated_at`
 
-### `islands`
-Ilhas pertencentes a um continente.
-- `id`, `nome`, `continent_id` (FK → continents), `updated_at`
+### `continents`
+Continentes pertencentes a um modo de jogo.
+- `id`, `nome`, `game_mode_id` (FK → game_modes), `updated_at`
 
 ### `mines`
-Minas pertencentes a uma ilha.
-- `id`, `nome`, `island_id` (FK → islands)
+Minas pertencentes a um continente.
+- `id`, `nome`, `continent_id` (FK → continents)
 - `armazem_nivel`, `armazem_letra`
 - `elevador_nivel`, `elevador_letra`
 - `extracao_nivel`, `extracao_letra`
@@ -211,17 +214,17 @@ Duplo uso: artefatos reais (quantidade IS NOT NULL) e configs (quantidade IS NUL
 ## Funcionalidades Implementadas
 
 ### Abas do Dashboard
-1. **Resumo** — Visão geral de todas as ilhas: produção total, próximo prestígio, tempo estimado, barra de prestígio e donut chart
-2. **Ilhas** — Lista de ilhas em layout de tabela com colunas alinhadas:
+1. **Resumo** — Visão geral de todos os continentes: produção total, próximo prestígio, tempo estimado, barra de prestígio e donut chart
+2. **Continentes** — Lista de continentes em layout de tabela com colunas alinhadas:
    - Bullet de extração (verde = todas as minas têm extração como gargalo; vermelho = ao menos uma não tem)
    - Produção/s, Próx. Prestígio, Tempo estimado com cores por faixa, Balanço
    - Tempo: ≤10d verde · 11–30d amarelo · 31d–1A vermelho · >1A roxo
    - Tooltip no tempo mostra data estimada de chegada ao prestígio
    - Ao expandir: tabela de minas com setas de upgrade (↑ ↑↑ ↑↑↑)
 3. **Boosters / Artefatos** — Gerenciamento de artefatos ativos/inativos; slider de `% do Target` com botão Salvar
-4. **Produção** — Tabela por ilha: produção /s /min /hora /dia /semana; multiplicador offline com botão Salvar; coluna /hora destacada em amarelo se ≥ próximo prestígio
-5. **Promoção** — Simulação de pacotes promocionais: inserir N artefatos com multiplicador e duração independentes; cálculo segmentado de produção acumulada; mostra se cada ilha atinge o próximo prestígio
-6. **Cadastros** — CRUD de continentes e ilhas
+4. **Produção** — Tabela por continente: produção /s /min /hora /dia /semana; multiplicador offline com botão Salvar; coluna /hora destacada em amarelo se ≥ próximo prestígio
+5. **Promoção** — Simulação de pacotes promocionais: inserir N artefatos com multiplicador e duração independentes; cálculo segmentado de produção acumulada; mostra se cada continente atinge o próximo prestígio
+6. **Cadastros** — CRUD de modos de jogo e continentes
 
 ### Lógica de Negócio
 
@@ -233,7 +236,7 @@ Cada letra tem um `cont` (1, 2, 3, …). Valor absoluto (raw): `nivel × 1000^(c
 
 Score para comparação: `(cont - 1) * 100 + log10(nivel)`.
 
-#### Produção de uma ilha
+#### Produção de um continente
 Soma dos gargalos de cada mina (mínimo entre armazém, elevador, extração).  
 Normalizado para a maior letra presente, depois multiplicado pelo booster.
 
@@ -252,7 +255,7 @@ Fator aplicado à produção: `boosterTotal / 10`.
 #### Simulação de Promoção (`PromocaoPanel`)
 - Artefatos da promoção são **somados** aos já ativos
 - Cada artefato tem duração própria; cálculo segmentado por tempo (ordena durações, acumula produção por segmento)
-- Compara acumulado com o menor `nextPrestige.raw` da ilha
+- Compara acumulado com o menor `nextPrestige.raw` do continente
 
 ---
 
@@ -261,16 +264,16 @@ Fator aplicado à produção: `boosterTotal / 10`.
 | Componente | Responsabilidade |
 |-----------|-----------------|
 | `Dashboard.tsx` | Orquestração de abas, carregamento de dados, estado global |
-| `IslandPanel.tsx` | Tabela de ilhas com expansão por ilha para ver minas |
-| `MinesTable.tsx` | Tabela editável de minas (usada em IslandPanel) |
-| `SummaryPanel.tsx` | Cards de resumo por ilha com barras e donut charts |
+| `ContinentPanel.tsx` | Tabela de continentes com expansão por continente para ver minas |
+| `DetalheContinentePanel.tsx` | Tabela detalhada de um continente com níveis por coluna e ranking de prestígio |
+| `MinesTable.tsx` | Tabela editável de minas (usada em ContinentPanel) |
+| `SummaryPanel.tsx` | Cards de resumo por continente com barras e donut charts |
 | `ArtefatosPanel.tsx` | Lista de artefatos com toggle ativo/inativo e edição de tipo |
-| `BoosterBar.tsx` | Barra de resumo do booster total (usada em IslandPanel e SummaryPanel) |
+| `BoosterBar.tsx` | Barra de resumo do booster total (usada em ContinentPanel e SummaryPanel) |
 | `ProducaoPanel.tsx` | Tabela de produção por período com multiplicador offline |
 | `PromocaoPanel.tsx` | Simulador de pacotes promocionais |
-| `CadastrosPanel.tsx` | CRUD de continentes e ilhas |
+| `CadastrosPanel.tsx` | CRUD de modos de jogo e continentes |
 | `UpgradeArrow.tsx` | Renderiza seta de upgrade (↑/↑↑/↑↑↑) com cor |
-| `DetalheIlhaPanel.tsx` | Tabela detalhada de uma ilha com níveis por coluna e ranking de prestígio |
 | `LanguageSelector.tsx` | Seletor de idioma com bandeiras no header do Dashboard |
 
 | Util | Responsabilidade |
@@ -289,7 +292,7 @@ Fator aplicado à produção: `boosterTotal / 10`.
 
 Estrutura de chaves por domínio:
 - `common.*`     — rótulos genéricos (salvar, editar, fechar, etc.)
-- `islands.*`    — nomes de ilhas
+- `continents.*` — nomes de continentes
 - `mines.*`      — nomes de minas e componentes (armazém, elevador, extração)
 - `prestige.*`   — labels de prestígio, tempo, balanço
 - `production.*` — labels da aba Produção

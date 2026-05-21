@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Island, Mine, Factor } from '../types';
+import type { Continent, Mine, Factor } from '../types';
 import { MinesTable } from './MinesTable';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
 import { computeUpgradeHints } from '../utils/upgradeAdvisor';
 import { computeProduction, minNextPrestige } from '../utils/gameCalc';
 
 interface Props {
-  islands: Island[];
+  continents: Continent[];
   mines: Mine[];
   factors: Factor[];
   boosterTotal?: number;
@@ -39,8 +39,8 @@ function scoreNum(nivel: number | null, letra: string | null, factors: Factor[])
   return (cont - 1) * 100 + Math.log10(nivel > 0 ? nivel : 0.001);
 }
 
-function extracaoIslandStatus(islandMines: Mine[], factors: Factor[]): 'green' | 'red' | null {
-  const withData = islandMines.filter(m =>
+function extracaoContinentStatus(continentMines: Mine[], factors: Factor[]): 'green' | 'red' | null {
+  const withData = continentMines.filter(m =>
     m.armazem_nivel != null && m.armazem_letra &&
     m.elevador_nivel != null && m.elevador_letra &&
     m.extracao_nivel != null && m.extracao_letra
@@ -57,16 +57,15 @@ function extracaoIslandStatus(islandMines: Mine[], factors: Factor[]): 'green' |
 
 type BalanceStatus = 'ok' | 'warn' | 'bad' | 'unknown';
 
-function islandBalance(islandMines: Mine[], factors: Factor[]): BalanceStatus {
+function continentBalance(continentMines: Mine[], factors: Factor[]): BalanceStatus {
   const factorMap = new Map(factors.map(f => [f.letra, f]));
-  if (islandMines.length < 2) return 'unknown';
+  if (continentMines.length < 2) return 'unknown';
 
-  const withData = islandMines.filter(
+  const withData = continentMines.filter(
     m => m.proximo_prestigio_valor != null && m.proximo_prestigio_letra
   );
   if (withData.length < 2) return 'unknown';
 
-  // prestige rank: lowest next prestige score = rank 1
   const prestigeSorted = [...withData].sort((a, b) => {
     const sc = (m: Mine) => {
       const cont = factorMap.get(m.proximo_prestigio_letra!)?.cont ?? 1;
@@ -78,7 +77,6 @@ function islandBalance(islandMines: Mine[], factors: Factor[]): BalanceStatus {
   const prestigeRank: Record<number, number> = {};
   prestigeSorted.forEach((m, i) => { prestigeRank[m.id] = i + 1; });
 
-  // pct rank: lowest raw bottleneck = rank 1
   const pctSorted = [...withData].sort(
     (a, b) => mineRawBottleneck(a, factors) - mineRawBottleneck(b, factors)
   );
@@ -129,91 +127,91 @@ function estimatedDateTooltip(seconds: number, label: string): string {
   return `${label}: ${date} ${time}`;
 }
 
-export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo, targetPct, onMineUpdate }: Props) {
+export function ContinentPanel({ continents, mines, factors, boosterTotal, boosterInfo, targetPct, onMineUpdate }: Props) {
   const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const timeLbl: TimeLabels = {
-    year:  t('islands.time_year'),
-    month: t('islands.time_month'),
-    day:   t('islands.time_day'),
-    hour:  t('islands.time_hour'),
+    year:  t('continents.time_year'),
+    month: t('continents.time_month'),
+    day:   t('continents.time_day'),
+    hour:  t('continents.time_hour'),
   };
 
   return (
     <section className="panel">
       <div className="panel-header">
-        <h2>{t('islands.header')}</h2>
+        <h2>{t('continents.header')}</h2>
         {boosterInfo && <BoosterBar info={boosterInfo} />}
       </div>
 
-      <div className="islands-table-header">
-        <div className="islands-th">{t('islands.col_island')}</div>
-        <div className="islands-th islands-th-right">{t('islands.col_production')}</div>
-        <div className="islands-th islands-th-right">{t('islands.col_next_prestige')}</div>
-        <div className="islands-th islands-th-right">{t('islands.col_time')}</div>
-        <div className="islands-th islands-th-end">{t('islands.col_balance')}</div>
+      <div className="continents-table-header">
+        <div className="continents-th">{t('continents.col_continent')}</div>
+        <div className="continents-th continents-th-right">{t('continents.col_production')}</div>
+        <div className="continents-th continents-th-right">{t('continents.col_next_prestige')}</div>
+        <div className="continents-th continents-th-right">{t('continents.col_time')}</div>
+        <div className="continents-th continents-th-end">{t('continents.col_balance')}</div>
       </div>
 
-      <div className="islands-list">
-        {islands.map(island => {
-          const islandMines  = mines.filter(m => m.island_id === island.id);
-          const isExpanded   = expandedId === island.id;
-          const upgradeHints = computeUpgradeHints(islandMines, factors, targetPct ?? 100, (boosterTotal ?? 0) / 10);
-          const extStatus    = extracaoIslandStatus(islandMines, factors);
-          const production   = computeProduction(islandMines, factors, (boosterTotal ?? 0) / 10);
-          const nextPrestige = minNextPrestige(islandMines, factors);
-          const timeSeconds  = production.raw > 0 && nextPrestige.raw > 0
+      <div className="continents-list">
+        {continents.map(continent => {
+          const continentMines = mines.filter(m => m.continent_id === continent.id);
+          const isExpanded     = expandedId === continent.id;
+          const upgradeHints   = computeUpgradeHints(continentMines, factors, targetPct ?? 100, (boosterTotal ?? 0) / 10);
+          const extStatus      = extracaoContinentStatus(continentMines, factors);
+          const production     = computeProduction(continentMines, factors, (boosterTotal ?? 0) / 10);
+          const nextPrestige   = minNextPrestige(continentMines, factors);
+          const timeSeconds    = production.raw > 0 && nextPrestige.raw > 0
             ? nextPrestige.raw / production.raw : 0;
-          const timeEst     = formatTime(timeSeconds, timeLbl);
-          const timeCls     = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
-          const timeTooltip = estimatedDateTooltip(timeSeconds, t('islands.estimated_date'));
-          const balance     = islandBalance(islandMines, factors);
+          const timeEst        = formatTime(timeSeconds, timeLbl);
+          const timeCls        = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
+          const timeTooltip    = estimatedDateTooltip(timeSeconds, t('continents.estimated_date'));
+          const balance        = continentBalance(continentMines, factors);
 
           return (
-            <div key={island.id} className="island-row">
-              <div className="island-summary">
+            <div key={continent.id} className="continent-row">
+              <div className="continent-summary">
 
                 <div className="isl-col-name">
                   <button
-                    className={`island-toggle ${isExpanded ? 'open' : ''}`}
-                    onClick={() => setExpandedId(isExpanded ? null : island.id)}
+                    className={`continent-toggle ${isExpanded ? 'open' : ''}`}
+                    onClick={() => setExpandedId(isExpanded ? null : continent.id)}
                   >
                     {isExpanded ? '▾' : '▸'}
                   </button>
                   {extStatus && (
                     <span
                       className={`status-bullet ${extStatus === 'green' ? 'bullet-green' : 'bullet-red'}`}
-                      title={extStatus === 'green' ? t('islands.tooltip_extraction_ok') : t('islands.tooltip_extraction_nok')}
+                      title={extStatus === 'green' ? t('continents.tooltip_extraction_ok') : t('continents.tooltip_extraction_nok')}
                     />
                   )}
-                  <strong className="island-title">{island.nome}</strong>
-                  <span className="mine-count">{t('islands.mines_count', { count: islandMines.length })}</span>
+                  <strong className="continent-title">{continent.nome}</strong>
+                  <span className="mine-count">{t('continents.mines_count', { count: continentMines.length })}</span>
                 </div>
 
-                <div className="isl-col-val" data-label={t('islands.col_production')}>
+                <div className="isl-col-val" data-label={t('continents.col_production')}>
                   {production.display !== '—'
                     ? <span className="prod-value">{production.display}</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 
-                <div className="isl-col-val" data-label={t('islands.col_next_prestige')}>
+                <div className="isl-col-val" data-label={t('continents.col_next_prestige')}>
                   {nextPrestige.raw > 0
                     ? <span className="prod-value prod-prestige">{nextPrestige.display} ({nextPrestige.nome})</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 
-                <div className="isl-col-val" data-label={t('islands.col_time')}>
+                <div className="isl-col-val" data-label={t('continents.col_time')}>
                   {timeEst !== '—'
                     ? <span className={`time-badge ${timeCls}`} title={timeTooltip}>{timeEst}</span>
                     : <span className="isl-empty">—</span>}
                 </div>
 
-                <div className="isl-col-val" data-label={t('islands.col_balance')}>
+                <div className="isl-col-val" data-label={t('continents.col_balance')}>
                   {balance !== 'unknown' && (
-                    <span className="island-balance">
+                    <span className="continent-balance">
                       <span className={`status-bullet ${balance === 'ok' ? 'bullet-green' : balance === 'warn' ? 'bullet-warn' : 'bullet-red'}`} />
                       <span className={`balance-label balance-${balance}`}>
-                        {balance === 'ok' ? t('islands.balanced') : t('islands.needs_work')}
+                        {balance === 'ok' ? t('continents.balanced') : t('continents.needs_work')}
                       </span>
                     </span>
                   )}
@@ -222,9 +220,9 @@ export function IslandPanel({ islands, mines, factors, boosterTotal, boosterInfo
               </div>
 
               {isExpanded && (
-                <div className="island-mines">
+                <div className="continent-mines">
                   <MinesTable
-                    mines={islandMines}
+                    mines={continentMines}
                     factors={factors}
                     boosterTotal={boosterTotal}
                     upgradeHints={upgradeHints}

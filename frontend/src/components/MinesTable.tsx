@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Mine, Factor, Island } from '../types';
+import type { Mine, Factor, Continent } from '../types';
 import { api } from '../api/client';
 import { UpgradeArrow } from './UpgradeArrow';
 import { formatRaw } from '../utils/upgradeAdvisor';
@@ -10,8 +10,8 @@ import { roundByMagnitude } from '../utils/gameCalc';
 interface Props {
   mines: Mine[];
   factors: Factor[];
-  islands?: Island[];
-  showIsland?: boolean;
+  continents?: Continent[];
+  showContinent?: boolean;
   boosterTotal?: number;
   readOnly?: boolean;
   upgradeHints?: Record<number, UpgradeHint | null>;
@@ -30,7 +30,7 @@ type FormRow = {
   prestigio_maximo: string;
   proximo_prestigio_valor: string;
   proximo_prestigio_letra: string;
-  island_id: string;
+  continent_id: string;
 };
 
 function toForm(m: Mine): FormRow {
@@ -45,7 +45,7 @@ function toForm(m: Mine): FormRow {
     prestigio_maximo:         m.prestigio_maximo?.toString()         ?? '0',
     proximo_prestigio_valor:  m.proximo_prestigio_valor?.toString()  ?? '',
     proximo_prestigio_letra:  m.proximo_prestigio_letra              ?? '',
-    island_id:                m.island_id?.toString()                ?? '',
+    continent_id:             m.continent_id?.toString()             ?? '',
   };
 }
 
@@ -108,7 +108,7 @@ function extracaoStatus(f: FormRow, factors: Factor[]): 'min' | 'notmin' | 'unkn
   return x <= Math.min(a, e) + 1e-9 ? 'min' : 'notmin';
 }
 
-export function MinesTable({ mines, factors, islands = [], showIsland = false, boosterTotal = 0, readOnly = false, upgradeHints, targetPct = 10, onUpdate }: Props) {
+export function MinesTable({ mines, factors, continents = [], showContinent = false, boosterTotal = 0, readOnly = false, upgradeHints, targetPct = 10, onUpdate }: Props) {
   const { t } = useTranslation();
   const [rows,   setRows]   = useState<Record<number, FormRow>>({});
   const [saving, setSaving] = useState<Record<number, boolean>>({});
@@ -158,13 +158,13 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
   const letras = factors.map(f => f.letra);
 
   const rawMap: Record<number, number> = {};
-  const islandRawTotals: Record<number, number> = {};
+  const continentRawTotals: Record<number, number> = {};
   mines.forEach(m => {
     const f = rows[m.id];
     const raw = f ? rawBottleneck(f, factors) : 0;
     rawMap[m.id] = raw;
-    const key = m.island_id ?? 0;
-    islandRawTotals[key] = (islandRawTotals[key] ?? 0) + raw;
+    const key = m.continent_id ?? 0;
+    continentRawTotals[key] = (continentRawTotals[key] ?? 0) + raw;
   });
 
   // Ranking de ordem de prestígio: menor próximo prestígio = fazer primeiro
@@ -184,13 +184,13 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
 
   // Ranking por % de produção: menor % = rank 1
   const pctRank: Record<number, number> = {};
-  const islandGroups: Record<number, Mine[]> = {};
+  const continentGroups: Record<number, Mine[]> = {};
   mines.forEach(m => {
-    const key = m.island_id ?? 0;
-    if (!islandGroups[key]) islandGroups[key] = [];
-    islandGroups[key].push(m);
+    const key = m.continent_id ?? 0;
+    if (!continentGroups[key]) continentGroups[key] = [];
+    continentGroups[key].push(m);
   });
-  Object.values(islandGroups).forEach(group => {
+  Object.values(continentGroups).forEach(group => {
     [...group]
       .sort((a, b) => (rawMap[a.id] ?? 0) - (rawMap[b.id] ?? 0))
       .forEach((m, i) => { pctRank[m.id] = i + 1; });
@@ -204,7 +204,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
         <colgroup>
           <col />
           <col />
-          {showIsland && <col />}
+          {showContinent && <col />}
           <col span={8} className="cg-a" />
           <col span={2} className="cg-b" />
           <col />
@@ -217,7 +217,7 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
           <tr>
             <th className="col-status" rowSpan={2}></th>
             <th className="col-nome"   rowSpan={2}>{t('mines.col_mine')}</th>
-            {showIsland && <th className="col-ilha" rowSpan={2}>{t('mines.col_island')}</th>}
+            {showContinent && <th className="col-continente" rowSpan={2}>{t('mines.col_continent')}</th>}
             <th colSpan={2} className="grp-a-l">{t('mines.col_warehouse')}</th>
             <th colSpan={2}>{t('mines.col_elevator')}</th>
             <th colSpan={2}>{t('mines.col_extraction')}</th>
@@ -253,10 +253,10 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
             const producao = boosterTotal > 0 && botleneck
               ? boostedDisplay(botleneck.nivel, botleneck.letra, boosterTotal / 10, factors)
               : '—';
-            const islandKey = m.island_id ?? 0;
-            const islandTotal = islandRawTotals[islandKey] ?? 0;
-            const pct = islandTotal > 0 && rawMap[m.id] > 0
-              ? (rawMap[m.id] / islandTotal * 100).toFixed(2) + '%'
+            const continentKey = m.continent_id ?? 0;
+            const continentTotal = continentRawTotals[continentKey] ?? 0;
+            const pct = continentTotal > 0 && rawMap[m.id] > 0
+              ? (rawMap[m.id] / continentTotal * 100).toFixed(2) + '%'
               : '—';
             const rank    = prestigeRank[m.id] ?? 0;
             const pctR    = pctRank[m.id] ?? 0;
@@ -287,9 +287,9 @@ export function MinesTable({ mines, factors, islands = [], showIsland = false, b
                   <span className="mine-name">{m.nome}</span>
                 </td>
 
-                {showIsland && (
-                  <td className="col-ilha">
-                    <span className="island-name-cell">{m.island_nome ?? '—'}</span>
+                {showContinent && (
+                  <td className="col-continente">
+                    <span className="continent-name-cell">{m.continent_nome ?? '—'}</span>
                   </td>
                 )}
 
