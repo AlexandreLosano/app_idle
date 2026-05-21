@@ -14,6 +14,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'app-idle-env', variable: 'ENV_FILE')]) {
                     sh 'cp $ENV_FILE .env'
                     sh 'docker-compose down --remove-orphans || true'
+                    sh 'docker ps -q --filter publish=15432 | xargs -r docker rm -f || true'
                     sh 'docker-compose up -d --build'
                 }
             }
