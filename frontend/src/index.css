@@ -1584,6 +1584,7 @@ button { cursor: pointer; font-family: inherit; }
 .detalhe-col-input.cell-green  { color: var(--ok);    border-color: var(--ok); }
 .detalhe-col-input.cell-yellow { color: var(--warn);  border-color: var(--warn); }
 .detalhe-col-input.cell-red    { color: #e05555;      border-color: #e05555; }
+.detalhe-col-input.cell-cyan   { color: #22d3ee; border-color: #22d3ee; cursor: not-allowed; }
 
 .detalhe-rank {
   color: var(--warn);

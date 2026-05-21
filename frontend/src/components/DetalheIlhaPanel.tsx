@@ -80,11 +80,18 @@ export function DetalheIlhaPanel({ islands, mines, factors, boosterTotal }: Prop
 
   const rank3Mine = islandMines.find(m => prestigeRanks[m.id] === 3);
 
-  function getCellColor(mineId: number, key: string): 'cell-purple' | 'cell-green' | 'cell-yellow' | 'cell-red' | '' {
+  function isCapped800(key: string, val: string): boolean {
+    const n = Number(key);
+    return n >= 25 && n <= 35 && val === '800';
+  }
+
+  function getCellColor(mineId: number, key: string): 'cell-cyan' | 'cell-purple' | 'cell-green' | 'cell-yellow' | 'cell-red' | '' {
+    const val = getInput(mineId, key);
+    if (isCapped800(key, val)) return 'cell-cyan';
     if (!rank3Mine) return '';
     const ref = parseFloat(getInput(rank3Mine.id, key));
-    const own = parseFloat(getInput(mineId, key));
-    if (isNaN(ref) || isNaN(own) || getInput(mineId, key) === '') return '';
+    const own = parseFloat(val);
+    if (isNaN(ref) || isNaN(own) || val === '') return '';
     if (own > ref)      return 'cell-purple';
     if (own === ref)    return 'cell-green';
     if (ref - own <= 3) return 'cell-yellow';
@@ -138,14 +145,16 @@ export function DetalheIlhaPanel({ islands, mines, factors, boosterTotal }: Prop
                     <td className="detalhe-res-td-nome">{mine.nome}</td>
                     {NIVEIS_COLS.map((c, i) => {
                       const color = getCellColor(mine.id, c.key);
+                      const locked = color === 'cell-cyan';
                       return (
                         <td key={c.key} className={`detalhe-input-td${i === 0 ? ' detalhe-input-td-first' : ''}${i === NIVEIS_COLS.length - 1 ? ' detalhe-input-td-last' : ''}`}>
                           <input
                             className={`detalhe-col-input ${color}`}
                             type="text"
                             value={getInput(mine.id, c.key)}
-                            onChange={e => setInput(mine.id, c.key, e.target.value)}
-                            onBlur={e => handleBlur(mine.id, c.key, e.target.value)}
+                            readOnly={locked}
+                            onChange={locked ? undefined : e => setInput(mine.id, c.key, e.target.value)}
+                            onBlur={locked ? undefined : e => handleBlur(mine.id, c.key, e.target.value)}
                           />
                         </td>
                       );
