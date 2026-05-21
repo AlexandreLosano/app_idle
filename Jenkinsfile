@@ -15,10 +15,12 @@ pipeline {
                     sh 'cp $ENV_FILE .env'
                     sh 'docker-compose down --remove-orphans || true'
                     sh '''
-                        PGPORT=$(grep -E "^POSTGRES_PORT=" .env | cut -d= -f2 | tr -d "[:space:]")
-                        if [ -n "$PGPORT" ]; then
-                            docker ps -q --filter "publish=${PGPORT}" | xargs -r docker rm -f || true
-                        fi
+                        for VAR in POSTGRES_PORT BACKEND_PORT FRONTEND_PORT; do
+                            PORT=$(grep -E "^${VAR}=" .env | cut -d= -f2 | tr -d "[:space:]")
+                            if [ -n "$PORT" ]; then
+                                docker ps -q --filter "publish=${PORT}" | xargs -r docker rm -f || true
+                            fi
+                        done
                     '''
                     sh 'docker-compose up -d --build'
                 }
@@ -38,8 +40,7 @@ pipeline {
                             cd ~/repos/app_idle &&
                             git pull origin main &&
                             docker-compose down --remove-orphans || true &&
-                            PGPORT=\$(grep -E \"^POSTGRES_PORT=\" .env | cut -d= -f2 | tr -d \"[:space:]\") &&
-                            if [ -n \"\$PGPORT\" ]; then docker ps -q --filter \"publish=\${PGPORT}\" | xargs -r docker rm -f || true; fi &&
+                            for VAR in POSTGRES_PORT BACKEND_PORT FRONTEND_PORT; do PORT=\$(grep -E \"^\${VAR}=\" .env | cut -d= -f2 | tr -d \"[:space:]\"); if [ -n \"\$PORT\" ]; then docker ps -q --filter \"publish=\${PORT}\" | xargs -r docker rm -f || true; fi; done &&
                             docker-compose up -d --build
                         "
                     '''
