@@ -37,13 +37,18 @@ pipeline {
                     file(credentialsId: 'app-idle-env', variable: 'ENV_FILE')
                 ]) {
                     sh '''
-                        ssh -i /var/jenkins_home/.ssh/id_ed25519 -o StrictHostKeyChecking=no alosano@192.168.0.10 "
+                        ssh -i /var/jenkins_home/.ssh/id_ed25519 -o StrictHostKeyChecking=no alosano@192.168.0.10 '
                             cd ~/repos/app_idle &&
                             git pull origin main &&
                             docker-compose -p app_idle_prd down --remove-orphans || true &&
-                            for VAR in POSTGRES_PORT BACKEND_PORT FRONTEND_PORT; do PORT=\$(grep -E \"^\${VAR}=\" .env | cut -d= -f2 | tr -d \"[:space:]\"); if [ -n \"\$PORT\" ]; then docker ps -q --filter \"publish=\${PORT}\" | xargs -r docker rm -f || true; fi; done &&
+                            for VAR in POSTGRES_PORT BACKEND_PORT FRONTEND_PORT; do
+                                PORT=$(grep -E "^${VAR}=" .env | cut -d= -f2 | tr -d "[:space:]")
+                                if [ -n "$PORT" ]; then
+                                    docker ps -q --filter "publish=${PORT}" | xargs -r docker rm -f || true
+                                fi
+                            done &&
                             docker-compose -p app_idle_prd up -d --build
-                        "
+                        '
                     '''
                 }
             }
