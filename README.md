@@ -148,5 +148,23 @@ Todas as mudanças estão documentadas em [`docs/`](docs/) com o formato `altera
 
 ### Fluxo de trabalho
 
-- **develop** → push detectado via polling → build e deploy automático no Note (DEV)
-- **main** → merge via PR → deploy automático no Optiplex (PRD) + sincronização automática da branch develop
+- **develop** → ambiente local, trabalho do dia a dia com `docker compose up`
+- **main** → deploy automático no servidor PRD via GitHub Actions ao receber push
+
+### Deploy para PRD
+
+```bash
+git checkout main
+git merge develop
+git push origin main
+```
+
+O GitHub Actions dispara automaticamente e faz o deploy no servidor PRD.
+
+### Requisitos do runner
+
+O self-hosted runner precisa estar ativo no notebook para os deploys funcionarem:
+
+```bash
+cd ~/repos/app_idle/actions-runner && ./run.sh
+```
