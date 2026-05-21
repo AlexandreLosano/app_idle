@@ -14,7 +14,12 @@ pipeline {
                 withCredentials([file(credentialsId: 'app-idle-env', variable: 'ENV_FILE')]) {
                     sh 'cp $ENV_FILE .env'
                     sh 'docker-compose down --remove-orphans || true'
-                    sh 'docker ps -q --filter publish=15432 | xargs -r docker rm -f || true'
+                    sh '''
+                        PGPORT=$(grep -E "^POSTGRES_PORT=" .env | cut -d= -f2 | tr -d "[:space:]")
+                        if [ -n "$PGPORT" ]; then
+                            docker ps -q --filter "publish=${PGPORT}" | xargs -r docker rm -f || true
+                        fi
+                    '''
                     sh 'docker-compose up -d --build'
                 }
             }
@@ -33,6 +38,8 @@ pipeline {
                             cd ~/repos/app_idle &&
                             git pull origin main &&
                             docker-compose down --remove-orphans || true &&
+                            PGPORT=\$(grep -E \"^POSTGRES_PORT=\" .env | cut -d= -f2 | tr -d \"[:space:]\") &&
+                            if [ -n \"\$PGPORT\" ]; then docker ps -q --filter \"publish=\${PGPORT}\" | xargs -r docker rm -f || true; fi &&
                             docker-compose up -d --build
                         "
                     '''
