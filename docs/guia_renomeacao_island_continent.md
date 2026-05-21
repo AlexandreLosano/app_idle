@@ -660,7 +660,7 @@ Só deve aparecer `Continent` e `GameMode` — não `Island` nem o `Continent` a
 
 ### Passo 8.4 — Commit
 
-- [ ] Fazer o commit na branch `develop`:
+- [x] Fazer o commit na branch `develop`:
 ```bash
 git add -A
 git commit -m "refactor: renomear Island→Continent e Continent→GameMode (#0043)
