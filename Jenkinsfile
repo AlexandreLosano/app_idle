@@ -13,6 +13,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'app-idle-env', variable: 'ENV_FILE')]) {
                     sh 'cp $ENV_FILE .env'
+                    sh 'docker-compose down --remove-orphans || true'
                     sh 'docker-compose up -d --build'
                 }
             }
@@ -30,6 +31,7 @@ pipeline {
                         ssh -i /var/jenkins_home/.ssh/id_ed25519 -o StrictHostKeyChecking=no alosano@192.168.0.10 "
                             cd ~/repos/app_idle &&
                             git pull origin main &&
+                            docker-compose down --remove-orphans || true &&
                             docker-compose up -d --build
                         "
                     '''
