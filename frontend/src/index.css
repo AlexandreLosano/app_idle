@@ -1595,12 +1595,20 @@ button { cursor: pointer; font-family: inherit; }
 
 /* ── faixa de desenvolvimento ────────────────────────────────────────── */
 
-.dev-banner {
+.dev-ribbon {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+  width: 130px;
+  padding: 5px 0;
+  text-align: center;
   z-index: 9999;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  user-select: none;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   background: repeating-linear-gradient(
     -45deg,
     #b34700,
@@ -1608,17 +1616,18 @@ button { cursor: pointer; font-family: inherit; }
     #e65100 14px,
     #e65100 28px
   );
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-align: center;
-  padding: 4px 0;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  user-select: none;
 }
 
-body:has(.dev-banner) {
-  padding-top: 26px;
+.dev-ribbon-left {
+  top: 35px;
+  left: -20px;
+  transform: rotate(-45deg);
 }
+
+.dev-ribbon-right {
+  top: 35px;
+  right: -20px;
+  transform: rotate(45deg);
+}
+
 

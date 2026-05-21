@@ -12,9 +12,10 @@ export default function App() {
   return (
     <>
       {dev && (
-        <div className="dev-banner">
-          ⚠ DESENVOLVIMENTO — {window.location.hostname}
-        </div>
+        <>
+          <div className="dev-ribbon dev-ribbon-left">⚠ DEV</div>
+          <div className="dev-ribbon dev-ribbon-right">⚠ DEV</div>
+        </>
       )}
       <Dashboard />
     </>

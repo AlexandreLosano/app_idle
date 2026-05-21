@@ -3,7 +3,7 @@
 ## Regras Obrigatórias
 
 ### 1. Documentação de Alterações
-Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0041**.
+Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0043**.
 
 Formato:
 ```
@@ -43,6 +43,39 @@ sg docker -c "docker compose up --build -d backend"          # Rebuild backend (
 - **Backend:** Node.js + TypeScript + Express + pg (node-postgres)
 - **Banco:** PostgreSQL 16
 - **Containerização:** Docker + Docker Compose
+
+### 5. Reflexo imediato no DEV após qualquer alteração
+Após concluir qualquer alteração de código (edição de arquivo), reconstruir e subir o ambiente DEV **imediatamente**, sem esperar confirmação:
+
+```bash
+sg docker -c "docker compose -p app_idle_dev up --build -d"
+```
+
+- Se apenas o backend foi alterado: rebuildar só o backend para ser mais rápido:
+  ```bash
+  sg docker -c "docker compose -p app_idle_dev up --build -d backend"
+  ```
+- Se apenas o frontend foi alterado: rebuildar só o frontend:
+  ```bash
+  sg docker -c "docker compose -p app_idle_dev up --build -d frontend"
+  ```
+- Aguardar o container ficar saudável e informar ao usuário que o DEV foi atualizado.
+
+### 6. Fluxo de deploy para PRD — aprovação obrigatória
+**NUNCA** fazer merge na branch `main` nem disparar o workflow de PRD sem aprovação explícita do usuário.
+
+O fluxo correto é:
+1. Todo o desenvolvimento acontece na branch `develop`
+2. Ao concluir uma tarefa, informar ao usuário que está pronto em DEV e aguardar aprovação para PRD
+3. Somente após o usuário dizer explicitamente "sobe para PRD", "faz o merge", "aprova" ou equivalente, executar:
+   ```bash
+   git checkout main && git merge develop && git push origin main
+   ```
+4. O GitHub Actions (`.github/workflows/deploy.yml`) dispara automaticamente e faz o deploy no servidor PRD via self-hosted runner.
+
+Resumo do pipeline:
+- **develop** → DEV local (docker compose), atualizado automaticamente após cada alteração
+- **main** → PRD (servidor 192.168.0.10), atualizado pelo GitHub Actions somente com aprovação do usuário
 
 ---
 
