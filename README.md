@@ -167,5 +167,11 @@ O GitHub Actions dispara automaticamente e faz o deploy no servidor PRD.
 O self-hosted runner precisa estar ativo no notebook para os deploys funcionarem:
 
 ```bash
+# Verificar se já está rodando (saída vazia = parado)
+pgrep -a -f "Runner.Listener"
+# Exemplo de saída quando ativo:
+# 3456221 /home/alosano/repos/app_idle/actions-runner/bin/Runner.Listener run
+
+# Iniciar (mantém terminal ocupado enquanto roda)
 cd ~/repos/app_idle/actions-runner && ./run.sh
 ```
