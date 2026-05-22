@@ -14,6 +14,7 @@
     "tabs": {
       "summary": "Resumen",
       "continents": "Continentes ({{count}})",
+      "metas": "Metas",
       "boosters": "Boosters / Artefactos",
       "production": "Producción",
       "promotion": "Promoción",
@@ -26,6 +27,7 @@
     "col_prestiges": "Prestigios",
     "col_production": "Producción/s",
     "col_next_prestige": "Próx. Prestigio",
+    "col_meta": "Meta",
     "col_time": "Tiempo",
     "col_balance": "Balance",
     "mines_count": "{{count}} minas",
@@ -50,7 +52,7 @@
     "col_next_prestige": "Próx. Prestigio",
     "col_prestige_order": "Orden Prestigio",
     "col_production": "Producción",
-    "col_target": "Objetivo",
+    "col_target": "Aloc. Meta",
     "sub_level": "Nivel",
     "sub_letter": "Letra",
     "sub_value": "Valor",
@@ -125,5 +127,23 @@
     "select_game_mode": "Modo de Juego…",
     "select_continent": "Continente…",
     "select_to_edit": "Seleccionar para editar…"
+  },
+  "metas": {
+    "header": "Metas por Continente",
+    "col_continent": "Continente",
+    "col_production": "Producción/s",
+    "col_time": "Tiempo",
+    "col_meta": "Meta",
+    "auto_badge": "Auto",
+    "auto_tooltip": "Meta automática (tiempo ≤ 30 días)",
+    "calc_header": "Calculadora de Producción",
+    "calc_quantity": "Cantidad deseada",
+    "calc_time": "En cuánto tiempo",
+    "calc_result": "Producción/s necesaria",
+    "unit_seconds": "segundos",
+    "unit_minutes": "minutos",
+    "unit_hours": "horas",
+    "unit_days": "días",
+    "col_next_prestige": "Próx. Prestigio"
   }
 }

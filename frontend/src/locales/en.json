@@ -14,6 +14,7 @@
     "tabs": {
       "summary": "Summary",
       "continents": "Continents ({{count}})",
+      "metas": "Goals",
       "boosters": "Boosters / Artifacts",
       "production": "Production",
       "promotion": "Promotion",
@@ -26,6 +27,7 @@
     "col_prestiges": "Prestiges",
     "col_production": "Production/s",
     "col_next_prestige": "Next Prestige",
+    "col_meta": "Goal",
     "col_time": "Time",
     "col_balance": "Balance",
     "mines_count": "{{count}} mines",
@@ -50,7 +52,7 @@
     "col_next_prestige": "Next Prestige",
     "col_prestige_order": "Prestige Order",
     "col_production": "Production",
-    "col_target": "Target",
+    "col_target": "Alloc. Goal",
     "sub_level": "Level",
     "sub_letter": "Letter",
     "sub_value": "Value",
@@ -125,5 +127,23 @@
     "select_game_mode": "Game Mode…",
     "select_continent": "Continent…",
     "select_to_edit": "Select to edit…"
+  },
+  "metas": {
+    "header": "Goals by Continent",
+    "col_continent": "Continent",
+    "col_production": "Production/s",
+    "col_time": "Time",
+    "col_meta": "Goal",
+    "auto_badge": "Auto",
+    "auto_tooltip": "Automatic goal (time ≤ 30 days)",
+    "calc_header": "Production Calculator",
+    "calc_quantity": "Desired quantity",
+    "calc_time": "In how much time",
+    "calc_result": "Required production/s",
+    "unit_seconds": "seconds",
+    "unit_minutes": "minutes",
+    "unit_hours": "hours",
+    "unit_days": "days",
+    "col_next_prestige": "Next Prestige"
   }
 }

@@ -15,7 +15,6 @@ interface Props {
   boosterTotal?: number;
   readOnly?: boolean;
   upgradeHints?: Record<number, UpgradeHint | null>;
-  targetPct?: number;
   onUpdate: (updated: Mine) => void;
 }
 
@@ -108,7 +107,7 @@ function extracaoStatus(f: FormRow, factors: Factor[]): 'min' | 'notmin' | 'unkn
   return x <= Math.min(a, e) + 1e-9 ? 'min' : 'notmin';
 }
 
-export function MinesTable({ mines, factors, continents = [], showContinent = false, boosterTotal = 0, readOnly = false, upgradeHints, targetPct = 10, onUpdate }: Props) {
+export function MinesTable({ mines, factors, continents = [], showContinent = false, boosterTotal = 0, readOnly = false, upgradeHints, onUpdate }: Props) {
   const { t } = useTranslation();
   const [rows,   setRows]   = useState<Record<number, FormRow>>({});
   const [saving, setSaving] = useState<Record<number, boolean>>({});
@@ -381,7 +380,7 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
                 {upgradeHints && (
                   <td className="col-target">
                     {upgradeHints[m.id] != null
-                      ? formatRaw(upgradeHints[m.id]!.targetRaw * targetPct / 100, factors)
+                      ? formatRaw(upgradeHints[m.id]!.targetRaw, factors)
                       : '—'}
                   </td>
                 )}

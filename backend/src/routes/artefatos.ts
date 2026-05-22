@@ -3,20 +3,20 @@ import { pool } from '../db';
 
 const router = Router();
 
-const CONFIG_TIPOS = ['buster_anuncio', 'total_comprado', 'target_pct', 'mult_off', 'horas_sono'];
+const CONFIG_TIPOS = ['buster_anuncio', 'total_comprado', 'mult_off', 'horas_sono'];
 
 router.get('/config', async (_req: Request, res: Response) => {
   const { rows } = await pool.query(
     `SELECT tipo, valor FROM artefatos WHERE tipo = ANY($1)`,
     [CONFIG_TIPOS]
   );
-  const result: Record<string, number | null> = { buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null };
+  const result: Record<string, number | null> = { buster_anuncio: null, total_comprado: null, mult_off: null, horas_sono: null };
   for (const r of rows) result[r.tipo] = r.valor !== null ? parseFloat(r.valor) : null;
   res.json(result);
 });
 
 router.put('/config', async (req: Request, res: Response) => {
-  const { buster_anuncio, total_comprado, target_pct, mult_off, horas_sono } = req.body;
+  const { buster_anuncio, total_comprado, mult_off, horas_sono } = req.body;
 
   if (buster_anuncio !== undefined) {
     await pool.query(
@@ -28,12 +28,6 @@ router.put('/config', async (req: Request, res: Response) => {
     await pool.query(
       `UPDATE artefatos SET valor = $1, updated_at = NOW() WHERE tipo = 'total_comprado'`,
       [total_comprado]
-    );
-  }
-  if (target_pct !== undefined) {
-    await pool.query(
-      `UPDATE artefatos SET valor = $1, updated_at = NOW() WHERE tipo = 'target_pct'`,
-      [target_pct]
     );
   }
   if (mult_off !== undefined) {
@@ -53,7 +47,7 @@ router.put('/config', async (req: Request, res: Response) => {
     `SELECT tipo, valor FROM artefatos WHERE tipo = ANY($1)`,
     [CONFIG_TIPOS]
   );
-  const result: Record<string, number | null> = { buster_anuncio: null, total_comprado: null, target_pct: null, mult_off: null, horas_sono: null };
+  const result: Record<string, number | null> = { buster_anuncio: null, total_comprado: null, mult_off: null, horas_sono: null };
   for (const r of rows) result[r.tipo] = r.valor !== null ? parseFloat(r.valor) : null;
   res.json(result);
 });

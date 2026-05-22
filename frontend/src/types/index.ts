@@ -41,3 +41,11 @@ export interface GameMode {
   nome: string;
   updated_at: string;
 }
+
+export interface Meta {
+  continent_id: number;
+  valor: number;
+  letra: string;
+  unidade: 's' | 'min' | 'd';
+  updated_at: string;
+}

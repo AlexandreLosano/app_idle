@@ -7,6 +7,7 @@ import gameStateRouter from './routes/gameState';
 import artefatosRouter from './routes/artefatos';
 import gameModesRouter from './routes/game_modes';
 import detalheValoresRouter from './routes/detalheValores';
+import metasRouter from './routes/metas';
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
@@ -20,6 +21,7 @@ app.use('/api/game', gameStateRouter);
 app.use('/api/artefatos', artefatosRouter);
 app.use('/api/game-modes', gameModesRouter);
 app.use('/api/detalhe-valores', detalheValoresRouter);
+app.use('/api/metas', metasRouter);
 
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 

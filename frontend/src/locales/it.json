@@ -14,6 +14,7 @@
     "tabs": {
       "summary": "Riepilogo",
       "continents": "Continenti ({{count}})",
+      "metas": "Obiettivi",
       "boosters": "Booster / Artefatti",
       "production": "Produzione",
       "promotion": "Promozione",
@@ -26,6 +27,7 @@
     "col_prestiges": "Prestige",
     "col_production": "Produzione/s",
     "col_next_prestige": "Pross. Prestigio",
+    "col_meta": "Obiettivo",
     "col_time": "Tempo",
     "col_balance": "Bilancio",
     "mines_count": "{{count}} miniere",
@@ -50,7 +52,7 @@
     "col_next_prestige": "Pross. Prestigio",
     "col_prestige_order": "Ordine Prestigio",
     "col_production": "Produzione",
-    "col_target": "Obiettivo",
+    "col_target": "Alloc. Obi.",
     "sub_level": "Livello",
     "sub_letter": "Lettera",
     "sub_value": "Valore",
@@ -125,5 +127,23 @@
     "select_game_mode": "Modalità di gioco…",
     "select_continent": "Continente…",
     "select_to_edit": "Seleziona per modificare…"
+  },
+  "metas": {
+    "header": "Obiettivi per Continente",
+    "col_continent": "Continente",
+    "col_production": "Produzione/s",
+    "col_time": "Tempo",
+    "col_meta": "Obiettivo",
+    "auto_badge": "Auto",
+    "auto_tooltip": "Obiettivo automatico (tempo ≤ 30 giorni)",
+    "calc_header": "Calcolatore di Produzione",
+    "calc_quantity": "Quantità desiderata",
+    "calc_time": "In quanto tempo",
+    "calc_result": "Produzione/s richiesta",
+    "unit_seconds": "secondi",
+    "unit_minutes": "minuti",
+    "unit_hours": "ore",
+    "unit_days": "giorni",
+    "col_next_prestige": "Pross. Prestigio"
   }
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Continent, Mine, Factor } from '../types';
+import type { Continent, Mine, Factor, Meta } from '../types';
 import { MinesTable } from './MinesTable';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
 import { computeUpgradeHints } from '../utils/upgradeAdvisor';
@@ -12,7 +12,8 @@ interface Props {
   factors: Factor[];
   boosterTotal?: number;
   boosterInfo?: BoosterInfo;
-  targetPct?: number;
+  metasMap?: Record<number, { raw: number } | undefined>;
+  metas?: Meta[];
   onMineUpdate: (updated: Mine) => void;
 }
 
@@ -127,7 +128,7 @@ function estimatedDateTooltip(seconds: number, label: string): string {
   return `${label}: ${date} ${time}`;
 }
 
-export function ContinentPanel({ continents, mines, factors, boosterTotal, boosterInfo, targetPct, onMineUpdate }: Props) {
+export function ContinentPanel({ continents, mines, factors, boosterTotal, boosterInfo, metasMap = {}, metas = [], onMineUpdate }: Props) {
   const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const timeLbl: TimeLabels = {
@@ -149,6 +150,7 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
         <div className="continents-th">{t('continents.col_prestiges')}</div>
         <div className="continents-th continents-th-right">{t('continents.col_production')}</div>
         <div className="continents-th continents-th-right">{t('continents.col_next_prestige')}</div>
+        <div className="continents-th continents-th-right">{t('continents.col_meta')}</div>
         <div className="continents-th continents-th-right">{t('continents.col_time')}</div>
         <div className="continents-th continents-th-end">{t('continents.col_balance')}</div>
       </div>
@@ -157,12 +159,16 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
         {continents.map(continent => {
           const continentMines = mines.filter(m => m.continent_id === continent.id);
           const isExpanded     = expandedId === continent.id;
-          const upgradeHints   = computeUpgradeHints(continentMines, factors, targetPct ?? 100, (boosterTotal ?? 0) / 10);
           const extStatus      = extracaoContinentStatus(continentMines, factors);
           const production     = computeProduction(continentMines, factors, (boosterTotal ?? 0) / 10);
           const nextPrestige   = minNextPrestige(continentMines, factors);
           const timeSeconds    = production.raw > 0 && nextPrestige.raw > 0
             ? nextPrestige.raw / production.raw : 0;
+          const timeDays       = timeSeconds / 86400;
+          const metaRaw        = timeDays > 0 && timeDays <= 30
+            ? nextPrestige.raw / 86400
+            : (metasMap[continent.id]?.raw ?? production.raw);
+          const upgradeHints   = computeUpgradeHints(continentMines, factors, metaRaw, (boosterTotal ?? 0) / 10);
           const timeEst        = formatTime(timeSeconds, timeLbl);
           const timeCls        = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
           const timeTooltip    = estimatedDateTooltip(timeSeconds, t('continents.estimated_date'));
@@ -205,8 +211,20 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
 
                 <div className="isl-col-val" data-label={t('continents.col_next_prestige')}>
                   {nextPrestige.raw > 0
-                    ? <span className="prod-value prod-prestige">{nextPrestige.display} ({nextPrestige.nome})</span>
+                    ? <span className="prod-value prod-prestige">{nextPrestige.display}</span>
                     : <span className="isl-empty">—</span>}
+                </div>
+
+                <div className="isl-col-val" data-label={t('continents.col_meta')}>
+                  {(() => {
+                    const meta = metas.find(m => m.continent_id === continent.id);
+                    if (!meta) return <span className="isl-empty">—</span>;
+                    return (
+                      <span className="meta-goal-display">
+                        {meta.valor}{meta.letra}/{meta.unidade}
+                      </span>
+                    );
+                  })()}
                 </div>
 
                 <div className="isl-col-val" data-label={t('continents.col_time')}>
@@ -235,7 +253,6 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
                     factors={factors}
                     boosterTotal={boosterTotal}
                     upgradeHints={upgradeHints}
-                    targetPct={targetPct}
                     onUpdate={onMineUpdate}
                   />
                 </div>

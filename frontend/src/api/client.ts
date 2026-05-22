@@ -1,4 +1,4 @@
-import type { Mine, Continent, GameMode, Factor, Artefato } from '../types';
+import type { Mine, Continent, GameMode, Factor, Artefato, Meta } from '../types';
 
 const BASE = '/api';
 
@@ -73,8 +73,13 @@ export const api = {
     list: () => get<Artefato[]>('/artefatos'),
     create: (data: { quantidade: number; tipo?: string }) => post<Artefato>('/artefatos', data),
     update: (id: number, data: Partial<Artefato>) => put<Artefato>(`/artefatos/${id}`, data),
-    getConfig: () => get<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>('/artefatos/config'),
-    updateConfig: (data: { buster_anuncio?: number | null; total_comprado?: number | null; target_pct?: number | null; mult_off?: number | null; horas_sono?: number | null }) =>
-      put<{ buster_anuncio: number | null; total_comprado: number | null; target_pct: number | null; mult_off: number | null; horas_sono: number | null }>('/artefatos/config', data),
+    getConfig: () => get<{ buster_anuncio: number | null; total_comprado: number | null; mult_off: number | null; horas_sono: number | null }>('/artefatos/config'),
+    updateConfig: (data: { buster_anuncio?: number | null; total_comprado?: number | null; mult_off?: number | null; horas_sono?: number | null }) =>
+      put<{ buster_anuncio: number | null; total_comprado: number | null; mult_off: number | null; horas_sono: number | null }>('/artefatos/config', data),
+  },
+  metas: {
+    list: () => get<Meta[]>('/metas'),
+    update: (continent_id: number, data: { valor: number; letra: string; unidade: 's' | 'min' | 'd' }) =>
+      put<Meta>(`/metas/${continent_id}`, data as never),
   },
 };

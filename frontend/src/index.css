@@ -520,7 +520,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* ── Island table grid ───────────────────────────────────────────── */
 .continents-table-header {
   display: grid;
-  grid-template-columns: minmax(160px, 1.8fr) 0.75fr 1fr 1.8fr 1.3fr 1fr;
+  grid-template-columns: minmax(130px, 1.5fr) 0.65fr 0.9fr 1.1fr 0.85fr 1fr 0.85fr;
   padding: 6px 16px 8px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 4px;
@@ -544,7 +544,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
 .continent-summary {
   display: grid;
-  grid-template-columns: minmax(160px, 1.8fr) 0.75fr 1fr 1.8fr 1.3fr 1fr;
+  grid-template-columns: minmax(130px, 1.5fr) 0.65fr 0.9fr 1.1fr 0.85fr 1fr 0.85fr;
   align-items: center;
   padding: 12px 16px;
 }
@@ -557,6 +557,9 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
 .isl-col-val {
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .isl-col-prestiges {
   text-align: left;
@@ -598,6 +601,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   color: var(--accent);
 }
 .prod-prestige { color: var(--warn); }
+.meta-goal-display { color: #22d3ee; font-family: 'Courier New', monospace; font-size: 13px; font-weight: 700; }
 
 .time-badge {
   font-size: 13px;
@@ -960,20 +964,122 @@ button { cursor: pointer; font-family: inherit; }
   cursor: pointer;
 }
 
-/* Target % slider */
-.target-pct-bar {
+/* === Metas Panel === */
+.metas-table-wrap { overflow-x: auto; }
+.metas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.metas-table th {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.metas-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--surface2);
+  vertical-align: middle;
+}
+.metas-col-name { font-weight: 600; }
+.metas-col-prod { font-family: 'Courier New', monospace; }
+.metas-col-prestige { font-family: 'Courier New', monospace; color: var(--warn); font-weight: 700; }
+.metas-meta-auto {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: 6px;
+  font-family: 'Courier New', monospace;
+}
+.metas-auto-badge {
+  font-size: 10px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 5px;
+  cursor: default;
+}
+.metas-tr-auto td { background: rgba(34, 211, 238, 0.06); }
+.metas-tr-auto .metas-col-name { color: #22d3ee; }
+.meta-valor-auto { border-color: #22d3ee !important; color: #22d3ee; }
+.meta-letra-auto { border-color: #22d3ee !important; color: #22d3ee; }
+
+.metas-meta-edit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.metas-unit-group {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.metas-unit-btn {
+  padding: 3px 7px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  border-right: 1px solid var(--border);
+  transition: background 0.1s, color 0.1s;
+}
+.metas-unit-btn:last-child { border-right: none; }
+.metas-unit-btn:hover { background: var(--surface); color: var(--text); }
+.metas-unit-btn.active { background: var(--accent); color: #fff; }
+.meta-valor-input {
+  width: 80px;
+  padding: 4px 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+.meta-letra-select {
+  padding: 4px 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
+.metas-calc {
+  margin-top: 24px;
+  padding: 16px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-top: 12px;
 }
-.target-pct-label { font-size: 13px; color: var(--text-muted); white-space: nowrap; }
-.target-pct-label strong { color: var(--accent); font-family: 'Courier New', monospace; }
-.target-pct-slider { flex: 1; accent-color: var(--accent); cursor: pointer; height: 4px; }
+.metas-calc h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+}
+.metas-calc-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.metas-calc-label { font-size: 12px; color: var(--text-muted); min-width: 130px; }
+.metas-calc-result {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: 'Courier New', monospace;
+}
 
 /* Upgrade advisor arrow */
 .upgrade-arrow        { font-size: 11px; font-weight: 700; margin-right: 4px; cursor: default; }

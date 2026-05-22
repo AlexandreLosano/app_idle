@@ -66,7 +66,7 @@ export function formatRaw(rawValue: number, factors: Factor[]): string {
 export function computeUpgradeHints(
   mines: Mine[],
   factors: Factor[],
-  targetPct: number = 100,
+  metaRaw: number,
   boosterFactor: number = 1,
 ): Record<number, UpgradeHint | null> {
   const result: Record<number, UpgradeHint | null> = {};
@@ -82,21 +82,17 @@ export function computeUpgradeHints(
     prestigeScore(b.proximo_prestigio_valor!, b.proximo_prestigio_letra!, factors),
   );
 
-  const rank1 = sorted[0];
-  const baseRaw =
-    prestigeRaw(rank1.proximo_prestigio_valor!, rank1.proximo_prestigio_letra!, factors) / 86400;
-
+  const baseRaw = metaRaw;
   const pcts = getPercentages(sorted.length);
 
   sorted.forEach((m, i) => {
     const targetRaw = baseRaw * pcts[i];
-    const effectiveTarget = targetRaw * targetPct / 100;
     const bottleneck = mineBottleneckRaw(m, factors);
     const boostedBottleneck = bottleneck * boosterFactor;
     let signal: UpgradeSignal;
-    if (boostedBottleneck < effectiveTarget * 0.9) {
+    if (boostedBottleneck < targetRaw * 0.9) {
       signal = 'up';
-    } else if (boostedBottleneck > effectiveTarget * 1.1) {
+    } else if (boostedBottleneck > targetRaw * 1.1) {
       signal = 'skip';
     } else {
       signal = 'ok';
