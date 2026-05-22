@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Dashboard } from './components/Dashboard';
 
 const PROD_IP = import.meta.env.VITE_PROD_IP as string | undefined;
@@ -9,6 +10,13 @@ function isDevHost(): boolean {
 
 export default function App() {
   const dev = isDevHost();
+
+  useEffect(() => {
+    document.title = dev
+      ? '[DEV] Idle Miner Tycom - Tracker'
+      : 'Idle Miner Tycom - Tracker';
+  }, [dev]);
+
   return (
     <>
       {dev && (
