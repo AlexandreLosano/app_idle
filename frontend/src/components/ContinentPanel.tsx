@@ -146,6 +146,7 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
 
       <div className="continents-table-header">
         <div className="continents-th">{t('continents.col_continent')}</div>
+        <div className="continents-th">{t('continents.col_prestiges')}</div>
         <div className="continents-th continents-th-right">{t('continents.col_production')}</div>
         <div className="continents-th continents-th-right">{t('continents.col_next_prestige')}</div>
         <div className="continents-th continents-th-right">{t('continents.col_time')}</div>
@@ -166,6 +167,8 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
           const timeCls        = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
           const timeTooltip    = estimatedDateTooltip(timeSeconds, t('continents.estimated_date'));
           const balance        = continentBalance(continentMines, factors);
+          const totalAtual     = continentMines.reduce((s, m) => s + (m.prestigio_atual  ?? 0), 0);
+          const totalMaximo    = continentMines.reduce((s, m) => s + (m.prestigio_maximo ?? 0), 0);
 
           return (
             <div key={continent.id} className="continent-row">
@@ -186,6 +189,12 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
                   )}
                   <strong className="continent-title">{continent.nome}</strong>
                   <span className="mine-count">{t('continents.mines_count', { count: continentMines.length })}</span>
+                </div>
+
+                <div className="isl-col-val isl-col-prestiges" data-label={t('continents.col_prestiges')}>
+                  {totalMaximo > 0
+                    ? <span className={`sc-value sc-prestige-count${totalAtual === totalMaximo ? ' maxed' : ''}`}>{totalAtual} / {totalMaximo}</span>
+                    : <span className="isl-empty">—</span>}
                 </div>
 
                 <div className="isl-col-val" data-label={t('continents.col_production')}>

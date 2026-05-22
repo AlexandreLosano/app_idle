@@ -23,6 +23,7 @@
   "continents": {
     "header": "Continentes",
     "col_continent": "Continente",
+    "col_prestiges": "Prestígios",
     "col_production": "Produção/s",
     "col_next_prestige": "Próx. Prestígio",
     "col_time": "Tempo",
@@ -67,7 +68,8 @@
     "next_prestige": "Próx. Prestígio",
     "mine": "Mina",
     "time": "Tempo",
-    "prestiges": "prestígios"
+    "prestiges": "prestígios",
+    "prestigios_label": "Prestígios"
   },
   "boosters": {
     "header": "Boosters / Artefatos",

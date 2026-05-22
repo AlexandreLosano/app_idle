@@ -104,7 +104,7 @@ export function SummaryPanel({ continents, mines, factors, boosterTotal, booster
       {boosterInfo && <BoosterBar info={boosterInfo} />}
       {/* Continent cards */}
       <div className="summary-cards">
-        {data.map(({ continent, im, production, next, timeEst }) => (
+        {data.map(({ continent, im, production, next, totalAtual, totalMaximo, timeEst }) => (
           <div key={continent.id} className="summary-card">
             <div className="sc-header">
               <strong className="sc-name">{continent.nome}</strong>
@@ -131,6 +131,14 @@ export function SummaryPanel({ continents, mines, factors, boosterTotal, booster
                   <span className="sc-value sc-time">{timeEst}</span>
                 </div>
               </>
+            )}
+            {totalMaximo > 0 && (
+              <div className="sc-row">
+                <span className="sc-label">{t('summary.prestigios_label')}</span>
+                <span className={`sc-value sc-prestige-count${totalAtual === totalMaximo ? ' maxed' : ''}`}>
+                  {totalAtual} / {totalMaximo}
+                </span>
+              </div>
             )}
           </div>
         ))}

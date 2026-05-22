@@ -520,7 +520,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* ── Island table grid ───────────────────────────────────────────── */
 .continents-table-header {
   display: grid;
-  grid-template-columns: minmax(180px, 2fr) 0.8fr 1.8fr 0.9fr 1.3fr;
+  grid-template-columns: minmax(160px, 1.8fr) 0.75fr 1fr 1.8fr 1.3fr 1fr;
   padding: 6px 16px 8px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 4px;
@@ -544,7 +544,7 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
 .continent-summary {
   display: grid;
-  grid-template-columns: minmax(180px, 2fr) 0.8fr 1.8fr 0.9fr 1.3fr;
+  grid-template-columns: minmax(160px, 1.8fr) 0.75fr 1fr 1.8fr 1.3fr 1fr;
   align-items: center;
   padding: 12px 16px;
 }
@@ -557,6 +557,9 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
 .isl-col-val {
   text-align: center;
+}
+.isl-col-prestiges {
+  text-align: left;
 }
 
 .isl-empty {
@@ -783,6 +786,10 @@ button { cursor: pointer; font-family: inherit; }
 .sc-prestige{ color: var(--warn); }
 .sc-mine    { font-family: inherit; font-size: 12px; font-weight: 600; color: var(--text); }
 .sc-time    { color: var(--accent); }
+.sc-prestige-count { color: var(--text); }
+.sc-prestige-count.maxed {
+  color: #ffe600;
+}
 
 /* Prestige comparison chart */
 .summary-prestige-chart { margin-top: 0; }
@@ -1351,7 +1358,7 @@ button { cursor: pointer; font-family: inherit; }
 @media (min-width: 700px) and (max-width: 899px) {
   .continents-table-header,
   .continent-summary {
-    grid-template-columns: minmax(140px, 2fr) 0.8fr 1.6fr 0.9fr 1.2fr;
+    grid-template-columns: minmax(130px, 1.8fr) 0.7fr 0.9fr 1.6fr 1.2fr 0.9fr;
     padding-left: 10px;
     padding-right: 10px;
   }
