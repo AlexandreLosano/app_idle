@@ -157,6 +157,7 @@ Todas as mudanças estão documentadas em [`docs/`](docs/) com o formato `altera
 git checkout main
 git merge develop
 git push origin main
+git checkout develop
 ```
 
 O GitHub Actions dispara automaticamente e faz o deploy no servidor PRD.

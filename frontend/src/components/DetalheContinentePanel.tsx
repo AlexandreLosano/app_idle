@@ -152,7 +152,13 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
                             type="text"
                             value={getInput(mine.id, c.key)}
                             readOnly={locked}
-                            onChange={locked ? undefined : e => setInput(mine.id, c.key, e.target.value)}
+                            onChange={locked ? undefined : e => {
+                              const v = e.target.value;
+                              setInput(mine.id, c.key, v);
+                              if (isCapped800(c.key, v)) {
+                                api.detalheValores.save(mine.id, c.key, v);
+                              }
+                            }}
                             onBlur={locked ? undefined : e => handleBlur(mine.id, c.key, e.target.value)}
                           />
                         </td>
