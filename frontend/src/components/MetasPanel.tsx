@@ -16,42 +16,6 @@ interface Props {
 
 type MetaForm = { valor: string; letra: string; unidade: 's' | 'min' | 'd' };
 
-function formatTime(seconds: number): string {
-  if (!isFinite(seconds) || seconds <= 0) return '—';
-  const totalDays = Math.floor(seconds / 86400);
-  const years  = Math.floor(totalDays / 365);
-  const months = Math.floor((totalDays % 365) / 30);
-  const days   = totalDays % 30;
-  const hours  = Math.floor((seconds % 86400) / 3600);
-  const parts: string[] = [];
-  if (years  > 0) parts.push(`${years}a`);
-  if (months > 0) parts.push(`${months}m`);
-  if (days   > 0) parts.push(`${days}d`);
-  if (hours  > 0 || parts.length === 0) parts.push(`${hours}h`);
-  return parts.join(' ');
-}
-
-function timeColorClass(seconds: number): string {
-  const days = seconds / 86400;
-  if (days > 365) return 'time-purple';
-  if (days > 30)  return 'time-red';
-  if (days > 10)  return 'time-warn';
-  return 'time-green';
-}
-
-function rawToValorLetra(raw: number, factors: Factor[]): { valor: string; letra: string } {
-  const sorted = [...factors].sort((a, b) => a.cont - b.cont);
-  if (sorted.length === 0 || raw <= 0) return { valor: '0', letra: sorted[0]?.letra ?? '-' };
-  let value = raw;
-  let idx = 0;
-  while (value >= 1000 && idx < sorted.length - 1) { value /= 1000; idx++; }
-  let rounded = value;
-  if (value < 10)  rounded = Math.round(value * 100) / 100;
-  else if (value < 100) rounded = Math.round(value * 10) / 10;
-  else rounded = Math.round(value);
-  return { valor: String(rounded), letra: sorted[idx].letra };
-}
-
 export function MetasPanel({ continents, mines, factors, boosterTotal, metas, onMetaUpdate }: Props) {
   const { t } = useTranslation();
 
@@ -140,31 +104,21 @@ export function MetasPanel({ continents, mines, factors, boosterTotal, metas, on
           <tbody>
             {continents.map(continent => {
               const continentMines = mines.filter(m => m.continent_id === continent.id);
-              const production  = computeProduction(continentMines, factors, boosterTotal / 10);
+              const production   = computeProduction(continentMines, factors, boosterTotal / 10);
               const nextPrestige = minNextPrestige(continentMines, factors);
-              const timeSeconds = production.raw > 0 && nextPrestige.raw > 0
-                ? nextPrestige.raw / production.raw : 0;
-              const timeDays = timeSeconds / 86400;
-              const isAuto   = timeDays > 0 && timeDays <= 30;
 
-              // Auto rows ALWAYS reflect current nextPrestige/d, unless user is actively editing
-              const autoDefault = isAuto && nextPrestige.raw > 0
-                ? { ...rawToValorLetra(nextPrestige.raw, factors), unidade: 'd' as const }
-                : null;
-              const form = (autoDefault && !dirty[continent.id])
-                ? autoDefault
-                : (forms[continent.id] ?? autoDefault ?? {
-                    valor: '',
-                    letra: sortedFactors[0]?.letra ?? '',
-                    unidade: 's' as const,
-                  });
+              const form = forms[continent.id] ?? {
+                valor:   '',
+                letra:   sortedFactors[0]?.letra ?? '',
+                unidade: 's' as const,
+              };
 
               const isSaving = saving[continent.id] ?? false;
               const isSaved  = saved[continent.id]  ?? false;
               const isDirty  = dirty[continent.id]  ?? false;
 
               return (
-                <tr key={continent.id} className={isAuto ? 'metas-tr-auto' : ''}>
+                <tr key={continent.id}>
                   <td className="metas-col-name">{continent.nome}</td>
                   <td className="metas-col-prod"><span className="prod-value">{production.display}</span></td>
                   <td className="metas-col-prestige">
@@ -174,13 +128,13 @@ export function MetasPanel({ continents, mines, factors, boosterTotal, metas, on
                     <span className="metas-meta-edit">
                       <input
                         type="number"
-                        className={`meta-valor-input${isAuto ? ' meta-valor-auto' : ''}`}
+                        className="meta-valor-input"
                         value={form.valor}
                         min={0}
                         onChange={e => setFormField(continent.id, 'valor', e.target.value)}
                       />
                       <select
-                        className={`meta-letra-select${isAuto ? ' meta-letra-auto' : ''}`}
+                        className="meta-letra-select"
                         value={form.letra}
                         onChange={e => setFormField(continent.id, 'letra', e.target.value)}
                       >

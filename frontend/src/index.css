@@ -1003,10 +1003,6 @@ button { cursor: pointer; font-family: inherit; }
   padding: 1px 5px;
   cursor: default;
 }
-.metas-tr-auto td { background: rgba(34, 211, 238, 0.06); }
-.metas-tr-auto .metas-col-name { color: #22d3ee; }
-.meta-valor-auto { border-color: #22d3ee !important; color: #22d3ee; }
-.meta-letra-auto { border-color: #22d3ee !important; color: #22d3ee; }
 
 .metas-meta-edit {
   display: flex;

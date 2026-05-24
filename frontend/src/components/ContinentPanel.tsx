@@ -165,9 +165,7 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
           const timeSeconds    = production.raw > 0 && nextPrestige.raw > 0
             ? nextPrestige.raw / production.raw : 0;
           const timeDays       = timeSeconds / 86400;
-          const metaRaw        = timeDays > 0 && timeDays <= 30
-            ? nextPrestige.raw / 86400
-            : (metasMap[continent.id]?.raw ?? production.raw);
+          const metaRaw        = metasMap[continent.id]?.raw ?? production.raw;
           const upgradeHints   = computeUpgradeHints(continentMines, factors, metaRaw, (boosterTotal ?? 0) / 10);
           const timeEst        = formatTime(timeSeconds, timeLbl);
           const timeCls        = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
