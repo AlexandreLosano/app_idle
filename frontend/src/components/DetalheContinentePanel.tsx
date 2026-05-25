@@ -71,13 +71,25 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
     api.detalheValores.save(mineId, key, val);
   }
 
-  const prestigeRanks: Record<number, number> = {};
-  const sorted = [...continentMines]
-    .filter(m => isFinite(scorePrestige(m, factors)))
-    .sort((a, b) => scorePrestige(a, factors) - scorePrestige(b, factors));
-  sorted.forEach((m, i) => { prestigeRanks[m.id] = i + 1; });
+  const isMaxed = continentMines.length > 0
+    && continentMines.every(m => m.prestigio_atual > 0 && m.prestigio_atual === m.prestigio_maximo);
 
-  const rank3Mine = continentMines.find(m => prestigeRanks[m.id] === 3);
+  const rankMap: Record<number, number> = {};
+  if (isMaxed) {
+    [...continentMines]
+      .sort((a, b) => Number(a.fator_rendimento ?? 0) - Number(b.fator_rendimento ?? 0))
+      .forEach((m, i) => { rankMap[m.id] = Number(m.fator_rendimento ?? 0) > 0 ? i + 1 : 0; });
+  } else {
+    const prestigeRanks: Record<number, number> = {};
+    const sorted = [...continentMines]
+      .filter(m => isFinite(scorePrestige(m, factors)))
+      .sort((a, b) => scorePrestige(a, factors) - scorePrestige(b, factors));
+    sorted.forEach((m, i) => { prestigeRanks[m.id] = i + 1; });
+    Object.assign(rankMap, prestigeRanks);
+  }
+
+  const refRank = isMaxed ? 5 : 3;
+  const refMine = continentMines.find(m => rankMap[m.id] === refRank);
 
   function isCapped800(key: string, val: string): boolean {
     const n = Number(key);
@@ -87,8 +99,8 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
   function getCellColor(mineId: number, key: string): 'cell-cyan' | 'cell-purple' | 'cell-green' | 'cell-yellow' | 'cell-red' | '' {
     const val = getInput(mineId, key);
     if (isCapped800(key, val)) return 'cell-cyan';
-    if (!rank3Mine) return '';
-    const ref = parseFloat(getInput(rank3Mine.id, key));
+    if (!refMine) return '';
+    const ref = parseFloat(getInput(refMine.id, key));
     const own = parseFloat(val);
     if (isNaN(ref) || isNaN(own) || val === '') return '';
     if (own > ref)      return 'cell-purple';
@@ -127,7 +139,7 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
                 <th className="detalhe-res-th-nome detalhe-th-rowspan" rowSpan={2}>Mina</th>
                 <th className="detalhe-niveis-header" colSpan={NIVEIS_COLS.length}>NÍVEIS</th>
                 <th className="detalhe-res-th detalhe-th-rowspan" rowSpan={2}>Produção<br/>atual</th>
-                <th className="detalhe-res-th detalhe-th-rowspan" rowSpan={2}>Ordem<br/>Prestígio</th>
+                <th className="detalhe-res-th detalhe-th-rowspan" rowSpan={2}>Ordem<br/>{isMaxed ? 'Fator' : 'Prestígio'}</th>
               </tr>
               <tr>
                 {NIVEIS_COLS.map(c => (
@@ -138,7 +150,7 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
             <tbody>
               {continentMines.map(mine => {
                 const raw  = mineBottleneckRaw(mine, factors) * boosterFactor;
-                const rank = prestigeRanks[mine.id];
+                const rank = rankMap[mine.id];
                 return (
                   <tr key={mine.id}>
                     <td className="detalhe-res-td-nome">{mine.nome}</td>
