@@ -1586,6 +1586,19 @@ button { cursor: pointer; font-family: inherit; }
   overflow: hidden;
 }
 
+.detalhe-producao-wrap { margin-top: 16px; }
+
+.detalhe-producao-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.detalhe-producao-table thead th { background: var(--surface2); color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; padding: 5px 8px; border-bottom: 1px solid var(--border); text-align: center; white-space: nowrap; }
+.detalhe-producao-table tbody tr:hover td { background: var(--surface2); }
+.detalhe-producao-table tbody td { padding: 5px 10px; border-bottom: 1px solid var(--border); text-align: center; font-family: 'Courier New', monospace; font-weight: 700; color: var(--accent); white-space: nowrap; }
+.detalhe-producao-table tbody tr:last-child td { border-bottom: none; }
+.detalhe-producao-table .detalhe-res-td-nome { text-align: left; font-family: inherit; color: var(--text); font-weight: 600; }
+
 .detalhe-result-table {
   width: 100%;
   table-layout: fixed;

@@ -132,6 +132,7 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
       </div>
 
       {continentMines.length > 0 && (
+        <>
         <div className="detalhe-result-wrap">
           <table className="detalhe-result-table">
             <thead>
@@ -187,7 +188,43 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
               })}
             </tbody>
           </table>
+
         </div>
+
+        <div className="detalhe-result-wrap detalhe-producao-wrap">
+          <table className="detalhe-producao-table">
+            <thead>
+              <tr>
+                <th className="detalhe-res-th-nome detalhe-th-rowspan" rowSpan={2}>Mina</th>
+                <th colSpan={2} className="detalhe-niveis-header">Armazém</th>
+                <th colSpan={2} className="detalhe-niveis-header">Elevador</th>
+                <th colSpan={2} className="detalhe-niveis-header">Extração</th>
+              </tr>
+              <tr>
+                <th className="detalhe-sub-th">Nível</th>
+                <th className="detalhe-sub-th">Letra</th>
+                <th className="detalhe-sub-th">Nível</th>
+                <th className="detalhe-sub-th">Letra</th>
+                <th className="detalhe-sub-th">Nível</th>
+                <th className="detalhe-sub-th">Letra</th>
+              </tr>
+            </thead>
+            <tbody>
+              {continentMines.map(mine => (
+                <tr key={mine.id}>
+                  <td className="detalhe-res-td-nome">{mine.nome}</td>
+                  <td className="detalhe-res-td">{mine.armazem_nivel ?? '—'}</td>
+                  <td className="detalhe-res-td">{mine.armazem_letra ?? '—'}</td>
+                  <td className="detalhe-res-td">{mine.elevador_nivel ?? '—'}</td>
+                  <td className="detalhe-res-td">{mine.elevador_letra ?? '—'}</td>
+                  <td className="detalhe-res-td">{mine.extracao_nivel ?? '—'}</td>
+                  <td className="detalhe-res-td">{mine.extracao_letra ?? '—'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        </>
       )}
 
       {selectedContinentId !== '' && continentMines.length === 0 && (
