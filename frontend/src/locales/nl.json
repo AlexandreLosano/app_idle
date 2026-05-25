@@ -50,6 +50,8 @@
     "col_prestige_current": "Prestige",
     "col_prestige_max": "Max Prestige",
     "col_next_prestige": "Volgend Prestige",
+    "col_fator_rendimento": "Rendementsfactor",
+    "col_fator_order": "Factor Volgorde",
     "col_prestige_order": "Prestige Volgorde",
     "col_production": "Productie",
     "col_target": "Alloc. Doel",

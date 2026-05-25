@@ -18,6 +18,7 @@ export interface Mine {
   prestigio_maximo: number;
   proximo_prestigio_valor: number | null;
   proximo_prestigio_letra: string | null;
+  fator_rendimento: number | null;
   updated_at: string;
 }
 

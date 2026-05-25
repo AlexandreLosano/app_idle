@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { Continent, Mine, Factor, Meta } from '../types';
 import { MinesTable } from './MinesTable';
 import { BoosterBar, type BoosterInfo } from './BoosterBar';
-import { computeUpgradeHints } from '../utils/upgradeAdvisor';
+import { computeUpgradeHints, computeUpgradeHintsMaxed } from '../utils/upgradeAdvisor';
 import { computeProduction, minNextPrestige } from '../utils/gameCalc';
 
 interface Props {
@@ -166,13 +166,16 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
             ? nextPrestige.raw / production.raw : 0;
           const timeDays       = timeSeconds / 86400;
           const metaRaw        = metasMap[continent.id]?.raw ?? production.raw;
-          const upgradeHints   = computeUpgradeHints(continentMines, factors, metaRaw, (boosterTotal ?? 0) / 10);
+          const totalAtual     = continentMines.reduce((s, m) => s + (m.prestigio_atual  ?? 0), 0);
+          const totalMaximo    = continentMines.reduce((s, m) => s + (m.prestigio_maximo ?? 0), 0);
+          const isMaxed        = totalAtual > 0 && totalAtual === totalMaximo;
+          const upgradeHints   = isMaxed
+            ? computeUpgradeHintsMaxed(continentMines, factors, metaRaw, (boosterTotal ?? 0) / 10)
+            : computeUpgradeHints(continentMines, factors, metaRaw, (boosterTotal ?? 0) / 10);
           const timeEst        = formatTime(timeSeconds, timeLbl);
           const timeCls        = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
           const timeTooltip    = estimatedDateTooltip(timeSeconds, t('continents.estimated_date'));
           const balance        = continentBalance(continentMines, factors);
-          const totalAtual     = continentMines.reduce((s, m) => s + (m.prestigio_atual  ?? 0), 0);
-          const totalMaximo    = continentMines.reduce((s, m) => s + (m.prestigio_maximo ?? 0), 0);
 
           return (
             <div key={continent.id} className="continent-row">
@@ -250,6 +253,7 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
                     mines={continentMines}
                     factors={factors}
                     boosterTotal={boosterTotal}
+                    continentMaxed={isMaxed}
                     upgradeHints={upgradeHints}
                     onUpdate={onMineUpdate}
                   />

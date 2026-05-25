@@ -1,0 +1,1 @@
+ALTER TABLE mines ADD COLUMN IF NOT EXISTS fator_rendimento NUMERIC;

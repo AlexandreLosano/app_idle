@@ -14,6 +14,7 @@ interface Props {
   showContinent?: boolean;
   boosterTotal?: number;
   readOnly?: boolean;
+  continentMaxed?: boolean;
   upgradeHints?: Record<number, UpgradeHint | null>;
   onUpdate: (updated: Mine) => void;
 }
@@ -29,6 +30,7 @@ type FormRow = {
   prestigio_maximo: string;
   proximo_prestigio_valor: string;
   proximo_prestigio_letra: string;
+  fator_rendimento: string;
   continent_id: string;
 };
 
@@ -44,6 +46,7 @@ function toForm(m: Mine): FormRow {
     prestigio_maximo:         m.prestigio_maximo?.toString()         ?? '0',
     proximo_prestigio_valor:  m.proximo_prestigio_valor?.toString()  ?? '',
     proximo_prestigio_letra:  m.proximo_prestigio_letra              ?? '',
+    fator_rendimento:         m.fator_rendimento?.toString()         ?? '',
     continent_id:             m.continent_id?.toString()             ?? '',
   };
 }
@@ -107,7 +110,7 @@ function extracaoStatus(f: FormRow, factors: Factor[]): 'min' | 'notmin' | 'unkn
   return x <= Math.min(a, e) + 1e-9 ? 'min' : 'notmin';
 }
 
-export function MinesTable({ mines, factors, continents = [], showContinent = false, boosterTotal = 0, readOnly = false, upgradeHints, onUpdate }: Props) {
+export function MinesTable({ mines, factors, continents = [], showContinent = false, boosterTotal = 0, readOnly = false, continentMaxed = false, upgradeHints, onUpdate }: Props) {
   const { t } = useTranslation();
   const [rows,   setRows]   = useState<Record<number, FormRow>>({});
   const [saving, setSaving] = useState<Record<number, boolean>>({});
@@ -144,6 +147,7 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
         prestigio_maximo:          f.prestigio_maximo         ? parseInt(f.prestigio_maximo)               : undefined,
         proximo_prestigio_valor:   f.proximo_prestigio_valor  ? parseFloat(f.proximo_prestigio_valor)      : undefined,
         proximo_prestigio_letra:   f.proximo_prestigio_letra  || undefined,
+        fator_rendimento:          f.fator_rendimento         ? parseFloat(f.fator_rendimento)             : undefined,
       });
       setRows(r => ({ ...r, [m.id]: toForm(updated) }));
       onUpdate(updated);
@@ -166,20 +170,28 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
     continentRawTotals[key] = (continentRawTotals[key] ?? 0) + raw;
   });
 
-  // Ranking de ordem de prestígio: menor próximo prestígio = fazer primeiro
+  // Ranking de ordem: por prestígio (normal) ou por fator de rendimento (maxed)
   const prestigeRank: Record<number, number> = {};
-  const rankable = mines
-    .map(m => {
-      const f = rows[m.id];
-      const valor = f?.proximo_prestigio_valor ? parseFloat(f.proximo_prestigio_valor) : null;
-      const letra = f?.proximo_prestigio_letra ?? '';
-      if (!valor || !letra) return { id: m.id, sc: Infinity };
-      return { id: m.id, sc: score(valor.toString(), letra, factors) };
-    })
-    .sort((a, b) => a.sc - b.sc);
-  rankable.forEach((r, i) => {
-    prestigeRank[r.id] = r.sc === Infinity ? 0 : i + 1;
-  });
+  if (continentMaxed) {
+    [...mines]
+      .sort((a, b) => Number(a.fator_rendimento ?? 0) - Number(b.fator_rendimento ?? 0))
+      .forEach((m, i) => {
+        prestigeRank[m.id] = Number(m.fator_rendimento ?? 0) > 0 ? i + 1 : 0;
+      });
+  } else {
+    const rankable = mines
+      .map(m => {
+        const f = rows[m.id];
+        const valor = f?.proximo_prestigio_valor ? parseFloat(f.proximo_prestigio_valor) : null;
+        const letra = f?.proximo_prestigio_letra ?? '';
+        if (!valor || !letra) return { id: m.id, sc: Infinity };
+        return { id: m.id, sc: score(valor.toString(), letra, factors) };
+      })
+      .sort((a, b) => a.sc - b.sc);
+    rankable.forEach((r, i) => {
+      prestigeRank[r.id] = r.sc === Infinity ? 0 : i + 1;
+    });
+  }
 
   // Ranking por % de produção: menor % = rank 1
   const pctRank: Record<number, number> = {};
@@ -222,8 +234,10 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
             <th colSpan={2}>{t('mines.col_extraction')}</th>
             <th className="col-prestige" rowSpan={2}>{t('mines.col_prestige_current')}</th>
             <th className="col-prestige grp-a-r" rowSpan={2}>{t('mines.col_prestige_max')}</th>
-            <th colSpan={2} className="grp-b-l grp-b-r">{t('mines.col_next_prestige')}</th>
-            <th className="col-rank"     rowSpan={2}>{t('mines.col_prestige_order')}</th>
+            {continentMaxed
+              ? <th colSpan={2} className="grp-b-l grp-b-r">{t('mines.col_fator_rendimento')}</th>
+              : <th colSpan={2} className="grp-b-l grp-b-r">{t('mines.col_next_prestige')}</th>}
+            <th className="col-rank"     rowSpan={2}>{continentMaxed ? t('mines.col_fator_order') : t('mines.col_prestige_order')}</th>
             <th className="col-producao" rowSpan={2}>{t('mines.col_production')}</th>
             <th className="col-pct"     rowSpan={2}>%</th>
             {upgradeHints && <th className="col-target" rowSpan={2}>{t('mines.col_target')}</th>}
@@ -236,8 +250,12 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
             <th className="col-letra sub">{t('mines.sub_letter')}</th>
             <th className="col-nivel sub">{t('mines.sub_level')}</th>
             <th className="col-letra sub">{t('mines.sub_letter')}</th>
-            <th className="col-nivel sub grp-b-l">{t('mines.sub_value')}</th>
-            <th className="col-letra sub grp-b-r">{t('mines.sub_letter')}</th>
+            {continentMaxed
+              ? <th colSpan={2} className="col-nivel sub grp-b-l grp-b-r"></th>
+              : <>
+                  <th className="col-nivel sub grp-b-l">{t('mines.sub_value')}</th>
+                  <th className="col-letra sub grp-b-r">{t('mines.sub_letter')}</th>
+                </>}
           </tr>
         </thead>
         <tbody>
@@ -353,21 +371,32 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
                         onChange={e => set(m.id, 'prestigio_maximo', e.target.value)} />}
                 </td>
 
-                <td className="col-nivel grp-b-l">
-                  {readOnly
-                    ? <span>{f.proximo_prestigio_valor || '—'}</span>
-                    : <input type="number" step="0.01" value={f.proximo_prestigio_valor}
-                        onChange={e => set(m.id, 'proximo_prestigio_valor', e.target.value)} />}
-                </td>
-                <td className="col-letra grp-b-r">
-                  {readOnly
-                    ? <span>{f.proximo_prestigio_letra || '—'}</span>
-                    : <select value={f.proximo_prestigio_letra}
-                        onChange={e => set(m.id, 'proximo_prestigio_letra', e.target.value)}>
-                        <option value="">—</option>
-                        {letras.map(l => <option key={l} value={l}>{l}</option>)}
-                      </select>}
-                </td>
+                {continentMaxed ? (
+                  <td colSpan={2} className="col-nivel grp-b-l grp-b-r">
+                    {readOnly
+                      ? <span>{f.fator_rendimento || '—'}</span>
+                      : <input type="number" step="any" min="0" value={f.fator_rendimento}
+                          onChange={e => set(m.id, 'fator_rendimento', e.target.value)} />}
+                  </td>
+                ) : (
+                  <>
+                    <td className="col-nivel grp-b-l">
+                      {readOnly
+                        ? <span>{f.proximo_prestigio_valor || '—'}</span>
+                        : <input type="number" step="0.01" value={f.proximo_prestigio_valor}
+                            onChange={e => set(m.id, 'proximo_prestigio_valor', e.target.value)} />}
+                    </td>
+                    <td className="col-letra grp-b-r">
+                      {readOnly
+                        ? <span>{f.proximo_prestigio_letra || '—'}</span>
+                        : <select value={f.proximo_prestigio_letra}
+                            onChange={e => set(m.id, 'proximo_prestigio_letra', e.target.value)}>
+                            <option value="">—</option>
+                            {letras.map(l => <option key={l} value={l}>{l}</option>)}
+                          </select>}
+                    </td>
+                  </>
+                )}
 
                 <td className="col-rank">
                   <div className="rank-cell">

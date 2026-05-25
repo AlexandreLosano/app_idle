@@ -50,6 +50,8 @@
     "col_prestige_current": "Prestige",
     "col_prestige_max": "Prestige Max",
     "col_next_prestige": "Prochain Prestige",
+    "col_fator_rendimento": "Facteur de Rendement",
+    "col_fator_order": "Ordre Facteur",
     "col_prestige_order": "Ordre Prestige",
     "col_production": "Production",
     "col_target": "Alloc. Obj.",

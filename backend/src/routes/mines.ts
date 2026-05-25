@@ -65,6 +65,7 @@ router.put('/:nome', async (req: Request, res: Response) => {
     extracao_nivel, extracao_letra,
     prestigio_atual, prestigio_maximo,
     proximo_prestigio_valor, proximo_prestigio_letra,
+    fator_rendimento,
   } = req.body;
 
   try {
@@ -82,14 +83,16 @@ router.put('/:nome', async (req: Request, res: Response) => {
         prestigio_maximo           = COALESCE($10, prestigio_maximo),
         proximo_prestigio_valor    = COALESCE($11, proximo_prestigio_valor),
         proximo_prestigio_letra    = COALESCE($12, proximo_prestigio_letra),
+        fator_rendimento           = COALESCE($13, fator_rendimento),
         updated_at                 = NOW()
-      WHERE nome = $13
+      WHERE nome = $14
       RETURNING id`,
       [newNome?.trim() || null, continent_id,
        armazem_nivel, armazem_letra, elevador_nivel, elevador_letra,
        extracao_nivel, extracao_letra,
        prestigio_atual, prestigio_maximo,
        proximo_prestigio_valor, proximo_prestigio_letra,
+       fator_rendimento ?? null,
        nome]
     );
 

@@ -63,6 +63,37 @@ export function formatRaw(rawValue: number, factors: Factor[]): string {
   return `${roundByMagnitude(value)}${sorted[idx].letra}`;
 }
 
+export function computeUpgradeHintsMaxed(
+  mines: Mine[],
+  factors: Factor[],
+  metaRaw: number,
+  boosterFactor: number = 1,
+): Record<number, UpgradeHint | null> {
+  const result: Record<number, UpgradeHint | null> = {};
+
+  const active = mines.filter(m => m.fator_rendimento != null && Number(m.fator_rendimento) > 0);
+  if (active.length === 0) return result;
+
+  const sumFactors = active.reduce((s, m) => s + Number(m.fator_rendimento!), 0);
+
+  for (const m of active) {
+    const targetRaw = metaRaw * (Number(m.fator_rendimento!) / sumFactors);
+    const bottleneck = mineBottleneckRaw(m, factors);
+    const boostedBottleneck = bottleneck * boosterFactor;
+    let signal: UpgradeSignal;
+    if (boostedBottleneck < targetRaw * 0.9) {
+      signal = 'up';
+    } else if (boostedBottleneck > targetRaw * 1.1) {
+      signal = 'skip';
+    } else {
+      signal = 'ok';
+    }
+    result[m.id] = { signal, targetRaw, bottleneckRaw: boostedBottleneck };
+  }
+
+  return result;
+}
+
 export function computeUpgradeHints(
   mines: Mine[],
   factors: Factor[],

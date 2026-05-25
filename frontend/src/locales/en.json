@@ -50,6 +50,8 @@
     "col_prestige_current": "Cur. Prestige",
     "col_prestige_max": "Max Prestige",
     "col_next_prestige": "Next Prestige",
+    "col_fator_rendimento": "Yield Factor",
+    "col_fator_order": "Factor Order",
     "col_prestige_order": "Prestige Order",
     "col_production": "Production",
     "col_target": "Alloc. Goal",

@@ -50,6 +50,8 @@
     "col_prestige_current": "Prestigio",
     "col_prestige_max": "Prestigio Máx.",
     "col_next_prestige": "Próx. Prestigio",
+    "col_fator_rendimento": "Factor de Rendimiento",
+    "col_fator_order": "Orden Factor",
     "col_prestige_order": "Orden Prestigio",
     "col_production": "Producción",
     "col_target": "Aloc. Meta",
