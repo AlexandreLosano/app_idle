@@ -51,6 +51,12 @@ function toForm(m: Mine): FormRow {
   };
 }
 
+function mineNameStyle(name: string): React.CSSProperties | undefined {
+  if (name.length > 17) return { fontSize: '10px' };
+  if (name.length > 13) return { fontSize: '11px' };
+  return undefined;
+}
+
 // Retorna score comparável usando a ordem da letra + nível
 function score(nivel: string, letra: string, factors: Factor[]): number {
   if (!nivel || !letra) return -Infinity;
@@ -300,8 +306,12 @@ export function MinesTable({ mines, factors, continents = [], showContinent = fa
                 </td>
 
                 <td className="col-nome">
-                  {upgradeHints && <UpgradeArrow hint={upgradeHints[m.id] ?? null} />}
-                  <span className="mine-name">{m.nome}</span>
+                  <div className="mine-name-cell">
+                    {upgradeHints && <UpgradeArrow hint={upgradeHints[m.id] ?? null} />}
+                    <span className="mine-name" title={m.nome} style={mineNameStyle(m.nome)}>
+                      {m.nome}
+                    </span>
+                  </div>
                 </td>
 
                 {showContinent && (

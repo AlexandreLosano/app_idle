@@ -3,7 +3,7 @@
 ## Regras Obrigatórias
 
 ### 1. Documentação de Alterações
-Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0044**.
+Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0049**.
 
 Formato:
 ```
@@ -29,7 +29,7 @@ docker compose up --build                                     # Rebuild e sobe
 docker compose exec backend sh                                # Shell no backend
 docker compose exec db psql -U idle_user -d idle_db          # Acesso ao banco
 docker compose logs -f backend                                # Logs do backend
-sg docker -c "docker compose up --build -d backend"          # Rebuild backend (sem sudo)
+docker compose up --build -d backend                          # Rebuild backend
 ```
 
 ### 3. Banco de Dados
@@ -48,16 +48,16 @@ sg docker -c "docker compose up --build -d backend"          # Rebuild backend (
 Após concluir qualquer alteração de código (edição de arquivo), reconstruir e subir o ambiente DEV **imediatamente**, sem esperar confirmação:
 
 ```bash
-sg docker -c "docker compose -p app_idle_dev up --build -d"
+docker compose -p app_idle_dev up --build -d
 ```
 
 - Se apenas o backend foi alterado: rebuildar só o backend para ser mais rápido:
   ```bash
-  sg docker -c "docker compose -p app_idle_dev up --build -d backend"
+  docker compose -p app_idle_dev up --build -d backend
   ```
 - Se apenas o frontend foi alterado: rebuildar só o frontend:
   ```bash
-  sg docker -c "docker compose -p app_idle_dev up --build -d frontend"
+  docker compose -p app_idle_dev up --build -d frontend
   ```
 - Aguardar o container ficar saudável e informar ao usuário que o DEV foi atualizado.
 
@@ -300,3 +300,27 @@ Estrutura de chaves por domínio:
 - `boosters.*`   — labels da aba Boosters/Artefatos
 - `promo.*`      — labels da aba Promoção
 - `register.*`   — labels da aba Cadastros
+
+---
+
+## Skills Customizadas (Comandos `/`)
+
+### `/ui <descrição do problema>`
+Skill especializada em resolver problemas visuais/UI do projeto.
+
+**Como usar:** No prompt do Claude Code, digite `/ui` seguido da descrição do problema visual.
+
+**Exemplo:**
+```
+/ui A coluna de produção na aba Continentes está desalinhada em mobile. Os valores de tempo ficam cortados quando são maiores que "30d".
+```
+
+**O que a skill faz automaticamente:**
+1. Lê todos os componentes e estilos do projeto
+2. Identifica os arquivos afetados
+3. Implementa a correção respeitando as convenções (CSS puro, sem framework, sem glow/animação)
+4. Atualiza i18n se necessário
+5. Cria o doc de alteração
+6. Rebuilda o frontend no DEV
+
+**Arquivo:** `.claude/commands/ui.md`

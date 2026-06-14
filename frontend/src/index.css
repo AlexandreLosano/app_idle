@@ -213,9 +213,10 @@ body {
 .col-status-inner { display: flex; align-items: center; justify-content: center; gap: 2px; }
 
 .mines-table .col-nome {
-  width: 100px; text-align: left;
+  width: 130px; max-width: 130px; text-align: left;
   position: sticky; left: 36px; z-index: 2; background: var(--surface);
   box-shadow: 2px 0 5px rgba(0,0,0,0.25);
+  overflow: hidden;
 }
 .mines-table tbody tr:hover td.col-status,
 .mines-table tbody tr:hover td.col-nome { background: var(--surface2); }
@@ -403,7 +404,15 @@ col.cg-b { background: rgba(108, 142, 247, 0.09); }
   margin-left: 3px;
 }
 
-.mine-name { font-weight: 600; }
+.mine-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.mine-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
 .island-name-cell { font-size: 12px; color: var(--text-muted); }
 
 .mines-table input[type="number"],
@@ -1485,7 +1494,7 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 699px) {
   .mines-table { font-size: 11px; }
   .mines-table th, .mines-table td { padding: 4px 4px; }
-  .mines-table .col-nome { width: 80px; }
+  .mines-table .col-nome { width: 90px; max-width: 90px; }
   .mines-table .col-nivel { width: 54px; }
   .mines-table .col-letra { width: 36px; }
   .mines-table .col-prestige { width: 38px; }
