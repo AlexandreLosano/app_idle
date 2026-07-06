@@ -58,23 +58,25 @@ function extracaoContinentStatus(continentMines: Mine[], factors: Factor[]): 'gr
 
 type BalanceStatus = 'ok' | 'warn' | 'bad' | 'unknown';
 
-function continentBalance(continentMines: Mine[], factors: Factor[]): BalanceStatus {
+function continentBalance(continentMines: Mine[], factors: Factor[], isMaxed: boolean): BalanceStatus {
   const factorMap = new Map(factors.map(f => [f.letra, f]));
   if (continentMines.length < 2) return 'unknown';
 
-  const withData = continentMines.filter(
-    m => m.proximo_prestigio_valor != null && m.proximo_prestigio_letra
-  );
+  const withData = isMaxed
+    ? continentMines.filter(m => m.fator_rendimento != null && m.fator_rendimento > 0)
+    : continentMines.filter(m => m.proximo_prestigio_valor != null && m.proximo_prestigio_letra);
   if (withData.length < 2) return 'unknown';
 
-  const prestigeSorted = [...withData].sort((a, b) => {
-    const sc = (m: Mine) => {
-      const cont = factorMap.get(m.proximo_prestigio_letra!)?.cont ?? 1;
-      const v = m.proximo_prestigio_valor!;
-      return (cont - 1) * 100 + Math.log10(v > 0 ? v : 0.001);
-    };
-    return sc(a) - sc(b);
-  });
+  const prestigeSorted = isMaxed
+    ? [...withData].sort((a, b) => (a.fator_rendimento ?? 0) - (b.fator_rendimento ?? 0))
+    : [...withData].sort((a, b) => {
+        const sc = (m: Mine) => {
+          const cont = factorMap.get(m.proximo_prestigio_letra!)?.cont ?? 1;
+          const v = m.proximo_prestigio_valor!;
+          return (cont - 1) * 100 + Math.log10(v > 0 ? v : 0.001);
+        };
+        return sc(a) - sc(b);
+      });
   const prestigeRank: Record<number, number> = {};
   prestigeSorted.forEach((m, i) => { prestigeRank[m.id] = i + 1; });
 
@@ -84,14 +86,15 @@ function continentBalance(continentMines: Mine[], factors: Factor[]): BalanceSta
   const pctRank: Record<number, number> = {};
   pctSorted.forEach((m, i) => { pctRank[m.id] = i + 1; });
 
-  let maxDiff = 0;
+  let sumDiff = 0;
   for (const m of withData) {
     const diff = Math.abs((prestigeRank[m.id] ?? 0) - (pctRank[m.id] ?? 0));
-    if (diff > maxDiff) maxDiff = diff;
+    sumDiff += Math.min(diff, 2);
   }
+  const avgDiff = sumDiff / withData.length;
 
-  if (maxDiff === 0) return 'ok';
-  if (maxDiff === 1) return 'warn';
+  if (avgDiff === 0) return 'ok';
+  if (avgDiff <= 1) return 'warn';
   return 'bad';
 }
 
@@ -175,7 +178,7 @@ export function ContinentPanel({ continents, mines, factors, boosterTotal, boost
           const timeEst        = formatTime(timeSeconds, timeLbl);
           const timeCls        = timeSeconds > 0 ? timeColorClass(timeSeconds) : '';
           const timeTooltip    = estimatedDateTooltip(timeSeconds, t('continents.estimated_date'));
-          const balance        = continentBalance(continentMines, factors);
+          const balance        = continentBalance(continentMines, factors, isMaxed);
 
           return (
             <div key={continent.id} className="continent-row">
