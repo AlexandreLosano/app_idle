@@ -2,6 +2,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  color-scheme: dark;
   --bg: #0f1117;
   --surface: #1a1d27;
   --surface2: #22263a;
@@ -25,7 +26,7 @@ body {
 }
 
 /* Layout */
-.dashboard { max-width: 1200px; margin: 0 auto; padding: 0 16px 20px; }
+.dashboard { max-width: 1600px; margin: 0 auto; padding: 0 16px 20px; }
 
 /* Header */
 .app-header {
@@ -213,7 +214,7 @@ body {
 .col-status-inner { display: flex; align-items: center; justify-content: center; gap: 2px; }
 
 .mines-table .col-nome {
-  width: 130px; max-width: 130px; text-align: left;
+  width: 160px; max-width: 160px; text-align: left;
   position: sticky; left: 36px; z-index: 2; background: var(--surface);
   box-shadow: 2px 0 5px rgba(0,0,0,0.25);
   overflow: hidden;
@@ -222,8 +223,8 @@ body {
 .mines-table tbody tr:hover td.col-nome { background: var(--surface2); }
 
 .mines-table .col-continente { width: 90px; }
-.mines-table .col-nivel   { width: 72px; }
-.mines-table .col-letra   { width: 48px; }
+.mines-table .col-nivel   { width: 72px; min-width: 72px; }
+.mines-table .col-letra   { width: 64px; min-width: 64px; }
 .mines-table .col-prestige{ width: 50px; text-align: center; line-height: 1.2; }
 .mines-table .col-rank    { width: 60px; text-align: center; font-size: 12px; font-weight: 700; font-family: 'Courier New', monospace; color: var(--warn); }
 .mines-table .col-producao{ width: 80px; text-align: center; font-weight: 700; font-family: 'Courier New', monospace; color: var(--accent); }
@@ -1482,7 +1483,7 @@ button { cursor: pointer; font-family: inherit; }
   .mines-table th, .mines-table td { padding: 5px 5px; }
   .mines-table th.sub { padding: 2px 4px; }
   .mines-table .col-nivel   { width: 62px; }
-  .mines-table .col-letra   { width: 42px; }
+  .mines-table .col-letra   { width: 56px; min-width: 56px; }
   .mines-table .col-prestige{ width: 44px; }
   .mines-table .col-rank    { width: 52px; }
   .mines-table .col-producao{ width: 70px; }
@@ -1496,7 +1497,7 @@ button { cursor: pointer; font-family: inherit; }
   .mines-table th, .mines-table td { padding: 4px 4px; }
   .mines-table .col-nome { width: 90px; max-width: 90px; }
   .mines-table .col-nivel { width: 54px; }
-  .mines-table .col-letra { width: 36px; }
+  .mines-table .col-letra { width: 50px; min-width: 50px; }
   .mines-table .col-prestige { width: 38px; }
   .mines-table .col-rank { width: 44px; }
   .mines-table .col-producao { width: 60px; }
