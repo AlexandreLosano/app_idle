@@ -1712,6 +1712,7 @@ button { cursor: pointer; font-family: inherit; }
   border-color: var(--accent);
   background: var(--surface);
 }
+.detalhe-prestige-input { max-width: 64px; }
 .detalhe-col-input.cell-purple { color: #c084fc;       border-color: #c084fc; }
 .detalhe-col-input.cell-green  { color: var(--ok);    border-color: var(--ok); }
 .detalhe-col-input.cell-yellow { color: var(--warn);  border-color: var(--warn); }

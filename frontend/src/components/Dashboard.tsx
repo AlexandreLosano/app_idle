@@ -195,6 +195,7 @@ export function Dashboard() {
           mines={mines}
           factors={factors}
           boosterTotal={boosterTotal}
+          onMineUpdate={handleMineUpdate}
         />
       )}
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Continent, Mine, Factor } from '../types';
 import { api } from '../api/client';
 import { formatRaw } from '../utils/upgradeAdvisor';
@@ -8,6 +9,7 @@ interface Props {
   mines: Mine[];
   factors: Factor[];
   boosterTotal: number;
+  onMineUpdate: (updated: Mine) => void;
 }
 
 function scorePrestige(m: Mine, factors: Factor[]): number {
@@ -38,9 +40,11 @@ const NIVEIS_COLS: { key: string; label: string }[] = [
   ...[25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35].map(n => ({ key: String(n), label: String(n) })),
 ];
 
-export function DetalheContinentePanel({ continents, mines, factors, boosterTotal }: Props) {
+export function DetalheContinentePanel({ continents, mines, factors, boosterTotal, onMineUpdate }: Props) {
+  const { t } = useTranslation();
   const [selectedContinentId, setSelectedContinentId] = useState<number | ''>('');
   const [inputValues, setInputValues] = useState<Record<string, string>>({});
+  const [prestigeDraft, setPrestigeDraft] = useState<Record<number, string>>({});
 
   const boosterFactor = boosterTotal / 10;
 
@@ -70,6 +74,29 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
   function handleBlur(mineId: number, key: string, val: string) {
     api.detalheValores.save(mineId, key, val);
   }
+
+  async function savePrestige(mine: Mine, data: Partial<Mine>) {
+    try {
+      onMineUpdate(await api.mines.update(mine.nome, data));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function handlePrestigeValorBlur(mine: Mine) {
+    const draft = prestigeDraft[mine.id];
+    if (draft == null) return;
+    setPrestigeDraft(prev => {
+      const next = { ...prev };
+      delete next[mine.id];
+      return next;
+    });
+    const valor = parseFloat(draft.replace(',', '.'));
+    if (isNaN(valor) || valor <= 0 || valor === Number(mine.proximo_prestigio_valor)) return;
+    savePrestige(mine, { proximo_prestigio_valor: valor });
+  }
+
+  const letras = factors.map(f => f.letra);
 
   const isMaxed = continentMines.length > 0
     && continentMines.every(m => m.prestigio_atual > 0 && m.prestigio_atual === m.prestigio_maximo);
@@ -139,6 +166,7 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
               <tr>
                 <th className="detalhe-res-th-nome detalhe-th-rowspan" rowSpan={2}>Mina</th>
                 <th className="detalhe-niveis-header" colSpan={NIVEIS_COLS.length}>NÍVEIS</th>
+                <th className="detalhe-niveis-header" colSpan={2}>{t('mines.col_next_prestige')}</th>
                 <th className="detalhe-res-th detalhe-th-rowspan" rowSpan={2}>Produção<br/>atual</th>
                 <th className="detalhe-res-th detalhe-th-rowspan" rowSpan={2}>Ordem<br/>{isMaxed ? 'Fator' : 'Prestígio'}</th>
               </tr>
@@ -146,6 +174,8 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
                 {NIVEIS_COLS.map(c => (
                   <th key={c.key} className="detalhe-sub-th">{c.label}</th>
                 ))}
+                <th className="detalhe-sub-th">{t('mines.sub_value')}</th>
+                <th className="detalhe-sub-th">{t('mines.sub_letter')}</th>
               </tr>
             </thead>
             <tbody>
@@ -177,6 +207,27 @@ export function DetalheContinentePanel({ continents, mines, factors, boosterTota
                         </td>
                       );
                     })}
+                    <td className="detalhe-input-td">
+                      <input
+                        className="detalhe-col-input detalhe-prestige-input"
+                        type="text"
+                        inputMode="decimal"
+                        value={prestigeDraft[mine.id] ?? mine.proximo_prestigio_valor?.toString() ?? ''}
+                        onChange={e => setPrestigeDraft(prev => ({ ...prev, [mine.id]: e.target.value }))}
+                        onBlur={() => handlePrestigeValorBlur(mine)}
+                        onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                      />
+                    </td>
+                    <td className="detalhe-input-td detalhe-input-td-last">
+                      <select
+                        className="detalhe-col-input detalhe-prestige-input"
+                        value={mine.proximo_prestigio_letra ?? ''}
+                        onChange={e => { if (e.target.value) savePrestige(mine, { proximo_prestigio_letra: e.target.value }); }}
+                      >
+                        <option value="">—</option>
+                        {letras.map(l => <option key={l} value={l}>{l}</option>)}
+                      </select>
+                    </td>
                     <td className="detalhe-res-td">{formatRaw(raw, factors)}</td>
                     <td className="detalhe-res-td">
                       {rank != null ? (

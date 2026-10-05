@@ -3,7 +3,7 @@
 ## Regras Obrigatórias
 
 ### 1. Documentação de Alterações
-Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0052**.
+Toda alteração de código deve ser documentada em `/docs/alteracao_XXXX.md` (número sequencial com 4 dígitos). Próximo número: **0053**.
 
 Formato:
 ```
@@ -265,7 +265,7 @@ Fator aplicado à produção: `boosterTotal / 10`.
 |-----------|-----------------|
 | `Dashboard.tsx` | Orquestração de abas, carregamento de dados, estado global |
 | `ContinentPanel.tsx` | Tabela de continentes com expansão por continente para ver minas |
-| `DetalheContinentePanel.tsx` | Tabela detalhada de um continente com níveis por coluna e ranking de prestígio |
+| `DetalheContinentePanel.tsx` | Tabela detalhada de um continente com níveis por coluna, edição do próximo prestígio (valor + letra) e ranking de prestígio |
 | `MinesTable.tsx` | Tabela editável de minas (usada em ContinentPanel) |
 | `SummaryPanel.tsx` | Cards de resumo por continente com barras e donut charts |
 | `ArtefatosPanel.tsx` | Lista de artefatos com toggle ativo/inativo e edição de tipo |
